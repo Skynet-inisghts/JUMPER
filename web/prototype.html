@@ -1,0 +1,1715 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JUMPER · crawler terminal for pons v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiny5&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07060A;--bg2:#0C0A12;--pan:#110D18;--ln:#241B33;--ln2:#3A2A52;
+ --tx:#D8D2E4;--dm:#7E7490;--dm2:#4A4259;
+ --ac:#B47CFF;--ac2:#7DF0C8;--rd:#FF5D7A;--ye:#FFD166;--cy:#6ED0FF}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:"JetBrains Mono",ui-monospace,monospace;
+ font-size:13px;line-height:1.65;overflow-x:hidden}
+.wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+a{color:inherit;text-decoration:none}
+#web{position:fixed;inset:0;z-index:14;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;
+ background-image:repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 3px)}
+.page{position:relative;z-index:2}
+nav{position:sticky;top:0;z-index:20;background:rgba(7,6,10,.92);border-bottom:1px solid var(--ln)}
+.nav{display:flex;align-items:center;gap:22px;height:58px}
+.logo{display:flex;align-items:center;gap:10px;font-family:"Tiny5",monospace;font-size:26px;
+ color:var(--tx);letter-spacing:1px}
+.logo b{color:var(--ac);text-shadow:0 0 22px rgba(180,124,255,.45)}
+.logo .mk{height:34px;image-rendering:pixelated;filter:drop-shadow(0 0 10px rgba(180,124,255,.5))}
+.logo .mk.sm{height:26px}
+.tagline{color:var(--dm2);font-size:11px}
+.navlinks{margin-left:auto;display:flex;gap:20px;font-size:12px;color:var(--dm)}
+.navlinks a:hover{color:var(--tx)}
+.btn{background:var(--ac);color:#140A20;padding:9px 17px;font-weight:700;font-size:12px;
+ border:0;border-radius:3px;cursor:pointer;font-family:inherit}
+.btn:hover{filter:brightness(1.12)}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--ln2)}
+.btn.ghost:hover{border-color:var(--ac)}
+
+/* ---------- hero: text left, spider on silk right ---------- */
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:38px;align-items:center;
+ position:relative;min-height:calc(100vh - 58px);padding:40px 0}
+.hero>div:first-child{position:relative;z-index:16}
+.hero>div:first-child:before{content:"";position:absolute;inset:-26px -34px;z-index:-1;
+ background:radial-gradient(ellipse at 36% 46%,rgba(7,6,10,.94) 40%,rgba(7,6,10,0) 76%)}
+.vtag{display:inline-block;background:rgba(180,124,255,.14);color:var(--ac);
+ padding:3px 9px;font-size:11px;border-radius:2px;margin-bottom:16px}
+h1{font-family:"Tiny5",monospace;font-size:clamp(56px,7.2vw,104px);line-height:.92;letter-spacing:1px;
+ color:var(--ac);text-shadow:0 0 44px rgba(180,124,255,.4);margin-bottom:14px}
+h1 span{color:var(--tx);text-shadow:none}
+.sub{font-size:clamp(18px,1.6vw,24px);font-weight:700;margin-bottom:16px}
+.lede{color:var(--dm);max-width:52ch;margin-bottom:28px;position:relative;
+ font-size:clamp(12.5px,1.05vw,15px)}
+.lede b{color:var(--tx);font-weight:400}
+.w{transition:color .12s,background .12s;border-radius:2px;padding:0 1px;margin:0 -1px}
+.w.lit{color:#fff!important;background:color-mix(in srgb,var(--litcol,#B47CFF) 34%,transparent);
+ box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--litcol,#B47CFF) 60%,transparent);
+ text-shadow:0 0 10px var(--litcol,#B47CFF)}
+.lit{color:var(--litcol,var(--ac))}
+.crawler.lit,.sf.lit,.frow.lit{border-color:var(--litcol,var(--ac))!important;
+ box-shadow:0 0 22px -6px var(--litcol,var(--ac))}
+.btn.lit{box-shadow:0 0 26px -4px var(--litcol,var(--ac))}
+.cta{display:flex;gap:11px;margin-bottom:26px}
+.notes{display:flex;gap:18px;font-size:11px;color:var(--dm2);flex-wrap:wrap}
+.notes i{color:var(--ac);font-style:normal}
+.herostats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:30px;
+ padding-top:22px;border-top:1px solid var(--ln);max-width:460px}
+.herostats b{display:block;font-family:"Tiny5",monospace;font-size:26px;color:var(--tx);
+ font-weight:400;line-height:1}
+.herostats span{display:block;font-size:9px;letter-spacing:.1em;color:var(--dm2);
+ text-transform:uppercase;margin-top:5px;line-height:1.3}
+
+/* the chips orbiting the mark */
+.orbit{position:absolute;inset:0;pointer-events:none}
+.ochip{position:absolute;border:1px solid var(--oc);color:var(--oc);background:rgba(7,6,10,.8);
+ padding:4px 10px;border-radius:3px;font-size:10.5px;white-space:nowrap;
+ transform:translate(-50%,-50%);opacity:0;transition:opacity .5s}
+.ochip.on{opacity:1}
+.ochip b{font-weight:700}
+
+/* the rail of tokens being walked right now */
+.tickerrail{border-top:1px solid var(--ln);background:#0A0812;overflow:hidden;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+ mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.ticker{display:flex;gap:34px;padding:11px 0;white-space:nowrap;width:max-content;
+ animation:slide 42s linear infinite}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--dm)}
+.ti b{color:var(--tx);font-weight:400}
+.ti u{text-decoration:none;font-size:10.5px;padding:1px 7px;border:1px solid;border-radius:2px}
+.ti u.ok{color:var(--ac2);border-color:rgba(125,240,200,.4)}
+.ti u.bad{color:var(--rd);border-color:rgba(255,93,122,.4)}
+.ti u.mid{color:var(--ye);border-color:rgba(255,209,102,.4)}
+.heroart{position:relative;height:min(62vh,560px);align-self:center}
+#heroSilk{position:absolute;left:50%;top:0;width:2px;height:26%;
+ background:linear-gradient(180deg,rgba(180,124,255,.04),rgba(180,124,255,.6))}
+#heroMark{position:absolute;left:50%;top:24%;height:min(36vh,310px);image-rendering:pixelated;
+ filter:drop-shadow(0 0 32px rgba(180,124,255,.5));animation:bob 4.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}
+ 50%{transform:translateX(-50%) translateY(-14px)}}
+.roomband{border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);background:#07060C;
+ height:100vh;display:flex}
+.roomband .stage{flex:1;display:flex;flex-direction:column;min-height:0}
+.stage{overflow:hidden;background:var(--pan)}
+#hunt{width:100%;flex:1;min-height:0;display:block}
+.routfoot{display:flex;justify-content:space-between;padding:9px 22px;flex:none;
+ border-top:1px solid var(--ln);font-size:10.5px;color:var(--dm2);letter-spacing:.1em}
+.routfoot u{text-decoration:none;color:var(--ac2)}
+.stagefoot{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ln);flex:none}
+.sf{padding:12px 22px;border-right:1px solid var(--ln)}.sf:last-child{border:0}
+.sf .k{font-size:9px;letter-spacing:.18em;color:var(--dm2);text-transform:uppercase}
+.sf .v{font-size:16px;font-variant-numeric:tabular-nums;margin-top:2px}
+.sf .v.g{color:var(--ac2)}.sf .v.y{color:var(--ye)}.sf .v.c{color:var(--cy)}
+
+section{padding:66px 0}
+h2{font-family:"Tiny5",monospace;font-size:40px;margin-bottom:10px}
+.sechead{color:var(--dm);max-width:62ch;margin-bottom:34px}
+.crawlers{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.crawler{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:16px;
+ position:relative;overflow:hidden}
+.crawler:before{content:"";position:absolute;left:0;top:0;width:100%;height:1px;
+ background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.55}
+.crawler .pic{height:100px;display:grid;place-items:center;margin-bottom:10px;position:relative}
+.crawler .pic img{height:86px;image-rendering:pixelated;position:relative;z-index:2;
+ animation:bob2 5s ease-in-out infinite}
+@keyframes bob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.crawler .silk{position:absolute;left:50%;top:0;width:1px;height:28px;background:rgba(180,124,255,.3)}
+.crawler .nm{font-family:"Tiny5",monospace;font-size:22px;color:var(--tx)}
+.crawler .ro{font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:3px 0 8px}
+.crawler .ds{color:var(--dm);font-size:11.5px;min-height:68px}
+.crawler .st{display:flex;justify-content:space-between;border-top:1px solid var(--ln);
+ margin-top:11px;padding-top:9px;font-size:10.5px;color:var(--dm2)}
+.crawler .st b{color:var(--tx);font-weight:400;font-variant-numeric:tabular-nums}
+
+.sechdr{display:flex;align-items:baseline;gap:14px}
+.secnum{margin-left:auto;color:var(--dm2);font-size:13px}
+.hudrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.hud{border:1px solid var(--ln);background:var(--pan);border-radius:6px;padding:14px 16px;
+ position:relative;overflow:hidden}
+.hud:before{content:"";position:absolute;left:0;top:0;height:1px;width:100%;
+ background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:.5}
+.hh{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.2em;
+ text-transform:uppercase;color:var(--dm2)}
+.hh u{text-decoration:none;color:var(--dm2)}
+.hv{font-family:"Tiny5",monospace;font-size:38px;line-height:1.1;margin-top:8px;color:var(--tx)}
+.hv.money{color:var(--ac2)}
+.hv.small{font-size:19px;font-family:"JetBrains Mono",monospace;color:var(--cy);margin-top:12px}
+.hv.up{color:var(--ac2)}.hv.down{color:var(--rd)}
+.hs{font-size:11px;color:var(--dm);margin-top:5px}
+.spark{height:30px;margin-top:6px}
+.spark canvas{width:100%;height:30px;display:block}
+.acct{border:1px solid var(--ln);background:var(--pan);border-radius:6px;margin-bottom:18px;
+ overflow:hidden}
+.ah{display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--ln);
+ font-size:11px;letter-spacing:.18em;color:var(--dm2)}
+.ah u{text-decoration:none;color:var(--dm)}
+.abody{display:grid;grid-template-columns:1fr 250px;gap:0}
+.abody canvas{width:100%;height:190px;display:block}
+.abig{border-left:1px solid var(--ln);padding:18px 16px;display:flex;flex-direction:column;
+ justify-content:center;text-align:right}
+.ab{font-family:"Tiny5",monospace;font-size:32px;color:var(--ac2);line-height:1;
+ white-space:nowrap}
+.al{font-size:10px;letter-spacing:.2em;color:var(--dm2);text-transform:uppercase;margin-top:6px}
+.ad{font-family:"Tiny5",monospace;font-size:20px;color:var(--tx);margin-top:16px;white-space:nowrap}
+@media(max-width:1000px){.abody{grid-template-columns:1fr}.abig{border-left:0;border-top:1px solid var(--ln);text-align:left}}
+.workrow{display:grid;grid-template-columns:1fr 1.12fr;gap:18px}
+.panel{border:1px solid var(--ln);background:var(--pan);border-radius:6px;padding:16px 18px;
+ min-height:430px}
+.whead{display:grid;grid-template-columns:150px 76px 1fr;gap:12px;color:var(--dm2);
+ font-size:12px;padding:0 10px 10px}
+.wrw{display:grid;grid-template-columns:150px 76px 1fr;gap:12px;align-items:center;
+ padding:10px;border-radius:4px;font-variant-numeric:tabular-nums;font-size:13px;
+ transition:background .25s,box-shadow .25s;position:relative}
+.wrw .ad{color:var(--tx)}
+.wrw .sh{color:var(--dm)}
+.wrw .fl{display:flex;gap:6px;flex-wrap:wrap}
+.tag{border:1px solid;padding:1px 8px;border-radius:3px;font-size:11.5px;line-height:1.5}
+.tag.deployer{color:var(--rd);border-color:rgba(255,93,122,.45)}
+.tag.sniper{color:var(--rd);border-color:rgba(255,93,122,.45)}
+.tag.virgin{color:var(--ye);border-color:rgba(255,209,102,.45)}
+.tag.transfer{color:var(--ye);border-color:rgba(255,209,102,.45)}
+.tag.short{color:var(--ye);border-color:rgba(255,209,102,.45)}
+.tag.clean{color:var(--ac2);border-color:rgba(125,240,200,.45)}
+.tag.smart{color:var(--cy);border-color:rgba(110,208,255,.45)}
+.wrw.bad{background:rgba(255,93,122,.07)}
+.wrw.warn{background:rgba(255,209,102,.05)}
+.wrw.ok{background:rgba(125,240,200,.04)}
+.wrw.now{box-shadow:inset 0 0 0 1px var(--litcol,var(--ac))}
+.lhead{display:flex;justify-content:space-between;color:var(--dm);font-size:13px;
+ padding-bottom:12px;border-bottom:1px solid var(--ln);margin-bottom:10px}
+.lhead u{color:var(--ac2);text-decoration:none;font-size:11.5px;display:flex;align-items:center;gap:6px}
+.lhead u i{width:6px;height:6px;border-radius:50%;background:var(--ac2);
+ box-shadow:0 0 8px var(--ac2);animation:blk 1.6s infinite}
+@keyframes blk{50%{opacity:.25}}
+.lrw{display:grid;grid-template-columns:78px 1fr;gap:12px;font-size:12.5px;padding:5px 8px;
+ font-variant-numeric:tabular-nums;animation:sl .3s;border-radius:3px}
+.lrw .ts{color:var(--dm2)}
+.lrw .ms b{font-weight:400}
+.lrw.hit{box-shadow:inset 0 0 0 1px rgba(180,124,255,.4)}
+.c-crawler{color:var(--cy)}.c-link{color:var(--ye)}.c-cluster{color:var(--ye)}
+.c-verdict{color:var(--rd)}.c-ok{color:var(--ac2)}.c-bad{color:var(--rd)}.c-dim{color:var(--dm)}
+@media(max-width:1000px){.workrow{grid-template-columns:1fr}}
+.feed{border:1px solid var(--ln);background:var(--pan);border-radius:5px;overflow:hidden}
+.feed .fh{padding:10px 14px;border-bottom:1px solid var(--ln);font-size:10px;
+ letter-spacing:.2em;text-transform:uppercase;color:var(--dm2);display:flex;justify-content:space-between}
+.feed .fh u{color:var(--ac);text-decoration:none}
+.frow{display:grid;grid-template-columns:52px 86px 1fr 92px;gap:12px;padding:7px 14px;
+ border-top:1px solid var(--ln);font-size:11.5px;font-variant-numeric:tabular-nums;animation:sl .3s}
+@keyframes sl{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+.frow .t{color:var(--dm2)}.frow .c{color:var(--ac)}.frow .m{color:var(--dm)}
+.frow .v{text-align:right}
+.frow .v.g{color:var(--ac2)}.frow .v.r{color:var(--rd)}.frow .v.y{color:var(--ye)}.frow .v.c{color:var(--cy)}
+footer{border-top:1px solid var(--ln);padding:34px 0 46px;color:var(--dm2);font-size:12px}
+.frow2{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.frow2 .r{margin-left:auto;display:flex;gap:18px}
+
+/* ---------- the crawl overlay ---------- */
+#ov{position:fixed;inset:0;z-index:60;background:rgba(5,4,8,.97);display:none;
+ grid-template-rows:56px 1fr;opacity:0;transition:opacity .35s;overflow:auto}
+#ov.on{display:grid;opacity:1}
+.ovtop{display:flex;align-items:center;gap:18px;padding:0 24px;border-bottom:1px solid var(--ln);
+ position:sticky;top:0;background:rgba(5,4,8,.97);z-index:5}
+.ovtop .cmd{color:var(--dm);font-size:12px;overflow:hidden;white-space:nowrap}
+.ovtop .cmd b{color:var(--tx);font-weight:400}
+.car{display:inline-block;width:6px;height:11px;background:var(--ac);vertical-align:-1px;
+ animation:bl .8s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.ovkv{text-align:right;min-width:72px;border-left:1px solid var(--ln);padding-left:14px}
+.ovkv .k{font-size:8px;letter-spacing:.2em;color:var(--dm2);text-transform:uppercase}
+.ovkv .v{font-size:14px;font-variant-numeric:tabular-nums}
+.closeb{margin-left:auto;color:var(--dm);cursor:pointer;font-size:18px;padding:0 6px}
+.closeb:hover{color:var(--tx)}
+.step{display:none;flex-direction:column;min-height:0}
+.step.on{display:flex}
+.step.on#stepRun{display:grid;grid-template-rows:1fr 150px}
+
+.inputwrap{max-width:820px;margin:0 auto;padding:46px 24px;text-align:center;width:100%}
+.bigmark{height:168px;image-rendering:pixelated;margin-bottom:26px;
+ filter:drop-shadow(0 0 30px rgba(180,124,255,.45));animation:bob2 4.6s ease-in-out infinite}
+.inputrow{display:flex;gap:10px}
+.inputrow input{flex:1;background:var(--pan);border:1px solid var(--ln2);color:var(--tx);
+ font-family:inherit;font-size:15px;padding:14px 16px;border-radius:4px;outline:none}
+.inputrow input:focus{border-color:var(--ac)}
+.inputrow .btn{padding:0 26px;font-size:14px}
+.inputnote{color:var(--dm);font-size:12.5px;margin-top:16px;line-height:1.7;text-align:left}
+.inputchips{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.inputchips span{border:1px solid var(--ln2);color:var(--dm);padding:5px 11px;font-size:11.5px;
+ border-radius:3px;cursor:pointer}
+.inputchips span:hover{border-color:var(--ac);color:var(--tx)}
+
+.ovmain{position:relative;overflow:hidden}
+#crawl{position:absolute;inset:0;width:100%;height:100%}
+.ovlog{border-top:1px solid var(--ln);display:grid;grid-template-columns:1fr 290px}
+.logrows{overflow:hidden;padding:8px 0}
+.lrow{display:grid;grid-template-columns:86px 1fr 110px;gap:14px;padding:4px 24px;
+ font-size:12px;font-variant-numeric:tabular-nums;animation:sl .25s}
+.lrow .c{color:var(--ac)}.lrow .m{color:var(--dm)}.lrow .v{text-align:right}
+.lrow .v.g{color:var(--ac2)}.lrow .v.r{color:var(--rd)}.lrow .v.y{color:var(--ye)}.lrow .v.c{color:var(--cy)}
+.ovprog{border-left:1px solid var(--ln);padding:12px 18px}
+.pg{margin-bottom:9px}
+.pg .n{display:flex;justify-content:space-between;font-size:10px;color:var(--dm2);
+ letter-spacing:.14em;text-transform:uppercase}
+.pg .n b{color:var(--tx);font-weight:400}
+.pg .t{height:3px;background:#1A1426;margin-top:4px;position:relative;overflow:hidden}
+.pg .t i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ac);transition:width .3s}
+.pg.done .t i{background:var(--ac2)}
+
+.repwrap{display:grid;grid-template-columns:1fr 420px;gap:24px;max-width:1340px;
+ margin:0 auto;padding:28px 24px 56px;width:100%}
+.gradehead{display:flex;gap:22px;align-items:center;border:1px solid var(--ln);
+ background:var(--pan);border-radius:5px;padding:20px 22px}
+.gradeltr{font-family:"Tiny5",monospace;font-size:58px;line-height:1}
+.gradenum{font-family:"Tiny5",monospace;font-size:44px;line-height:1}
+.gradenum span{font-size:21px;color:var(--dm2)}
+.gradeln{color:var(--dm);font-size:13px;margin-top:6px}
+.gwrap{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:18px 22px;margin-top:14px}
+.gradebar{height:13px;display:flex;position:relative;border-radius:2px}
+.gradebar i{display:block;height:100%}
+.gradebar u{position:absolute;top:-4px;width:4px;height:21px;background:#fff;
+ box-shadow:0 0 10px #fff;text-decoration:none;transition:left .7s}
+.gradeticks{display:flex;justify-content:space-between;font-size:11px;color:var(--dm2);margin-top:6px}
+.gradenote{color:var(--dm2);font-size:12px;margin-top:12px;line-height:1.7}
+.quads{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.quad{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:15px 17px}
+.quad .qh{display:flex;align-items:baseline;gap:9px}
+.quad .qn{color:var(--ac);font-size:15px;font-weight:700}
+.quad .qs{color:var(--dm2);font-size:11.5px}
+.quad .qv{margin-left:auto;font-size:21px;font-variant-numeric:tabular-nums}
+.quad .qbar{height:4px;background:#1A1426;margin:10px 0 12px;border-radius:2px;overflow:hidden}
+.quad .qbar i{display:block;height:100%}
+.quad .qq{font-size:13px;margin-bottom:10px}
+.quad li{list-style:none;color:var(--dm);font-size:12px;padding-left:14px;position:relative;
+ margin-bottom:5px;line-height:1.6}
+.quad li:before{content:"■";position:absolute;left:0;color:var(--ac);font-size:8px;top:3px}
+.quad .pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.quad .pills span{border:1px solid var(--ln2);padding:4px 9px;font-size:11.5px;border-radius:3px;color:var(--dm)}
+.quad .pills span b{color:var(--tx)}
+.repside{display:flex;flex-direction:column;gap:12px}
+.shareprev{border:1px solid var(--ln2);border-radius:5px;overflow:hidden;cursor:pointer;
+ position:relative;transition:.2s}
+.shareprev:hover{border-color:var(--ac);box-shadow:0 0 30px rgba(180,124,255,.18)}
+.shareprev canvas{width:100%;display:block}
+.shareprevhint{position:absolute;bottom:0;left:0;right:0;padding:8px;text-align:center;
+ background:rgba(5,4,8,.82);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
+.sharebtns{display:flex;gap:10px}.sharebtns .btn{flex:1}
+
+#share{position:fixed;inset:0;z-index:70;background:rgba(3,2,6,.92);display:none;
+ place-items:center;opacity:0;transition:opacity .45s}
+#share.on{display:grid;opacity:1}
+#shareCard{width:min(78vh,780px);height:min(78vh,780px);border-radius:6px;
+ box-shadow:0 0 140px rgba(180,124,255,.3);transform:scale(.93);
+ transition:transform .6s cubic-bezier(.16,1,.3,1)}
+#share.on #shareCard{transform:none}
+.sharebar{position:absolute;bottom:5%;display:flex;gap:10px;align-items:center}
+.sharebar span{color:var(--dm);font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+
+@media(max-width:1100px){.crawlers{grid-template-columns:1fr 1fr}}
+@media(max-width:1000px){.hero{grid-template-columns:1fr;min-height:auto;padding:52px 0}
+ .heroart{height:380px}
+ .roomband{height:auto}
+ #hunt{height:460px}.repwrap{grid-template-columns:1fr}
+ .ovlog{grid-template-columns:1fr}.ovprog{display:none}}
+@media(max-width:640px){.crawlers{grid-template-columns:1fr}h1{font-size:46px}.quads{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<canvas id="web"></canvas><div class="grain"></div>
+
+<div class="page">
+<nav><div class="wrap nav">
+  <div class="logo"><img class="mk" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAE/UlEQVR4nO3dsWpeZRzA4USK1CU6RQcpRTJVKOIFSN0SyezYod6Ac8gYOnsDdsjoHGw2Sy9ASsFMGULp0GZqs1Rc4iX41pzmnF/yPPPh/c73fefHu/w578oKAAAAAAAAAAAAAAAAAAAAAAAAzGt1rg8+2D0/H7luZ39raL3nLw5n+y703L21OfT8Pbz/eGi97b3VWZ6/j+b4UGAaAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGGLn14anZgZNfXE1vraxqT3d92cnh1P+n8s/XmZmh0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCFj1l8j7mmsD5+YffTGJdwC+//zj0O1+3CatRdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAi7MfcNTOXVm+Oh6/7+52zourWb6yasLsHo73xy+ufQejc/XrvQ/dTYgSFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIezKTGLN5dnJ4dy3wDVmB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrBrN4n17VfbQ9f98devH/hOeB/ff/3T0HVHL59+4DtZFjswhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCEzTaJdbB7PnQq3c7+1tB6o6cTzuXTTz6fdL23715Put6oq/I97t7aHHr+Ht5/PLTe9t7q6oVu6H+yA0OYgCFMwBAmYAgTMIQJGMIEDGEChjABQ9hsk1ijkyujEzNzmXoyaS5X5XtMba4Jq1F2YAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCFv86YTPXxwOTcKsr20semKLZRl9rpbODgxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2OLfibV0b9+9nvsWJnFVvsd1YweGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoawxZ/QdvfW5qSnDo6eSnfvzgOnHS7Ik6NHQ//bXM/LXOzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQNtuUycHu+dDEzM7+1tB6U0/MrK9tmMRakNOz40n/39GJrYf3Hw+tt723OktLdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAhb9Pt+PgTv2Loc3mF1OezAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQdmWmVqae6Hn15njoujtffjflxw775vbmpOs9OzmcdL1RRy+fDl33xWcbk37uVZnYsgNDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUPYjblv4L/M9c4kpxMuy+j/Nvq8jF639IktOzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMITNNol1sHs+NAmzs781tN7SJ2a4HFNPbI0+p9t7q7M8f3ZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIm20Sa67JFVhZGZ/Y2t5b9mNqB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrDFn044l9Oz46ERnNOj46H17t15cK1OO3xy9GjZI0xXhB0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCTGJFPTs5nPsWWAA7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhHlv0cIs/d1Z3nW1LHZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIM1VzSdbXNhY9YTW10dMduRg7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhP0L3tPAofKFk7MAAAAASUVORK5CYII="><span>JUM<b>PER</b></span></div>
+  <div class="tagline">pons v2 · chain 4663</div>
+  <div class="navlinks"><a href="#crawlers">Crawlers</a><a href="#feed">Live</a><a href="#">Docs</a><a href="#">GitHub</a></div>
+  <button class="btn" onclick="runCrawl()">Run a crawl</button>
+</div></nav>
+
+<div class="wrap hero">
+  <div>
+    <div class="vtag">v0.9 · live on robinhood chain 4663</div>
+    <h1>JUM<span>PER</span></h1>
+    <div class="sub">It can jump over any token.</div>
+    <p class="lede">25,000 tokens launch on Pons every day. JUMPER drops a swarm on one of them:
+    the spiders walk the contract, every transaction, every holder and every wallet those holders
+    ever touched. What comes back is <b>who stayed, who left, who sniped it and who actually
+    knows what they are doing.</b></p>
+    <div class="cta">
+      <button class="btn" onclick="runCrawl()">Run a crawl</button>
+      <button class="btn ghost" onclick="openShare()">See a sample card</button>
+    </div>
+    <div class="notes"><span><i>■</i> no keys</span><span><i>■</i> no signatures</span><span><i>■</i> reads the chain, never writes</span></div>
+
+    <div class="herostats">
+      <div><b id="hsA">25 412</b><span>launches today</span></div>
+      <div><b id="hsB">8</b><span>crawlers live</span></div>
+      <div><b id="hsC">1.4M</b><span>wallets indexed</span></div>
+      <div><b id="hsD">15s</b><span>per crawl</span></div>
+    </div>
+  </div>
+
+  <div class="heroart">
+    <div id="heroSilk"></div>
+    <img id="heroMark" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAE/UlEQVR4nO3dsWpeZRzA4USK1CU6RQcpRTJVKOIFSN0SyezYod6Ac8gYOnsDdsjoHGw2Sy9ASsFMGULp0GZqs1Rc4iX41pzmnF/yPPPh/c73fefHu/w578oKAAAAAAAAAAAAAAAAAAAAAAAAzGt1rg8+2D0/H7luZ39raL3nLw5n+y703L21OfT8Pbz/eGi97b3VWZ6/j+b4UGAaAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGGLn14anZgZNfXE1vraxqT3d92cnh1P+n8s/XmZmh0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCFj1l8j7mmsD5+YffTGJdwC+//zj0O1+3CatRdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAi7MfcNTOXVm+Oh6/7+52zourWb6yasLsHo73xy+ufQejc/XrvQ/dTYgSFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIezKTGLN5dnJ4dy3wDVmB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrBrN4n17VfbQ9f98devH/hOeB/ff/3T0HVHL59+4DtZFjswhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCEzTaJdbB7PnQq3c7+1tB6o6cTzuXTTz6fdL23715Put6oq/I97t7aHHr+Ht5/PLTe9t7q6oVu6H+yA0OYgCFMwBAmYAgTMIQJGMIEDGEChjABQ9hsk1ijkyujEzNzmXoyaS5X5XtMba4Jq1F2YAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCFv86YTPXxwOTcKsr20semKLZRl9rpbODgxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2OLfibV0b9+9nvsWJnFVvsd1YweGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoawxZ/QdvfW5qSnDo6eSnfvzgOnHS7Ik6NHQ//bXM/LXOzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQNtuUycHu+dDEzM7+1tB6U0/MrK9tmMRakNOz40n/39GJrYf3Hw+tt723OktLdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAhb9Pt+PgTv2Loc3mF1OezAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQdmWmVqae6Hn15njoujtffjflxw775vbmpOs9OzmcdL1RRy+fDl33xWcbk37uVZnYsgNDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUPYjblv4L/M9c4kpxMuy+j/Nvq8jF639IktOzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMITNNol1sHs+NAmzs781tN7SJ2a4HFNPbI0+p9t7q7M8f3ZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIm20Sa67JFVhZGZ/Y2t5b9mNqB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrDFn044l9Oz46ERnNOj46H17t15cK1OO3xy9GjZI0xXhB0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCTGJFPTs5nPsWWAA7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhHlv0cIs/d1Z3nW1LHZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIM1VzSdbXNhY9YTW10dMduRg7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhP0L3tPAofKFk7MAAAAASUVORK5CYII=">
+    <div class="orbit" id="orbit"></div>
+  </div>
+</div>
+
+<div class="tickerrail"><div class="ticker" id="ticker"></div></div>
+
+<div class="roomband">
+  <div class="stage">
+    <canvas id="hunt"></canvas>
+    <div class="routfoot">
+      <span>sources → objections → size → your approval</span><u id="routState">READY</u>
+    </div>
+    <div class="stagefoot">
+      <div class="sf"><div class="k">holders walked</div><div class="v" id="sf1">0</div></div>
+      <div class="sf"><div class="k">still holding</div><div class="v g" id="sf2">0%</div></div>
+      <div class="sf"><div class="k">snipers</div><div class="v y" id="sf3">0</div></div>
+      <div class="sf"><div class="k">smart wallets</div><div class="v c" id="sf4">0</div></div>
+    </div>
+  </div>
+</div>
+
+<section id="crawlers"><div class="wrap">
+  <h2>Eight crawlers, one web</h2>
+  <p class="sechead">Each spider walks one surface of the token and hands what it found to the next.
+  They run at the same time and print as they go, so nothing is a black box.</p>
+  <div class="crawlers" id="crawlerGrid"></div>
+</div></section>
+
+<section id="feed"><div class="wrap">
+  <div class="sechdr"><h2>crawlers at work</h2><span class="secnum">01</span></div>
+  <p class="sechead">Right now, on a live token. The left panel is the holder table the swarm is
+  walking. The right one is its log, unfiltered.</p>
+
+  <div class="hudrow">
+    <div class="hud">
+      <div class="hh"><span>FILLS</span><u>execution</u></div>
+      <div class="hv" id="hFills">0</div>
+      <div class="hs" id="hFillSub">last fill —</div>
+    </div>
+    <div class="hud">
+      <div class="hh"><span>SIZE IN</span><u>this run</u></div>
+      <div class="hv money" id="hSize">$0</div>
+      <div class="hs" id="hSizeSub">across 0 tokens</div>
+    </div>
+    <div class="hud">
+      <div class="hh"><span>P&amp;L</span><u>realised</u></div>
+      <div class="hv" id="hPnl">+$0</div>
+      <div class="spark"><canvas id="hSpark"></canvas></div>
+    </div>
+    <div class="hud">
+      <div class="hh"><span>WAITING ON</span><u>queue</u></div>
+      <div class="hv small" id="hWait">—</div>
+      <div class="hs" id="hWaitSub">0 in queue</div>
+    </div>
+  </div>
+
+  <div class="acct">
+    <div class="ah"><span>ACCOUNT / THIS RUN</span>
+      <u id="acPath">$1 200 → $3 140 → $6 853</u></div>
+    <div class="abody">
+      <canvas id="acChart"></canvas>
+      <div class="abig"><div class="ab" id="acBal">$6 853.78</div>
+        <div class="al">usd balance</div>
+        <div class="ad" id="acDelta">+$4 043.78</div></div>
+    </div>
+  </div>
+
+  <div class="workrow">
+    <div class="panel">
+      <div class="whead"><span>wallet</span><span>share</span><span>flags</span></div>
+      <div id="wtable"></div>
+    </div>
+    <div class="panel">
+      <div class="lhead"><span>&gt; tail -f crawler.log</span><u><i></i>live</u></div>
+      <div id="ltail"></div>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap frow2">
+  <div class="logo" style="font-size:20px"><img class="mk sm" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAE/UlEQVR4nO3dsWpeZRzA4USK1CU6RQcpRTJVKOIFSN0SyezYod6Ac8gYOnsDdsjoHGw2Sy9ASsFMGULp0GZqs1Rc4iX41pzmnF/yPPPh/c73fefHu/w578oKAAAAAAAAAAAAAAAAAAAAAAAAzGt1rg8+2D0/H7luZ39raL3nLw5n+y703L21OfT8Pbz/eGi97b3VWZ6/j+b4UGAaAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGGLn14anZgZNfXE1vraxqT3d92cnh1P+n8s/XmZmh0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCFj1l8j7mmsD5+YffTGJdwC+//zj0O1+3CatRdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAi7MfcNTOXVm+Oh6/7+52zourWb6yasLsHo73xy+ufQejc/XrvQ/dTYgSFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIezKTGLN5dnJ4dy3wDVmB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrBrN4n17VfbQ9f98devH/hOeB/ff/3T0HVHL59+4DtZFjswhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCEzTaJdbB7PnQq3c7+1tB6o6cTzuXTTz6fdL23715Put6oq/I97t7aHHr+Ht5/PLTe9t7q6oVu6H+yA0OYgCFMwBAmYAgTMIQJGMIEDGEChjABQ9hsk1ijkyujEzNzmXoyaS5X5XtMba4Jq1F2YAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCFv86YTPXxwOTcKsr20semKLZRl9rpbODgxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2OLfibV0b9+9nvsWJnFVvsd1YweGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoawxZ/QdvfW5qSnDo6eSnfvzgOnHS7Ik6NHQ//bXM/LXOzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQNtuUycHu+dDEzM7+1tB6U0/MrK9tmMRakNOz40n/39GJrYf3Hw+tt723OktLdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAhb9Pt+PgTv2Loc3mF1OezAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQdmWmVqae6Hn15njoujtffjflxw775vbmpOs9OzmcdL1RRy+fDl33xWcbk37uVZnYsgNDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUPYjblv4L/M9c4kpxMuy+j/Nvq8jF639IktOzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMITNNol1sHs+NAmzs781tN7SJ2a4HFNPbI0+p9t7q7M8f3ZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIm20Sa67JFVhZGZ/Y2t5b9mNqB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrDFn044l9Oz46ERnNOj46H17t15cK1OO3xy9GjZI0xXhB0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCTGJFPTs5nPsWWAA7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhHlv0cIs/d1Z3nW1LHZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIM1VzSdbXNhY9YTW10dMduRg7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhP0L3tPAofKFk7MAAAAASUVORK5CYII="><span>JUM<b>PER</b></span></div>
+  <span>it can jump over any token · reads public state only</span>
+  <div class="r"><a href="#">Docs</a><a href="#">GitHub</a><a href="#">X</a></div>
+</div></footer>
+</div>
+
+<div id="ov">
+  <div class="ovtop">
+    <div class="logo" style="font-size:20px"><img class="mk sm" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAE/UlEQVR4nO3dsWpeZRzA4USK1CU6RQcpRTJVKOIFSN0SyezYod6Ac8gYOnsDdsjoHGw2Sy9ASsFMGULp0GZqs1Rc4iX41pzmnF/yPPPh/c73fefHu/w578oKAAAAAAAAAAAAAAAAAAAAAAAAzGt1rg8+2D0/H7luZ39raL3nLw5n+y703L21OfT8Pbz/eGi97b3VWZ6/j+b4UGAaAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGGLn14anZgZNfXE1vraxqT3d92cnh1P+n8s/XmZmh0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCFj1l8j7mmsD5+YffTGJdwC+//zj0O1+3CatRdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAi7MfcNTOXVm+Oh6/7+52zourWb6yasLsHo73xy+ufQejc/XrvQ/dTYgSFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIezKTGLN5dnJ4dy3wDVmB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrBrN4n17VfbQ9f98devH/hOeB/ff/3T0HVHL59+4DtZFjswhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCEzTaJdbB7PnQq3c7+1tB6o6cTzuXTTz6fdL23715Put6oq/I97t7aHHr+Ht5/PLTe9t7q6oVu6H+yA0OYgCFMwBAmYAgTMIQJGMIEDGEChjABQ9hsk1ijkyujEzNzmXoyaS5X5XtMba4Jq1F2YAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCFv86YTPXxwOTcKsr20semKLZRl9rpbODgxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2OLfibV0b9+9nvsWJnFVvsd1YweGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoawxZ/QdvfW5qSnDo6eSnfvzgOnHS7Ik6NHQ//bXM/LXOzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQNtuUycHu+dDEzM7+1tB6U0/MrK9tmMRakNOz40n/39GJrYf3Hw+tt723OktLdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAhb9Pt+PgTv2Loc3mF1OezAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQdmWmVqae6Hn15njoujtffjflxw775vbmpOs9OzmcdL1RRy+fDl33xWcbk37uVZnYsgNDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUPYjblv4L/M9c4kpxMuy+j/Nvq8jF639IktOzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMITNNol1sHs+NAmzs781tN7SJ2a4HFNPbI0+p9t7q7M8f3ZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIm20Sa67JFVhZGZ/Y2t5b9mNqB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrDFn044l9Oz46ERnNOj46H17t15cK1OO3xy9GjZI0xXhB0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCTGJFPTs5nPsWWAA7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhHlv0cIs/d1Z3nW1LHZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIM1VzSdbXNhY9YTW10dMduRg7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhP0L3tPAofKFk7MAAAAASUVORK5CYII="><span>JUM<b>PER</b></span></div>
+    <div class="cmd" id="ovCmd">&gt; waiting for a contract<span class="car"></span></div>
+    <div class="ovkv"><div class="k">nodes</div><div class="v" id="ovN">0</div></div>
+    <div class="ovkv"><div class="k">edges</div><div class="v" id="ovE">0</div></div>
+    <div class="ovkv"><div class="k">elapsed</div><div class="v" id="ovT">0.0s</div></div>
+    <div class="closeb" onclick="closeCrawl()">✕</div>
+  </div>
+
+  <div class="step on" id="stepInput">
+    <div class="inputwrap">
+      <img class="bigmark" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAE/UlEQVR4nO3dsWpeZRzA4USK1CU6RQcpRTJVKOIFSN0SyezYod6Ac8gYOnsDdsjoHGw2Sy9ASsFMGULp0GZqs1Rc4iX41pzmnF/yPPPh/c73fefHu/w578oKAAAAAAAAAAAAAAAAAAAAAAAAzGt1rg8+2D0/H7luZ39raL3nLw5n+y703L21OfT8Pbz/eGi97b3VWZ6/j+b4UGAaAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGGLn14anZgZNfXE1vraxqT3d92cnh1P+n8s/XmZmh0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCFj1l8j7mmsD5+YffTGJdwC+//zj0O1+3CatRdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAi7MfcNTOXVm+Oh6/7+52zourWb6yasLsHo73xy+ufQejc/XrvQ/dTYgSFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIezKTGLN5dnJ4dy3wDVmB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrBrN4n17VfbQ9f98devH/hOeB/ff/3T0HVHL59+4DtZFjswhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCEzTaJdbB7PnQq3c7+1tB6o6cTzuXTTz6fdL23715Put6oq/I97t7aHHr+Ht5/PLTe9t7q6oVu6H+yA0OYgCFMwBAmYAgTMIQJGMIEDGEChjABQ9hsk1ijkyujEzNzmXoyaS5X5XtMba4Jq1F2YAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCFv86YTPXxwOTcKsr20semKLZRl9rpbODgxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2OLfibV0b9+9nvsWJnFVvsd1YweGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoawxZ/QdvfW5qSnDo6eSnfvzgOnHS7Ik6NHQ//bXM/LXOzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQNtuUycHu+dDEzM7+1tB6U0/MrK9tmMRakNOz40n/39GJrYf3Hw+tt723OktLdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAhb9Pt+PgTv2Loc3mF1OezAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQdmWmVqae6Hn15njoujtffjflxw775vbmpOs9OzmcdL1RRy+fDl33xWcbk37uVZnYsgNDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUPYjblv4L/M9c4kpxMuy+j/Nvq8jF639IktOzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMITNNol1sHs+NAmzs781tN7SJ2a4HFNPbI0+p9t7q7M8f3ZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIm20Sa67JFVhZGZ/Y2t5b9mNqB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrDFn044l9Oz46ERnNOj46H17t15cK1OO3xy9GjZI0xXhB0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCTGJFPTs5nPsWWAA7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhHlv0cIs/d1Z3nW1LHZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIM1VzSdbXNhY9YTW10dMduRg7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhP0L3tPAofKFk7MAAAAASUVORK5CYII=">
+      <div class="inputrow">
+        <input id="caInput" placeholder="0x contract address or ticker" spellcheck="false">
+        <button class="btn" onclick="startCrawl()">Run a crawl</button>
+      </div>
+      <div class="inputnote">A crawl takes a few seconds on a fresh token and up to a minute on a
+        week-old one: the swarm walks every transfer since launch. Try a sample to see the shape
+        instantly.</div>
+      <div class="inputchips">
+        <span onclick="fillCA('0x9c41ea77b30d5a12')">0x9c41ea77…b30d5a12</span>
+        <span onclick="fillCA('$ORCA')">$ORCA</span>
+        <span onclick="fillCA('$VRAX')">$VRAX</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="step" id="stepRun">
+    <div class="ovmain"><canvas id="crawl"></canvas></div>
+    <div class="ovlog">
+      <div class="logrows" id="ovRows"></div>
+      <div class="ovprog" id="ovProg"></div>
+    </div>
+  </div>
+
+  <div class="step" id="stepReport">
+    <div class="repwrap">
+      <div>
+        <div class="gradehead">
+          <div class="gradeltr" id="gLetter">TAUT</div>
+          <div>
+            <div class="gradenum"><b id="gScore">84</b><span>/100</span></div>
+            <div class="gradeln" id="gLine">the web holds</div>
+          </div>
+        </div>
+        <div class="gwrap">
+          <div class="gradebar">
+            <i style="width:34%;background:#8C2F3F"></i>
+            <i style="width:35%;background:#8A7A2A"></i>
+            <i style="width:31%;background:#2F7D55"></i>
+            <u id="gMark" style="left:84%"></u>
+          </div>
+          <div class="gradeticks"><span>1</span><span>35</span><span>70</span><span>100</span></div>
+          <div class="gradenote">a score on the web scale, SILK (nobody is leaving) down to TORN
+            (everyone left). it measures the past, it does not predict.</div>
+        </div>
+        <div class="quads" id="quads"></div>
+      </div>
+      <div class="repside">
+        <div class="shareprev" onclick="openShare()">
+          <canvas id="prevCard" width="1080" height="1080"></canvas>
+          <div class="shareprevhint">click to open full size</div>
+        </div>
+        <div class="sharebtns">
+          <button class="btn ghost" onclick="openShare()">Open card</button>
+          <button class="btn ghost" onclick="resetCrawl()">Run another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="share">
+  <canvas id="shareCard" width="1080" height="1080"></canvas>
+  <div class="sharebar">
+    <span id="shareLabel">web score 84 · taut</span>
+    <button class="btn" onclick="closeShare()">Close</button>
+  </div>
+</div>
+
+<script>
+const CREW=[{"n": "WEAVER", "r": "maps the holder graph", "col": "180,124,255", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEM0lEQVR4nO3dsW5URxiGYYxSksZpTLoIV5agcRoiEaHUroyEGzpugAbcuHTj0HADuQCQcOWaAktJgxukuDJCShG7wQ305g5mit/Hs8ff87RHu3u0u69GmtmduXEDAAAAAAC4rpaqT3Cwc3HRur63v9V8/OHxm/I9MF8P1h43vz/bm6+bj9/YXSp9f25WHgxzJwCiCYBoAiCaAIgmAKIJgGiTz8H35nl7rBPM26J//kYAogmAaAIgmgCIJgCiCYBoAiDa8Dn20fPEqyvrpdefu5Ozo9L7N/rzqzICEE0ARBMA0QRANAEQTQBEEwDRhq8D9Ew9z/zq6YfodYBnf/3afH/mPs/fYwQgmgCIJgCiCYBoAiCaAIgmAKL9MPoGek7PPzWvn3/7v3l9+dbt6Hn+nt778+9/h53H/3yp93PVjABEEwDRBEA0ARBNAEQTANEEQLSFXweY2vvj9jm0XG9GAKIJgGgCIJoAiCYAogmAaAIg2uzXAR7efdK8/vbvP6/oTuaq/f48+u1F8/rHz+8u82aunBGAaAIgmgCIJgCiCYBoAiCaAIhWXgc42Llo7iuzt79Vev7evkBT++nH2r43X7629y2qWvT7q54vsL3Z/r/Gxu5S6fwBIwDRBEA0ARBNAEQTANEEQDQBEK28DtCbh63OA0+tOo8+tUW/v6lV5/l7jABEEwDRBEA0ARBNAEQTANEEQLTJ9wU6PH5TmsddXVlf6HUE2qqf/9SMAEQTANEEQDQBEE0ARBMA0QRANAEQTQBEEwDRBEA0ARBNAEQTANEEQLTZnxNcNfX++FWLfn9zZwQgmgCIJgCiCYBoAiCaAIgmAKIN37Olen5Ab9+ZzfvP7StUsP/Py0nPfxi9b5ARgGgCIJoAiCYAogmAaAIgmgCINvkc7Oh5YucL1JycHZXe/9Gff48RgGgCIJoAiCYAogmAaAIgmgCIVp5jPdi5aM7z7u1vNR9fnef1f4K2Rf89f+/1tzdfNx+/sbtUen0jANEEQDQBEE0ARBMA0QRANAEQbfi+QD3VeerT80/N6/d++aPy9F2/r7XXQXreH7fnwas+fn7XvH57+U7p+Ufv+9NjBCCaAIgmAKIJgGgCIJoAiCYAog0/J3jq36PbF6im9/72Pr/e9dHrBEYAogmAaAIgmgCIJgCiCYBoAiDa5OsAo/edYVpzXycwAhBNAEQTANEEQDQBEE0ARBMA0crrAKPPB2CxVdcJet8v5wNAgQCIJgCiCYBoAiCaAIgmAKKZg++onhM8+nyA3jnB6YwARBMA0QRANAEQTQBEEwDRBEC04ecDXHdTn/NLjRGAaAIgmgCIJgCiCYBoAiCaAIjmt+JF1f8LVPm9f40RgGgCIJoAiCYAogmAaAIgmgCIZg65Y3Vlfeg8f9XJ2ZHPuMEIQDQBEE0ARBMA0QRANAEQTQBE+w6vltaKLECkdgAAAABJRU5ErkJggg=="}, {"n": "TRACKER", "r": "follows who left", "col": "255,93,122", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAD8klEQVR4nO3doW4UQQDH4ZZgIGCqSg0gC7giwFQgcTXUUMFDgOgDVMBDIFCHqUMiigBBJVSRtCEhF0QRJSDLG8yI6TB39/8+u9nu5ra/TDJzt7O0BAAAAAAAAAAAAAAAzJvl3hc439k9Lx3fPtgvnv/25Kj7PdLPk5vrxec/2dwqnr/8Zq/r87/U84/DrBMA0QRANAEQTQBEEwDRBEC04XPstXnimtZ1go2V1abrz7vD02nT5zf6+bUyAhBNAEQTANEEQDQBEE0ARBMA0YavA9T0nmf+/PhZ9DrA/Xevi5/PvM/z1xgBiCYAogmAaAIgmgCIJgCiCYBol0ffQM23s1/F4z/+/i4ev3HlWvQ8f03t8/nw83vx/LUr1y70fv43IwDRBEA0ARBNAEQTANEEQDQBEG3m1wF6mxwfjb4FBjICEE0ARBMA0QRANAEQTQBEEwDR5n4d4Onte03nv/zy8YLuZE7dfdh0+vvp8cXcxyBGAKIJgGgCIJoAiCYAogmAaAIgWvd1gPOd3eJ7Z7YP9ovn194LNNra1evF4z/+nC309Wtq+wtMNreK5y+/2eu6v4ARgGgCIJoAiCYAogmAaAIgmgCI1n0doDaP27oPbW+1efZFv35vvef5a4wARBMA0QRANAEQTQBEEwDRBEC04e8FentyVJwH3lhZnel1Aspqz3c0IwDRBEA0ARBNAEQTANEEQDQBEG34OsCsG/1endHXX3RGAKIJgGgCIJoAiCYAogmAaAIgWvw6wIvGfXKZb0YAogmAaAIgmgCIJgCiCYBoAiDa8He2tO4PUHvvzPM7D7xXqMGrr5+67u8w+r1BRgCiCYBoAiCaAIgmAKIJgGgCIFr3Odjznd3iPPH2wX7x/NZ5YvsLtDk8nTZ9/rV1gsnmVvH83vsIGwGIJgCiCYBoAiCaAIgmAKIJgGjDfw/QavT30Uf/3qD2ff2a0Z/faEYAogmAaAIgmgCIJgCiCYBoAiDazM/h9p6nrv1e4NHqrZbLL23fWm86f3J81HT+++lx8Xjt+/6Lvk5gBCCaAIgmAKIJgGgCIJoAiCYAog3fJ3jR55nnXe3zrT2/2vHRz88IQDQBEE0ARBMA0QRANAEQTQBE674OMHp/APpqXSeo/X/YHwA6EgDRBEA0ARBNAEQTANEEQDRz7I1q+wP0fi9Q6/4A6YwARBMA0QRANAEQTQBEEwDRBEC04e8FWnSt7/enLyMA0QRANAEQTQBEEwDRBEA0ARDNd8k7q/1eoMb3/fsyAhBNAEQTANEEQDQBEE0ARBMA0cwxN9pYWW2a5291eDr1DBsYAYgmAKIJgGgCIJoAiCYAogkAAAAAAACAhfQPFKm+ygkc4eMAAAAASUVORK5CYII="}, {"n": "SNARE", "r": "catches snipers", "col": "255,209,102", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEJUlEQVR4nO3dIW8UQQCG4TtyChIUNRUIUCCogASFISRVWBocqg4Jkh8AEkUVthgE6hKCJ6GiCKqKQNS0igRs+QPNTMJ0O7v3PY/d3nbS7ptJ5nZ3ZjMAAAAAAGBVzU/3t0+LP7CxM7+owcB5q13fly5qIDBGAiCaAIgmAKIJgGgCIJoAiLbYevm56QRPNm8U11k/LH/6HoH/1np91a5vMwDRBEA0ARBNAEQTANEEQDQBEG3Re52+9/cId29dK/7+Vbd3cDLo37f3/7d2fjMA0QRANAEQTQBEEwDRBEA0ARBt0XqCqX+P8O7Vg/Md0MTce/qxeHzs6/itzABEEwDRBEA0ARBNAEQTANEEQLTRv7Ondr/+0fHfpvN/ervZ9Pmpe/x82fT59bXLxeNDP2/QygxANAEQTQBEEwDRBEA0ARBNAERrfh5g6naXh72HQEdmAKIJgGgCIJoAiCYAogmAaAIg2qjv1Z7N6s8DPLy/flFD4Qxfvh4Vj3seAEZMAEQTANEEQDQBEE0ARBMA0ean+9vFdfb5xk5xHbf1/fG1zx/++l06PPv247h4nGHdu71WPH7z+tXi8dbro/b52vVtBiCaAIgmAKIJgGgCIJoAiCYAoi22Xn7uPYau1teuDHr+o+M/g55/6uMfWu36NgMQTQBEEwDRBEA0ARBNAEQTANFG/c6W2az+XqDa8wBDr5PXtK6jj338tecBvBcIRkwARBMA0QRANAEQTQBEEwDRVn6f4Knfzz718Y+dGYBoAiCaAIgmAKIJgGgCIJoAiNb9Xu3W/QHsE9xXbZ/g1v0BhmYGIJoAiCYAogmAaAIgmgCIJgCiNT8P0LqPa6s3778Xz//i2Z3i+Cir/X1r721qNfT1ZQYgmgCIJgCiCYBoAiCaAIgmAKIteq/jD33+2v3qtKm9/3/v4OSihnKm2vVtBiCaAIgmAKIJgGgCIJoAiCYAos1P97eL66TzjZ3u7w4qqa3z1tS+h5j68wS1+/mH/vv1Vru+zQBEEwDRBEA0ARBNAEQTANEEQLTua7itzyOMfX+Brc2bTZ/fXR6e00jONvT7/Xs/b1JjBiCaAIgmAKIJgGgCIJoAiCYAok1+f4Da+Yd+f/2q671Ob38AGJAAiCYAogmAaAIgmgCIJgCirfz+APTV+/9rfwAoEADRBEA0ARBNAEQTANEEQLTF7utHxR/4sNypHLeOz3Bar6/a9W0GIJoAiCYAogmAaAIgmgCIJgCiWcOvaN0nuPf+ALV9gtOZAYgmAKIJgGgCIJoAiCYAogmAaM37A1A29D6/tDEDEE0ARBMA0QRANAEQTQBEEwDR3CveqPV5gVbu929jBiCaAIgmAKIJgGgCIJoAiCYAollDrrh761rXdf5Wewcn/scFZgCiCYBoAiCaAIgmAKIJgGgCINo/68//gu37+AAAAAAASUVORK5CYII="}, {"n": "SCOUT", "r": "finds smart money", "col": "110,208,255", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEEUlEQVR4nO3dsYodVRzA4V2xM2CjK4pWohCrxQ0+gIWSFzBq4xtsZx4idnkDG3XzAospbOzEhHQLBislxVoJWq9vMEc4jrOT3/e1w+wd7r0/DvzP3pmDAwAAAAAA4Hl1OPsHTp9cXS0dP797Z/H8pw8fTF8D+/XOR58sfn9u3ztbPP/+8eHU9+eFmZNh7wRAmgBIEwBpAiBNAKQJgLTVZ/CjOe+IfYJ9u+6fvxWANAGQJgDSBECaAEgTAGkCIG3zGfvWc+KjmydTr793lxePpt6/rT+/WVYA0gRAmgBIEwBpAiBNAKQJgLTN9wFG1p4zf/rNz+l9gO8+v7X4/ux9zj9iBSBNAKQJgDQBkCYA0gRAmgBIe3HrCxj587dfF4///cezxeMvvfJ6es4/Mnp/nj3+cfn8V9/4T6/n/2YFIE0ApAmANAGQJgDSBECaAEi79vsAa/v2s5OtL2FTN063voJtWQFIEwBpAiBNAKQJgDQBkCYA0na/D/DX4PcAIzdW/n/22esb2fr6X3vv1qqvvzYrAGkCIE0ApAmANAGQJgDSBEDa9D7A6ZOrxfvKnN+9M/X3R/cFGll7Tr62vV//7PMFbt87Wzx+//hw6vkDVgDSBECaAEgTAGkCIE0ApAmAtOl9gNEcdnYOTNvsnH/ECkCaAEgTAGkCIE0ApAmANAGQtvp9gZ4+fDA1xz26eWIfYcdmP/+1WQFIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0nb/nOCRtZ/Tu7a9X/91ZwUgTQCkCYA0AZAmANIEQJoASNt8H2D2+QGHh8v3j3//iy/dV2jC46+/mnr+w8tvvb14fOv7BlkBSBMAaQIgTQCkCYA0AZAmANJWn8HOzvk9X2BblxePpt7/rT//ESsAaQIgTQCkCYA0AZAmANIEQNr0jPX0ydXinPf87p3F82fnvFvPmbf+vcHo//VHtn7/Rq9/+97Z4vn3j5d/DzJiBSBNAKQJgDQBkCYA0gRAmgBI2/SeLP/G2nPq0e8F3vzgw5mXP3j34+V9kJFfvl+eg4/8/tMPi8dH/++/9T7B2qwApAmANAGQJgDSBECaAEgTAGm7fz7AdZ8z793o/R19fqPjW39+VgDSBECaAEgTAGkCIE0ApAmAtNX3Acz5n2973yewApAmANIEQJoASBMAaQIgTQCkTe8DbP18gFmj++JcXjxaPH/vzwdY2+w+wej75fkAMEEApAmANAGQJgDSBECaAEi71jPkPbAPsG9WANIEQJoASBMAaQIgTQCkCYA0M+SVze4TmPOvywpAmgBIEwBpAiBNAKQJgDQBkGbGPOno5smmvwcY3deIZVYA0gRAmgBIEwBpAiBNAKQJAAAAAAAAgOfSPxZZ2MOO2LM2AAAAAElFTkSuQmCC"}, {"n": "KNOT", "r": "spots bundles", "col": "255,168,90", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAD2UlEQVR4nO3dsY4VVQCAYTA2qIUQE5UCJFYSO2hItLGikZI1xnew0kQfQBOoeAnibikNFY0kt2E74lZksxQEolka1BJfgMwo996duft/Xzs52bOz989J5tydc+IEAAAAAAAAAAAAAAAAAAAAAAAwFyennsDLX75+OXR969b9wfE7i8dL/Q6XLpwZ/PnH3e7+4VL37/qVc4P3b/vbzwbHn/zq9qSfwTem/OEwNQGQJgDSBECaAEgTAGkCIG3yfYAxY8+Zx4ztEzz46Wp6H+Dyj3cH78+67//UrACkCYA0AZAmANIEQJoASBMAaW9OPYExj56+GLz+5Pk/g9c/fPdU+jn/mLH789veH4Pjz54+tdL5HDUrAGkCIE0ApAmANAGQJgDSBEDa7PcB1m17cTD1FJiQFYA0AZAmANIEQJoASBMAaQIgbeP3Ab75/KPB6zd+/f1oJrKhboxc//7axcHr9x4+W91kJmAFIE0ApAmANAGQJgDSBECaAEibfB9g7Jzgyz/cPaqpvNLZ028tNf7J879XNJNXm/v8xv6+zgmGCQmANAGQJgDSBECaAEgTAGmT7wOMPQe+dOHMWt/vv+xz9HWb+/zGTP2cf4wVgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBNAKQJgDQBkCYA0gRAmgBIEwBpAiBt8vcCTW3d78df1tznt+msAKQJgDQBkCYA0gRAmgBIEwBpk+8DjJ0ju3Xr/uD4m3f2ht8/f+3iWs8XOO7G7u/1K+cG7++Dn686JxjmSgCkCYA0AZAmANIEQJoASJv1Ga6rsO5zho+73f3DY/0ZsQKQJgDSBECaAEgTAGkCIE0ApG38M96x76OPOf/e26uaykY6+POvpcbvLB5v9GfICkCaAEgTAGkCIE0ApAmANAGQNvtnuGPP+R89fTE4/otP31/pfP6vrSvnlxq/vThY0Uxez72Hzwavf/zBO4PX575PYAUgTQCkCYA0AZAmANIEQJoASNv48wGYt7G/r/MBYEICIE0ApAmANAGQJgDSBEDa5PsAyz4H9v7/aY19339ncfuopvJarACkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZAmANIEQJoASBMAaZO/F2hZu/uHg++l2d0/HBz/3ZefpN8rdPPO3qzP8V03KwBpAiBNAKQJgDQBkCYA0gRA2sbvA8zd9uJg6ikwwApAmgBIEwBpAiBNAKQJgDQBkJb+Lvh/sen/L1D/vv8YKwBpAiBNAKQJgDQBkCYA0gRA2r8S545xs6zy6gAAAABJRU5ErkJggg=="}, {"n": "LEDGER", "r": "rebuilds every book", "col": "125,240,200", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEOUlEQVR4nO3dsWtdVQDH8SiOFluokEAFuxVF6OBQO4hDB1cNOCkYcNZ/IJmaf6CdhQh2TfIPZJAOJkOHtyRka9HCKyg00j9A/wE5p3reybmX3+ezXm5zeLdfDpzz3j1rawAAAAAAAAAAAAAAwNy80fsP7Fyc/F26vr+1Xbz/7PCo+xjp54Mv7hWf/+bebvH++1fvdH3+b/b8x2HqBEA0ARBNAEQTANEEQDQBEG34GnttnbimdZ9g4/atpr8/d8vFedPnN/r5tTIDEE0ARBMA0QRANAEQTQBEEwDRhu8D1PReZ/7ul5+i9wF+/Ozb4ucz93X+GjMA0QRANAEQTQBEEwDRBEA0ARDtrdEDqHn59Hnx+qsXfxavv71+PXqdv6b2+fx2vCjef2X9+iqHc+nMAEQTANEEQDQBEE0ARBMA0QRAtMnvA/R2enA0eggMZAYgmgCIJgCiCYBoAiCaAIgmAKLNfh/go68+L17/9cHPlzSSmXpQvnz3h2+K1589frLCwVw+MwDRBEA0ARBNAEQTANEEQDQBEK37PsDOxUnxvTP7W9vF+2vvBertysa7Tfe/Wv6xopH8u6mPr3a+wObebvH++1fvdD1fwAxANAEQTQBEEwDRBEA0ARBNAETrvg9QW8dtPYe2Ves6em9TH1+r3uv8NWYAogmAaAIgmgCIJgCiCYBoAiDa8PcCnR0eFdeBN27fcs7vjNWe72hmAKIJgGgCIJoAiCYAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCINrw3wOM1vv9+K2mPr65MwMQTQBEEwDRBEA0ARBNAEQTANGG7wO0ng9w/PBR8b0zd9fWvFeoQe3zrT2/azdvFK+Pfm+QGYBoAiCaAIgmAKIJgGgCIJoAiNZ9DXbn4qS4Dry/tV28v3Wd2PkCbZaL86bPv7ZPsLm3W7y/9znCZgCiCYBoAiCaAIgmAKIJgGgCINqkz3B9Ha2/J3jnvfVVDWWW/vr9RdP9o7/P38oMQDQBEE0ARBMA0QRANAEQTQBEm/wabm2d/+XT58X73//045WO57/68Mt7TfefHhytaCT/z7PHT4rXr928Ubw+9X0CMwDRBEA0ARBNAEQTANEEQDQBEG325wMwbbXnO3qfwAxANAEQTQBEEwDRBEA0ARBNAETrvg/Q+3wA7/8fq/Z8avsAtf8fzgeAjgRANAEQTQBEEwDRBEA0ARCt+z5A73Vcpq22T3B2OPa9R2YAogmAaAIgmgCIJgCiCYBoAiCaAIgmAKIJgGgCIJoAiCYAogmAaAIg2vDzAVotF+fF75svF+fF+z/5/uvo9wodP3wU/XsNMwDRBEA0ARBNAEQTANEEQDQBEG32+wBTd3ow9r03lJkBiCYAogmAaAIgmgCIJgCiCYBo0d8Ffx1z/71A+vf9a8wARBMA0QRANAEQTQBEEwDRBEC0fwC0C7Lry8cXKwAAAABJRU5ErkJggg=="}, {"n": "SIEVE", "r": "throws out the noise", "col": "150,142,170", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAADuUlEQVR4nO3dMWseZQDA8SjOVp1DhoK4OAQCQgUHBR11c+zSza1O+Qidms2tS0c3HRV0a6dAhg6WSoaQRRRr/QL6De6BXt48ed//77cel7tc8ueBe+7u2dsDAAAAAAAAAAAAAAAAAAAAAABuijdmn8B3D7//b2n7o8cni/ufnj1d9Tsc7N9ePP6uu7g8X3X9jg7vLF6/e3fvL+7/zbdfT/0ffHPmwWE2AZAmANIEQJoASBMAaQIgbfo8wMjoPvPIaJ7g+P6D9DzAg5Pjxeuz6es/mxGANAGQJgDSBECaAEgTAGkCIO2t2Scw8udffyxuf/Xvy8Xtt95+N32ff2R0fX4//220/5Wez3UzApAmANIEQJoASBMAaQIgTQCk3fh5gE07PXsy+xSYyAhAmgBIEwBpAiBNAKQJgDQBkLb18wAfHX2yav+ffvnhis5kO33x2Ver9n/+4tkVnckcRgDSBECaAEgTAGkCIE0ApAmAtOnzAKN1gh88PL6uU3kt79x6b3H7P6/+3unjj4z+vtYJhokEQJoASBMAaQIgTQCkCYC06fMAo/vAB/u3p37ff3SffdePv9bs+/wjRgDSBECaAEgTAGkCIE0ApAmANAGQJgDSBECaAEgTAGkCIE0ApAmAtOnvA9x0s7+rM/v4u84IQJoASBMAaQIgTQCkCYA0AZCWnwdYu04u280IQJoASBMAaQIgTQCkCYA0AZA2/dvto3VkHz0+Wdz/9Ozp4u/w+adfTl1fYNv9/OuPi9f36PDO4vW9d/f+4s+fvX6AEYA0AZAmANIEQJoASBMAaQIgbfo8wKbNXmd4211cnu/0/4gRgDQBkCYA0gRAmgBIEwBpAiBt6+/xjp5HHxm9TzAy+32D0fP6I7Ov32xGANIEQJoASBMAaQIgTQCkCYC0G38Pd9P3qUfvC3zw/odrDr93dPjxqv1Pz56s2v/5i2eL20fP++/6PIERgDQBkCYA0gRAmgBIEwBpAiBt+jrBm14fgHVG13c0TzD6+1ofACYSAGkCIE0ApAmANAGQJgDSps8DzL4PzDqjeYLTs6fXdSqvxQhAmgBIEwBpAiBNAKQJgDQBkDZ9HmC20XdxLi7PF/ff9vUB6owApAmANAGQJgDSBECaAEgTAGn5eYBNW/t9fzbLCECaAEgTAGkCIE0ApAmANAGQ5lnyDVv7voDn/TfLCECaAEgTAGkCIE0ApAmANAGQ5h7zSgf7t6d+F2j0XSOWGQFIEwBpAiBNAKQJgDQBkCYAAAAAAAAAdtL/dfSiJ3W7hXcAAAAASUVORK5CYII="}, {"n": "ORACLE", "r": "writes the card", "col": "214,180,255", "spr": "iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEK0lEQVR4nO3dsaocVQCA4buyT6AoaGFjbK5gEwsbLawUYiNqessgKAGxE0wXBEvBxt4UNgZMZWEaC9MI3sbYWCgo+grXFwhzwJPJ7N7/+9rJToa983Pg7Mw5JycAAAAAAMBFtTu7fX6+9A9Or+x2j+pi4GEb3d+PPaoLgUMkANIEQJoASBMAaQIgTQCk7a/fvDp1gtdfeXdxnvXO3Vt+R+B/m72/Rve3EYA0AZAmANIEQJoASBMAaQIgbb/1PP3WvyOcXrq8+P9fdGf37636/W799x2d3whAmgBIEwBpAiBNAKQJgDQBkLafPcGx/47w6ftfPtwLOjLvfPjS4vFDn8efZQQgTQCkCYA0AZAmANIEQJoASDv4NXtGz+v//e8fU+f/4pNvpz5/7K7deHPq808+/szi8bXfN5hlBCBNAKQJgDQBkCYA0gRAmgBIm34f4Ni9/cHlrS9hU9dubH0F2zICkCYA0gRAmgBIEwBpAiBNAKQd/e8Af/0z9z7AU08sP88+a/b6Rra+/heeX15X6NAZAUgTAGkCIE0ApAmANAGQJgDS9me3zxfX3Tm9sltc12V2/fjR53//87elw0Nrz5Ov7divf+37Y/T50f1tBCBNAKQJgDQBkCYA0gRAmgBI21+/eXXra4DVjO5vIwBpAiBNAKQJgDQBkCYA0gRA2kHv4XpyMt4n+Jdff1r8/NbP0x/6ukUjs+sC2ScYDpgASBMAaQIgTQCkCYA0AZAmANIEQJoASBMAaQIgTQCkCYA0AZC2+bPas/sDjN4HYF2j9wGeffq5xeOj9f3XZgQgTQCkCYA0AZAmANIEQJoASNvPnmB2H9dZu93yPsbvvfXR4vWx7KtvPlv8fkfrNs1a+/4yApAmANIEQJoASBMAaQIgTQCk7beex1/7/D/+/P2ap88brf9/dv/eo7qUBxrd30YA0gRAmgBIEwBpAiBNAKQJgLTd2e3zxXnS0yvLz9tvbTTPOzL6HeLY3ycYPc+/9ve3tdH9bQQgTQCkCYA0AZAmANIEQJoASNt8Dnf2fYTZ/QVefvG1xeOz3nj16tTnv/vh64d0JQ82el9idn3/rd83GTECkCYA0gRAmgBIEwBpAiBNAKQd/f4Ao/OvvX79Rbf1PL39AWBFAiBNAKQJgDQBkCYA0gRA2oXfH4Btbf33tT8ALBAAaQIgTQCkCYA0AZAmANL2n3+8vO7Mnbu3RsfN47Oa2ftrdH8bAUgTAGkCIE0ApAmANAGQJgDSzOEPzO4TvPX+AKN9guuMAKQJgDQBkCYA0gRAmgBIEwBp0/sDsGztfX6ZYwQgTQCkCYA0AZAmANIEQJoASPOs+KTZ9wVmed5/jhGANAGQJgDSBECaAEgTAGkCIM0c8sDppcubzvPPOrt/z994gRGANAGQJgDSBECaAEgTAGkCIO0/S9fyXrVDJYcAAAAASUVORK5CYII="}];
+const MARK64='iVBORw0KGgoAAAANSUhEUgAAAPAAAADwCAYAAAA+VemSAAAE/UlEQVR4nO3dsWpeZRzA4USK1CU6RQcpRTJVKOIFSN0SyezYod6Ac8gYOnsDdsjoHGw2Sy9ASsFMGULp0GZqs1Rc4iX41pzmnF/yPPPh/c73fefHu/w578oKAAAAAAAAAAAAAAAAAAAAAAAAzGt1rg8+2D0/H7luZ39raL3nLw5n+y703L21OfT8Pbz/eGi97b3VWZ6/j+b4UGAaAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGGLn14anZgZNfXE1vraxqT3d92cnh1P+n8s/XmZmh0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCFj1l8j7mmsD5+YffTGJdwC+//zj0O1+3CatRdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAi7MfcNTOXVm+Oh6/7+52zourWb6yasLsHo73xy+ufQejc/XrvQ/dTYgSFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIezKTGLN5dnJ4dy3wDVmB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrBrN4n17VfbQ9f98devH/hOeB/ff/3T0HVHL59+4DtZFjswhAkYwgQMYQKGMAFDmIAhTMAQJmAIEzCEzTaJdbB7PnQq3c7+1tB6o6cTzuXTTz6fdL23715Put6oq/I97t7aHHr+Ht5/PLTe9t7q6oVu6H+yA0OYgCFMwBAmYAgTMIQJGMIEDGEChjABQ9hsk1ijkyujEzNzmXoyaS5X5XtMba4Jq1F2YAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCFv86YTPXxwOTcKsr20semKLZRl9rpbODgxhAoYwAUOYgCFMwBAmYAgTMIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhAkYwgQMYQKGMAFD2OLfibV0b9+9nvsWJnFVvsd1YweGMAFDmIAhTMAQJmAIEzCECRjCBAxhAoawxZ/QdvfW5qSnDo6eSnfvzgOnHS7Ik6NHQ//bXM/LXOzAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQNtuUycHu+dDEzM7+1tB6U0/MrK9tmMRakNOz40n/39GJrYf3Hw+tt723OktLdmAIEzCECRjCBAxhAoYwAUOYgCFMwBAmYAhb9Pt+PgTv2Loc3mF1OezAECZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQdmWmVqae6Hn15njoujtffjflxw775vbmpOs9OzmcdL1RRy+fDl33xWcbk37uVZnYsgNDmIAhTMAQJmAIEzCECRjCBAxhAoYwAUPYjblv4L/M9c4kpxMuy+j/Nvq8jF639IktOzCECRjCBAxhAoYwAUOYgCFMwBAmYAgTMITNNol1sHs+NAmzs781tN7SJ2a4HFNPbI0+p9t7q7M8f3ZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIm20Sa67JFVhZGZ/Y2t5b9mNqB4YwAUOYgCFMwBAmYAgTMIQJGMIEDGEChrDFn044l9Oz46ERnNOj46H17t15cK1OO3xy9GjZI0xXhB0YwgQMYQKGMAFDmIAhTMAQJmAIEzCECRjCTGJFPTs5nPsWWAA7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhHlv0cIs/d1Z3nW1LHZgCBMwhAkYwgQMYQKGMAFDmIAhTMAQJmAIM1VzSdbXNhY9YTW10dMduRg7MIQJGMIEDGEChjABQ5iAIUzAECZgCBMwhP0L3tPAofKFk7MAAAAASUVORK5CYII=';
+const $=s=>document.querySelector(s),rnd=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rnd(a,b+1));
+const fmt=n=>Math.round(n).toLocaleString('en-US').replace(/,/g,' ');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const COH={hold:'125,240,200',smart:'110,208,255',snipe:'255,209,102',gone:'255,93,122',raw:'126,116,144'};
+const TICK=['VRAX','MOTH','ORCA','ZINC','HALO','TIDE','KOI','FERN','ONYX','GRIP','SLUG','ARBOR'];
+let DPR=Math.min(devicePixelRatio||1,1.3);
+
+/* ---------- the roaming crawler: capsule body, long jointed legs, bright nodes ---------- */
+function spider(ctx,x,y,r,rgb,a,ph,ang,dot,feet){
+ ang=ang||0; dot=dot||rgb;
+ ctx.save();
+ ctx.translate(x,y);ctx.rotate(ang);
+ ctx.lineCap='round';ctx.lineJoin='round';
+
+ const BW=r*1.35, BH=r*2.7;           /* the body capsule */
+ const LEG=[-1.25,-0.45,0.35,1.15];  /* where the four pairs leave the body, along its length */
+
+ /* --- legs: two long straight segments, a node at the knee and at the foot --- */
+ for(const side of [-1,1]){
+  for(let i=0;i<4;i++){
+   const wob=Math.sin(ph*1.5+i*1.15+(side>0?2.1:0));
+   const out=LEG[i];
+   const ax=side*BW*.42, ay=out*BH*.30;
+
+   /* femur: straight out to the side, fanned front to back */
+   const fan=out*0.62 + wob*0.12;
+   const L1=r*(4.8+0.7*wob);
+   const kx=ax+side*Math.cos(fan)*L1, ky=ay+Math.sin(fan)*L1;
+   /* tibia: continues out and bends away */
+   const fan2=fan+0.42+wob*0.14;
+   const L2=r*(4.4+0.8*Math.cos(ph*1.2+i));
+   const fx=kx+side*Math.cos(fan2)*L2, fy=ky+Math.sin(fan2)*L2;
+
+   ctx.strokeStyle='rgba('+rgb+','+Math.min(1,a*1.25)+')';
+   ctx.lineWidth=Math.max(1.4,r*.30);
+   ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(kx,ky);ctx.lineTo(fx,fy);ctx.stroke();
+
+   ctx.fillStyle='rgba('+dot+','+Math.min(1,a*1.55)+')';
+   ctx.beginPath();ctx.arc(kx,ky,r*.38,0,6.283);ctx.fill();
+   ctx.beginPath();ctx.arc(fx,fy,r*.44,0,6.283);ctx.fill();
+   if(feet){const ca=Math.cos(ang),sa=Math.sin(ang);
+    feet.push([x+fx*ca-fy*sa, y+fx*sa+fy*ca]);}
+  }
+ }
+
+ /* --- body: dark capsule with a bright outline --- */
+ ctx.fillStyle='rgba(10,8,16,.95)';
+ ctx.strokeStyle='rgba('+rgb+','+Math.min(1,a*1.45)+')';
+ ctx.lineWidth=Math.max(1.5,r*.34);
+ ctx.beginPath();
+ if(ctx.roundRect)ctx.roundRect(-BW/2,-BH/2,BW,BH,r*.62);
+ else ctx.ellipse(0,0,BW/2,BH/2,0,0,6.283);
+ ctx.fill();ctx.stroke();
+
+ /* the eye node near the head end */
+ ctx.fillStyle='rgba('+dot+','+Math.min(1,a*1.6)+')';
+ ctx.beginPath();ctx.arc(0,-BH*.22,r*.46,0,6.283);ctx.fill();
+ ctx.restore();
+}
+
+/* ---------- the swarm that crawls over the whole page and spins silk ---------- */
+const wc=$('#web'),wx=wc.getContext('2d');
+let W,H;              /* viewport, in device pixels */
+let DW,DH;            /* the whole document, in device pixels */
+let SCX=0,SCY=0;      /* scroll offset, in device pixels */
+function docH(){return Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);}
+function sz(){DPR=Math.min(devicePixelRatio||1,1.3);
+ wc.width=innerWidth*DPR;wc.height=innerHeight*DPR;
+ wc.style.width=innerWidth+'px';wc.style.height=innerHeight+'px';
+ W=wc.width;H=wc.height;DW=W;DH=docH()*DPR;}
+sz();addEventListener('resize',()=>{sz();});
+addEventListener('scroll',()=>{SCX=scrollX*DPR;SCY=scrollY*DPR;},{passive:true});
+setInterval(()=>{DH=docH()*DPR;},1500);
+
+const ANCH=[];          // anchor points the swarm has dropped
+const TAGS=[];          // what a crawler found there, shown briefly
+const hex4=()=>Array.from({length:4},()=>'0123456789abcdef'[ri(0,15)]).join('');
+const FINDS=[
+ ()=>['0x'+hex4()+'…'+hex4()+' · still holding','125,240,200'],
+ ()=>['0x'+hex4()+'…'+hex4()+' · left at '+ri(2,9)+'h','255,93,122'],
+ ()=>['0x'+hex4()+'…'+hex4()+' · sniper, block '+ri(1,3),'255,209,102'],
+ ()=>['0x'+hex4()+'…'+hex4()+' · wr '+ri(58,84)+'%','110,208,255'],
+ ()=>['bundle · '+ri(2,6)+' wallets, one funder','255,209,102'],
+ ()=>['+'+(rnd(.05,2.4)).toFixed(2)+' E buy','125,240,200'],
+ ()=>['−'+(rnd(.05,1.8)).toFixed(2)+' E sell','255,93,122'],
+ ()=>['dust position dropped · $'+ri(3,48),'126,116,144'],
+ ()=>['traced across '+ri(9,41)+' tokens','110,208,255'],
+ ()=>['book rebuilt · '+ri(3,22)+' fills','125,240,200']];
+const THREAD=[];        // silk tied between anchors
+const SWARM=[];
+let MAXSW=16;
+function wantSwarm(){return Math.max(5,Math.min(16,Math.round((DH/H)*3)));}
+
+function newSpider(){
+ const c=CREW[ri(0,CREW.length-1)];
+ /* fill the emptiest band of the page, so every screen has a few */
+ const bands=Math.max(1,Math.round(DH/H));
+ const count=new Array(bands).fill(0);
+ for(const o of SWARM){const k=Math.min(bands-1,Math.max(0,Math.floor(o.y/DH*bands)));count[k]++;}
+ let pick=0,low=1e9;
+ for(let k=0;k<bands;k++){
+  const bias=(k===Math.floor(SCY/DH*bands))?-0.6:0;   /* a slight nudge to what is on screen */
+  if(count[k]+bias<low){low=count[k]+bias;pick=k;}}
+ const x = rnd(.04,.96)*DW;
+ const y = Math.max(70*DPR,Math.min(DH-30*DPR,(pick+Math.random())*(DH/bands)));
+ const DOTS=['255,209,102','110,208,255','125,240,200','255,93,122','214,180,255'];
+ return {x,y,vx:0,vy:0,col:c.col,ang:rnd(0,6.283),
+  dot:DOTS[ri(0,DOTS.length-1)],
+  sp:rnd(.9,2.7),                 // walking speed
+  scale:(()=>{const r=Math.random();
+    return r<.34 ? rnd(1.6,2.2)       // quick ones
+         : r<.84 ? rnd(2.4,3.4)       // the working size
+                 : rnd(3.8,5.0);})(), // a couple of heavies
+  leg:rnd(0,6.28),
+  trail:[],tgt:null,anchor:null,
+  life:0, maxlife:rnd(14000,34000),   // it leaves eventually
+  fade:0,                              // 0..1 in, then back out
+  state:'walk', jump:null, rest:0};
+}
+setTimeout(()=>{const n=wantSwarm();
+ for(let i=0;i<n;i++){
+  const s=newSpider();
+  s.y=Math.max(70*DPR,Math.min(DH-30*DPR,((i+.5)/n)*DH+rnd(-.3,.3)*(DH/n)));
+  s.x=rnd(.05,.95)*DW;
+  s.fade=1;SWARM.push(s);}},300);
+
+function nearestAnchor(s,maxd){
+ let best=null,bd=maxd*maxd;
+ for(const a of ANCH){
+  if(a===s.anchor)continue;
+  const d=(a.x-s.x)**2+(a.y-s.y)**2;
+  if(d<bd){bd=d;best=a;}}
+ return best;
+}
+function pickTarget(s,t){
+ const near=Math.random()<.34?nearestAnchor(s,W*.30):null;
+ if(near){s.tgt={x:near.x,y:near.y,anchor:near};return;}
+ /* half the time head for the reading column, so they crawl over the copy */
+ let nx,ny;
+ if(Math.random()<.5){
+  /* head for the reading column at roughly this height on the page */
+  nx=rnd(.06,.54)*DW;
+  ny=s.y+rnd(-1,1)*H*.55;
+ }else{
+  nx=Math.max(DW*.03,Math.min(DW*.97,s.x+rnd(-1,1)*DW*.26));
+  ny=s.y+rnd(-1,1)*H*.50;
+ }
+ ny=Math.max(70*DPR,Math.min(DH-20*DPR,ny));
+ const rbEl=document.querySelector('.roomband');
+ if(rbEl){const rr=rbEl.getBoundingClientRect();
+  const t0=(rr.top+scrollY)*DPR,b0=(rr.bottom+scrollY)*DPR;
+  if(ny>t0&&ny<b0)ny=(Math.random()<.5?t0-40*DPR:b0+40*DPR);}
+ const a={x:nx,y:ny,born:t};
+ ANCH.push(a);while(ANCH.length>420)ANCH.shift();
+ if(s.anchor)THREAD.push({a:s.anchor,b:a,born:t,dash:Math.random()<.35,col:s.col});
+ s.tgt={x:nx,y:ny,anchor:a};
+}
+
+function stepSwarm(t,dt){
+ /* population: spawn newcomers, retire the old */
+ MAXSW=wantSwarm();
+ if(SWARM.length<MAXSW && Math.random()<.05)SWARM.push(newSpider());
+ for(let i=SWARM.length-1;i>=0;i--){
+  const s=SWARM[i];
+  s.life+=dt;
+  if(s.life<700)s.fade=Math.min(1,s.fade+dt/700);
+  else if(s.life>s.maxlife){s.fade-=dt/900;if(s.fade<=0){SWARM.splice(i,1);continue;}}
+
+  if(s.state==='rest'){
+   s.rest-=dt;s.leg+=.012;
+   if(s.rest<=0)s.state='walk';
+   s.trail.push({x:s.x,y:s.y});
+   if(s.trail.length>52)s.trail.shift();
+   continue;
+  }
+
+  if(s.state==='jump'){
+   const j=s.jump;j.t+=dt/j.dur;
+   if(j.t>=1){
+    s.x=j.x1;s.y=j.y1;s.state='walk';s.jump=null;
+    s.tgt=null;
+    if(Math.random()<.35){s.state='rest';s.rest=rnd(600,1800);}
+   }else{
+    const u=j.t;
+    s.x=j.x0+(j.x1-j.x0)*u;
+    s.y=j.y0+(j.y1-j.y0)*u-Math.sin(u*Math.PI)*j.arc;
+    s.leg+=.50;                      // legs splay mid-air
+    const wa=Math.atan2(j.y1-j.y0,j.x1-j.x0)+Math.PI/2;
+    let dj=((wa-s.ang+Math.PI*3)%(Math.PI*2))-Math.PI;
+    s.ang+=dj*.09;
+   }
+   s.trail.push({x:s.x,y:s.y});
+   if(s.trail.length>52)s.trail.shift();
+   continue;
+  }
+
+  /* walking */
+  if(!s.tgt||Math.hypot(s.tgt.x-s.x,s.tgt.y-s.y)<13*DPR){
+   if(s.tgt&&s.tgt.anchor){
+    if(s.anchor)THREAD.push({a:s.anchor,b:s.tgt.anchor,born:t,
+      dash:Math.random()<.45,col:s.col});
+    s.anchor=s.tgt.anchor;
+    if(Math.random()<.14){
+     const [txt,col]=FINDS[ri(0,FINDS.length-1)]();
+     TAGS.push({sp:s,txt,col,born:t});
+     while(TAGS.length>3)TAGS.shift();}}
+   /* at an anchor it may stop, jump, or carry on */
+   const roll=Math.random();
+   if(roll<.12){s.state='rest';s.rest=rnd(200,750);s.tgt=null;continue;}
+   if(roll<.62){
+    const ang=rnd(0,6.283),dist=rnd(.20,.52)*Math.min(W,H);
+    s.jump={x0:s.x,y0:s.y,
+      x1:Math.max(DW*.03,Math.min(DW*.97,s.x+Math.cos(ang)*dist)),
+      y1:Math.max(70*DPR,Math.min(DH-20*DPR,s.y+Math.sin(ang)*dist)),
+      arc:rnd(50,165)*DPR,t:0,dur:rnd(170,330)};
+    s.state='jump';s.anchor=null;continue;}
+   pickTarget(s,t);
+  }
+  const dx=s.tgt.x-s.x,dy=s.tgt.y-s.y,d=Math.hypot(dx,dy)||1;
+  s.vx+=(dx/d-s.vx)*.14;s.vy+=(dy/d-s.vy)*.14;
+  const spd=s.sp*(1.5/Math.max(.8,s.scale*.8));
+  s.x+=s.vx*spd*DPR*1.7;s.y+=s.vy*spd*DPR*1.7;
+  s.leg+=.16*s.sp;
+  const want=Math.atan2(s.vy,s.vx)+Math.PI/2;
+  let dA=((want-s.ang+Math.PI*3)%(Math.PI*2))-Math.PI;
+  s.ang+=dA*.12;
+  s.trail.push({x:s.x,y:s.y});
+  if(s.trail.length>52)s.trail.shift();
+ }
+ while(THREAD.length>700)THREAD.shift();
+}
+
+let lastT=0;
+function drawWeb(t){requestAnimationFrame(drawWeb);
+ const dt=Math.min(60,t-lastT||16);lastT=t;
+ wx.clearRect(0,0,W,H);
+ stepSwarm(t,dt);
+ wx.save();wx.translate(-SCX,-SCY);
+
+ for(const th of THREAD){
+  const age=(t-th.born)/15000;
+  if(age>1)continue;
+  if(th.a.y<SCY-200*DPR&&th.b.y<SCY-200*DPR)continue;
+  if(th.a.y>SCY+H+200*DPR&&th.b.y>SCY+H+200*DPR)continue;
+  const len=Math.hypot(th.b.x-th.a.x,th.b.y-th.a.y);
+  if(len>W*.32)continue;                     /* a dragline, not a tightrope */
+  wx.strokeStyle='rgba('+th.col+','+((1-age)*.13)+')';
+  wx.lineWidth=1*DPR;
+  if(th.dash)wx.setLineDash([3*DPR,6*DPR]);else wx.setLineDash([]);
+  wx.beginPath();wx.moveTo(th.a.x,th.a.y);wx.lineTo(th.b.x,th.b.y);wx.stroke();}
+ wx.setLineDash([]);
+
+ for(const a of ANCH){
+  const age=(t-a.born)/15000;
+  if(age>1)continue;
+  const al=(1-age)*.32;
+  wx.fillStyle='rgba(180,124,255,'+al+')';
+  wx.fillRect(a.x-1.5*DPR,a.y-1.5*DPR,3*DPR,3*DPR);}
+
+ wx.font=(10.5*DPR)+'px "JetBrains Mono",ui-monospace,monospace';
+ for(const g of TAGS){
+  const age=(t-g.born)/3000;
+  if(age>1||!g.sp||g.sp.fade<.3)continue;
+  const al=(age<.15?age/.15:(1-age)*1.1)*.9;
+  const gx=g.sp.x+12*DPR, gy=g.sp.y+16*DPR;      /* follows its own spider */
+  const w=wx.measureText(g.txt).width+11*DPR;
+  wx.fillStyle='rgba(7,6,10,'+(al*.82)+')';
+  wx.fillRect(gx,gy-10*DPR,w,15*DPR);
+  wx.fillStyle='rgba('+g.col+','+(al*.9)+')';
+  wx.fillRect(gx,gy-10*DPR,1.5*DPR,15*DPR);
+  wx.fillStyle='rgba('+g.col+','+al+')';
+  wx.fillText(g.txt,gx+7*DPR,gy+1*DPR);
+ }
+
+ /* what the swarm is reading right now, boxed and tethered */
+ for(const b of BOXES){
+  wx.strokeStyle='rgba('+b.col+',.55)';wx.lineWidth=1*DPR;
+  wx.strokeRect(b.x-3*DPR,b.y-3*DPR,b.w+6*DPR,b.h+6*DPR);
+  const cx2=b.x+b.w/2, cy2=b.y+b.h/2;
+  wx.setLineDash([3*DPR,5*DPR]);
+  wx.strokeStyle='rgba('+b.col+',.28)';
+  wx.beginPath();wx.moveTo(b.sx,b.sy);wx.lineTo(cx2,cy2);wx.stroke();
+  wx.setLineDash([]);
+  /* corner ticks, so it reads as a reticle not a border */
+  wx.strokeStyle='rgba('+b.col+',.9)';wx.lineWidth=1.6*DPR;
+  const L=5*DPR;
+  for(const [ox,oy,dx,dy] of [[0,0,1,1],[b.w,0,-1,1],[0,b.h,1,-1],[b.w,b.h,-1,-1]]){
+   wx.beginPath();
+   wx.moveTo(b.x-3*DPR+ox,b.y-3*DPR+oy+dy*L);
+   wx.lineTo(b.x-3*DPR+ox,b.y-3*DPR+oy);
+   wx.lineTo(b.x-3*DPR+ox+dx*L,b.y-3*DPR+oy);
+   wx.stroke();}
+ }
+
+ const rb=document.querySelector('.roomband');
+ let rbT=-1,rbB=-1;
+ if(rb){const r=rb.getBoundingClientRect();
+  rbT=(r.top+scrollY)*DPR; rbB=(r.bottom+scrollY)*DPR;}
+ for(const s of SWARM){
+  if(s.y<SCY-200*DPR||s.y>SCY+H+200*DPR)continue;
+  if(rbT>=0&&s.y>rbT&&s.y<rbB)continue;
+  const al=Math.max(0,Math.min(1,s.fade));
+  if(s.trail.length>1&&s.state!=='jump'){
+   wx.strokeStyle='rgba('+s.col+','+(.22*al)+')';wx.lineWidth=Math.max(1,.8*s.scale)*DPR;
+   wx.beginPath();wx.moveTo(s.trail[0].x,s.trail[0].y);
+   for(const p of s.trail)wx.lineTo(p.x,p.y);
+   wx.stroke();}
+  if(s.state==='jump'){      /* a thin dragline back to where it leapt from */
+   wx.strokeStyle='rgba('+s.col+','+(.18*al)+')';wx.lineWidth=1*DPR;
+   wx.setLineDash([2*DPR,5*DPR]);
+   wx.beginPath();wx.moveTo(s.jump.x0,s.jump.y0);wx.lineTo(s.x,s.y);wx.stroke();
+   wx.setLineDash([]);}
+  s.feet=[];
+  spider(wx,s.x,s.y,1.8*DPR*s.scale,s.col,.82*al,s.leg,s.ang,s.dot,s.feet);}
+ wx.restore();
+ highlightUnderfoot();
+}
+requestAnimationFrame(drawWeb);
+
+let litEls=[],lastLit=0,BOXES=[];
+function probe(px,py,s){
+ const sx=(px-SCX)/DPR, sy=(py-SCY)/DPR;
+ if(sx<0||sy<0||sx>innerWidth||sy>innerHeight)return null;
+ const el=document.elementFromPoint(sx,sy);
+ if(!el)return null;
+ if(el.closest('#ov')||el.closest('#share')||el.closest('nav'))return null;
+ return el.classList&&el.classList.contains('w')?el
+        :el.closest('.w,.btn,.sf,.crawler,.frow,.wrw,.lrw,.hud,.tag');
+}
+function highlightUnderfoot(){
+ const now=performance.now();
+ if(now-lastLit<120)return;
+ lastLit=now;
+ for(const e of litEls)e.classList.remove('lit');
+ litEls=[];BOXES=[];
+ for(const s of SWARM){
+  if(s.fade<.45)continue;
+  const pts=[[s.x,s.y]].concat(s.feet||[]);
+  const seen=new Set();
+  for(const [px,py] of pts){
+   const tgt=probe(px,py,s);
+   if(!tgt||seen.has(tgt))continue;
+   if(tgt.closest('.heroart')||tgt.closest('.roomband'))continue;
+   seen.add(tgt);
+   tgt.classList.add('lit');
+   tgt.style.setProperty('--litcol','rgb('+s.col+')');
+   litEls.push(tgt);
+   /* the box the crawler draws around whatever it is reading */
+   const r=tgt.getBoundingClientRect();
+   if(r.width<34)continue;                 /* skip the reticle on short words */
+   BOXES.push({x:(r.left+scrollX)*DPR,y:(r.top+scrollY)*DPR,
+     w:r.width*DPR,h:r.height*DPR,col:s.col,sx:s.x,sy:s.y});
+  }
+ }
+}
+
+/* wrap words so a crawler can land on one of them */
+function wrapWords(sel){
+ document.querySelectorAll(sel).forEach(node=>{
+  const walk=document.createTreeWalker(node,NodeFilter.SHOW_TEXT);
+  const texts=[];let n;
+  while(n=walk.nextNode())if(n.nodeValue.trim())texts.push(n);
+  for(const tn of texts){
+   const frag=document.createDocumentFragment();
+   tn.nodeValue.split(/(\s+)/).forEach(part=>{
+    if(!part.trim()){frag.appendChild(document.createTextNode(part));return;}
+    const sp=document.createElement('span');sp.className='w';sp.textContent=part;
+    frag.appendChild(sp);});
+   tn.parentNode.replaceChild(frag,tn);
+  }
+ });
+}
+setTimeout(()=>{wrapWords('.sub,.lede,.sechead,.crawler .ds,.crawler .nm');},200);
+
+/* ---------- chain graph ---------- */
+const LAYER=['CONTRACT','TRANSACTIONS','HOLDERS','WALLET HISTORY'];
+const LX=[.09,.33,.60,.86];
+function buildChain(txN,perTx){
+ const nodes=[],links=[];
+ nodes.push({x:LX[0],y:.5,k:'contract',r:7,st:'raw'});
+ const txIdx=[];
+ for(let i=0;i<txN;i++){
+  nodes.push({x:LX[1]+rnd(-.012,.012),y:.14+i*(.72/(txN-1)),k:'tx',r:4,st:'raw'});
+  txIdx.push(nodes.length-1);links.push([0,nodes.length-1]);}
+ const hIdx=[];
+ txIdx.forEach(ti=>{const n=ri(perTx[0],perTx[1]);
+  for(let j=0;j<n;j++){
+   nodes.push({x:LX[2]+rnd(-.025,.025),y:nodes[ti].y+(j-(n-1)/2)*.047+rnd(-.008,.008),
+    k:'holder',r:rnd(2.4,4.2),st:'raw'});
+   hIdx.push(nodes.length-1);links.push([ti,nodes.length-1]);}});
+ hIdx.forEach(hi=>{if(Math.random()<.5)return;const n=ri(1,3);
+  for(let j=0;j<n;j++){
+   nodes.push({x:LX[3]+rnd(-.03,.05),y:nodes[hi].y+(j-(n-1)/2)*.03+rnd(-.006,.006),
+    k:'hist',r:rnd(1.5,2.5),st:'raw'});
+   links.push([hi,nodes.length-1]);}});
+ return {nodes,links};
+}
+function drawChain(ctx,g,CW,CH,t,bugs,labels){
+ ctx.clearRect(0,0,CW,CH);
+ ctx.setLineDash([3*DPR,7*DPR]);
+ LX.forEach(x=>{ctx.strokeStyle='rgba(180,124,255,.09)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(x*CW,CH*.10);ctx.lineTo(x*CW,CH*.95);ctx.stroke();});
+ ctx.setLineDash([]);
+ if(labels){ctx.font=(9.5*DPR)+'px "JetBrains Mono",monospace';
+  ctx.fillStyle='rgba(126,116,144,.8)';ctx.textAlign='center';
+  LX.forEach((x,i)=>ctx.fillText(LAYER[i],x*CW,CH*.06));ctx.textAlign='left';}
+ for(const [a,b] of g.links){const A=g.nodes[a],B=g.nodes[b];
+  const lit=B.st!=='raw';
+  ctx.strokeStyle=lit?'rgba('+COH[B.st]+',.34)':'rgba(255,255,255,.06)';
+  ctx.lineWidth=lit?1.3:.8;
+  const mx=(A.x+B.x)/2;
+  ctx.beginPath();ctx.moveTo(A.x*CW,A.y*CH);
+  ctx.bezierCurveTo(mx*CW,A.y*CH,mx*CW,B.y*CH,B.x*CW,B.y*CH);ctx.stroke();}
+ for(const n of g.nodes){const c=COH[n.st];
+  const pulse=.84+.16*Math.sin(t*.004+n.y*40);
+  if(n.k==='contract'){ctx.fillStyle='rgba(216,210,228,.95)';
+   ctx.fillRect(n.x*CW-5*DPR,n.y*CH-5*DPR,10*DPR,10*DPR);
+   ctx.strokeStyle='rgba(180,124,255,.5)';ctx.lineWidth=1.2;
+   ctx.strokeRect(n.x*CW-9*DPR,n.y*CH-9*DPR,18*DPR,18*DPR);continue;}
+  ctx.fillStyle='rgba('+c+','+(n.st==='raw'?.24:.95)+')';
+  if(n.k==='tx'){const r=n.r*DPR*pulse;ctx.fillRect(n.x*CW-r,n.y*CH-r,r*2,r*2);}
+  else{ctx.beginPath();ctx.arc(n.x*CW,n.y*CH,n.r*DPR*pulse,0,6.283);ctx.fill();}
+  if(n.st==='smart'){ctx.strokeStyle='rgba('+c+',.45)';ctx.lineWidth=1.1;
+   ctx.beginPath();ctx.arc(n.x*CW,n.y*CH,n.r*DPR*2.5,0,6.283);ctx.stroke();}}
+ for(const b of bugs){const [ai,bi]=g.links[b.li];
+  const A=g.nodes[ai],B=g.nodes[bi];
+  const mx=(A.x+B.x)/2,u=b.t,v=1-u;
+  const px=(v*v*v*A.x+3*v*v*u*mx+3*v*u*u*mx+u*u*u*B.x)*CW;
+  const py=(v*v*v*A.y+3*v*v*u*A.y+3*v*u*u*B.y+u*u*u*B.y)*CH;
+  spider(ctx,px,py,1.2*DPR,COH[b.tag],.85,t*.011+b.leg,b.leg*.3,'255,209,102');}
+}
+
+/* ---------- hero stage: the research floor, in perspective ---------- */
+const hc=$('#hunt'),hx=hc.getContext('2d');let SW,SH;
+function hsz(){const r=hc.getBoundingClientRect();
+ hc.width=Math.round(r.width*DPR);hc.height=Math.round(r.height*DPR);
+ SW=hc.width;SH=hc.height;}
+setTimeout(hsz,50);addEventListener('resize',()=>setTimeout(hsz,60));
+
+/* the crew sprites, as images */
+const CREWIMG=CREW.map(c=>{const im=new Image();im.src='data:image/png;base64,'+c.spr;return im;});
+
+/* the candles on the back wall, with the swarm's own marks on them */
+const WALLC=[];
+(function(){let px=100;for(let i=0;i<64;i++){const o=px,c=px*(1+rnd(-.04,.042));
+ WALLC.push({o,c,h:Math.max(o,c)*1.012,l:Math.min(o,c)*0.988});px=c;}})();
+/* marks live on an index that shifts with the chart */
+let MARKS=[
+ {i:14,k:'FLAGGED', col:'180,124,255'},
+ {i:22,k:'BOUGHT',  col:'125,240,200', note:'$1 200'},
+ {i:38,k:'ADDED',   col:'125,240,200', note:'$800'},
+ {i:52,k:'SOLD',    col:'255,93,122',  note:'+183%'}];
+setInterval(()=>{
+ WALLC.shift();
+ const last=WALLC[WALLC.length-1].c,c2=last*(1+rnd(-.035,.04));
+ WALLC.push({o:last,c:c2,h:Math.max(last,c2)*1.012,l:Math.min(last,c2)*0.988});
+ MARKS.forEach(m=>m.i--);
+ MARKS=MARKS.filter(m=>m.i>1);
+ if(MARKS.length<4&&Math.random()<.22){
+  const kinds=[['BOUGHT','125,240,200','$'+fmt(ri(400,2600))],
+               ['SOLD','255,93,122','+'+ri(40,320)+'%'],
+               ['ADDED','125,240,200','$'+fmt(ri(300,1400))],
+               ['FLAGGED','180,124,255','']];
+  const k=kinds[ri(0,kinds.length-1)];
+  MARKS.push({i:WALLC.length-3,k:k[0],col:k[1],note:k[2]});}
+},1300);
+
+/* each desk keeps its own little readout */
+const MONKIND=['graph','bars','wallets','rows','heat','line','scan','verdict'];
+const DESK=CREW.map((c,i)=>({d:Array.from({length:18},()=>Math.random()),
+ kind:MONKIND[i],flash:0,x:0,y:0,sc:1,vx:0,vy:0,
+ rows:Array.from({length:4},()=>({a:'0x'+hex4(),v:ri(1,99)})),
+ heat:Array.from({length:24},()=>Math.random()),
+ scan:0}));
+setInterval(()=>{const i=ri(0,DESK.length-1);
+ DESK[i].d.shift();DESK[i].d.push(Math.random());DESK[i].flash=1;
+ const D=DESK[i];
+ if(D.kind==='wallets'||D.kind==='rows'){
+  D.rows.shift();D.rows.push({a:'0x'+hex4(),v:ri(1,99)});}
+ if(D.kind==='heat'){D.heat[ri(0,D.heat.length-1)]=Math.random();}},520);
+
+/* the crew: each one owns a desk but wanders between them */
+const CREWST=CREW.map((c,i)=>({home:i,at:i,x:0,y:0,sc:1,guest:false,
+ state:'sit',t:0,dur:rnd(1500,4500),fromX:0,fromY:0,toX:0,toY:0,step:rnd(0,6.28)}));
+
+let walked=0,held=13,snipeN=0,smartN=0;
+
+function miniChart(ctx,x,y,w,h,col,DK,t){
+ const D=DK.d, kind=DK.kind;
+ ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();
+ ctx.strokeStyle=ctx.fillStyle='rgb('+col+')';
+ const F=Math.max(5,h*.22);
+
+ if(kind==='bars'){                       /* transfer volume */
+  const bw=w/D.length;
+  D.forEach((v,k)=>{ctx.globalAlpha=.45+v*.55;
+   ctx.fillRect(x+k*bw+1,y+h-2-v*(h-5),bw-2,v*(h-5));});ctx.globalAlpha=1;}
+
+ else if(kind==='wallets'){               /* a list of addresses */
+  ctx.font=F+'px "JetBrains Mono",monospace';
+  DK.rows.forEach((r,k)=>{
+   ctx.globalAlpha=.9-k*.16;
+   ctx.fillText(r.a+'…',x+2,y+F+k*(h/4));
+   ctx.fillText(r.v+'%',x+w-F*2.4,y+F+k*(h/4));});
+  ctx.globalAlpha=1;}
+
+ else if(kind==='rows'){                  /* a ledger of in and out */
+  DK.rows.forEach((r,k)=>{
+   const yy=y+3+k*(h-6)/4, wd=(r.v/100)*(w-6);
+   ctx.globalAlpha=.25;ctx.fillRect(x+3,yy,w-6,(h-6)/4-2);
+   ctx.globalAlpha=.85;ctx.fillRect(x+3,yy,wd,(h-6)/4-2);});
+  ctx.globalAlpha=1;}
+
+ else if(kind==='heat'){                  /* a grid of cohorts */
+  const cols=8,rows2=3,cw=(w-4)/cols,ch=(h-4)/rows2;
+  DK.heat.forEach((v,k)=>{
+   ctx.globalAlpha=.15+v*.8;
+   ctx.fillRect(x+2+(k%cols)*cw,y+2+Math.floor(k/cols)*ch,cw-1.5,ch-1.5);});
+  ctx.globalAlpha=1;}
+
+ else if(kind==='scan'){                  /* a sweep across a field of dots */
+  DK.scan=(DK.scan+0.012)%1;
+  for(let k=0;k<26;k++){
+   const px=x+((k*37)%100)/100*w, py=y+((k*61)%100)/100*h;
+   const d=Math.abs(px-(x+DK.scan*w));
+   ctx.globalAlpha=d<w*.12?.95:.22;
+   ctx.fillRect(px,py,2,2);}
+  ctx.globalAlpha=.6;ctx.fillRect(x+DK.scan*w,y,1.4,h);ctx.globalAlpha=1;}
+
+ else if(kind==='verdict'){               /* a score bar with a marker */
+  const sc=0.2+D[D.length-1]*0.75;
+  ctx.globalAlpha=.25;ctx.fillRect(x+3,y+h*.42,w-6,h*.18);
+  ctx.globalAlpha=1;ctx.fillRect(x+3,y+h*.42,(w-6)*sc,h*.18);
+  ctx.fillRect(x+3+(w-6)*sc-1,y+h*.32,2.5,h*.38);
+  ctx.font=F+'px "JetBrains Mono",monospace';
+  ctx.fillText(Math.round(sc*100),x+3,y+F);}
+
+ else if(kind==='graph'){                 /* a little holder tree */
+  ctx.lineWidth=1;
+  for(let k=0;k<7;k++){
+   const yy=y+h*(k+0.6)/7.2;
+   ctx.globalAlpha=.55;
+   ctx.beginPath();ctx.moveTo(x+4,y+h/2);
+   ctx.bezierCurveTo(x+w*.32,y+h/2,x+w*.44,yy,x+w-6,yy);ctx.stroke();
+   ctx.globalAlpha=1;ctx.beginPath();ctx.arc(x+w-5,yy,1.7,0,6.283);ctx.fill();}
+  ctx.beginPath();ctx.arc(x+4,y+h/2,2.4,0,6.283);ctx.fill();}
+
+ else{                                    /* a plain line */
+  ctx.lineWidth=Math.max(1,w*.012);ctx.beginPath();
+  D.forEach((v,k)=>{const px=x+k/(D.length-1)*w, py=y+h-3-v*(h-7);
+   k?ctx.lineTo(px,py):ctx.moveTo(px,py);});ctx.stroke();}
+ ctx.restore();
+}
+
+function drawRoom(t){requestAnimationFrame(drawRoom);
+ if(!SW)return;
+ const W2=SW,H2=SH;
+ hx.clearRect(0,0,W2,H2);
+
+ /* ---- back wall and floor ---- */
+ const HOR=H2*.42;                                    /* horizon */
+ let g=hx.createLinearGradient(0,0,0,HOR);
+ g.addColorStop(0,'#0B0812');g.addColorStop(1,'#15102099');
+ hx.fillStyle=g;hx.fillRect(0,0,W2,HOR);
+ g=hx.createLinearGradient(0,HOR,0,H2);
+ g.addColorStop(0,'#16112399');g.addColorStop(1,'#07060C');
+ hx.fillStyle=g;hx.fillRect(0,HOR,W2,H2-HOR);
+
+ /* floor grid converging to a vanishing point */
+ const VX=W2*.5, VY=HOR-H2*.10;
+ hx.strokeStyle='rgba(180,124,255,.10)';hx.lineWidth=1;
+ for(let i=-9;i<=9;i++){
+  hx.beginPath();hx.moveTo(VX+i*W2*.085,VY);hx.lineTo(VX+i*W2*.42,H2);hx.stroke();}
+ for(let k=1;k<=7;k++){
+  const yy=HOR+Math.pow(k/7,1.9)*(H2-HOR);
+  hx.beginPath();hx.moveTo(0,yy);hx.lineTo(W2,yy);hx.stroke();}
+
+ /* ---- the big screen on the back wall ---- */
+ const sx=W2*.21, sy=H2*.05, sw=W2*.58, sh=H2*.27;
+ hx.fillStyle='#05040A';hx.fillRect(sx,sy,sw,sh);
+ hx.strokeStyle='#392B55';hx.lineWidth=2.4*DPR;hx.strokeRect(sx,sy,sw,sh);
+ hx.fillStyle='rgba(126,116,144,.95)';hx.font=(9*DPR)+'px "JetBrains Mono",monospace';
+ hx.fillText('SELECTED TOKEN / RESEARCH REPLAY',sx+10*DPR,sy+15*DPR);
+ hx.fillStyle='#B47CFF';hx.textAlign='right';
+ hx.fillText(ROOMTOK,sx+sw-10*DPR,sy+15*DPR);hx.textAlign='left';
+ /* candles inside */
+ const hi=Math.max(...WALLC.map(k=>k.h)),lo=Math.min(...WALLC.map(k=>k.l));
+ const CY=v=>sy+sh-16*DPR-((v-lo)/(hi-lo))*(sh-34*DPR);
+ const bw=(sw-24*DPR)/WALLC.length;
+ WALLC.forEach((k,i)=>{const x=sx+12*DPR+i*bw,up=k.c>=k.o;
+  hx.strokeStyle=hx.fillStyle=up?'#7DF0C8':'#FF5D7A';hx.lineWidth=1*DPR;
+  hx.beginPath();hx.moveTo(x+bw/2,CY(k.h));hx.lineTo(x+bw/2,CY(k.l));hx.stroke();
+  hx.fillRect(x+.6*DPR,Math.min(CY(k.o),CY(k.c)),bw-1.6*DPR,
+   Math.max(1.4*DPR,Math.abs(CY(k.o)-CY(k.c))));});
+ /* the swarm's marks on the chart */
+ let lane=0;
+ for(const m of MARKS){
+  if(m.i<0||m.i>=WALLC.length)continue;
+  const mx=sx+12*DPR+m.i*bw+bw/2;
+  const k=WALLC[m.i], at=CY(m.k==='SOLD'?k.h:k.l);
+  hx.strokeStyle='rgba('+m.col+',.55)';hx.setLineDash([3*DPR,4*DPR]);hx.lineWidth=1.1*DPR;
+  hx.beginPath();hx.moveTo(mx,sy+22*DPR);hx.lineTo(mx,sy+sh-8*DPR);hx.stroke();hx.setLineDash([]);
+  /* the marker itself, on the candle */
+  hx.fillStyle='rgb('+m.col+')';
+  if(m.k==='SOLD'){hx.beginPath();hx.moveTo(mx,at-9*DPR);
+   hx.lineTo(mx-4*DPR,at-3*DPR);hx.lineTo(mx+4*DPR,at-3*DPR);hx.closePath();hx.fill();}
+  else{hx.beginPath();hx.moveTo(mx,at+9*DPR);
+   hx.lineTo(mx-4*DPR,at+3*DPR);hx.lineTo(mx+4*DPR,at+3*DPR);hx.closePath();hx.fill();}
+  /* the label, staggered so they do not collide */
+  const ly=sy+28*DPR+(lane%3)*11*DPR;lane++;
+  hx.font='700 '+(7.5*DPR)+'px "JetBrains Mono",monospace';
+  const txt=m.k+(m.note?' '+m.note:'');
+  const tw=hx.measureText(txt).width;
+  hx.fillStyle='rgba(6,5,10,.85)';hx.fillRect(mx+3*DPR,ly-7*DPR,tw+6*DPR,10*DPR);
+  hx.fillStyle='rgb('+m.col+')';hx.fillText(txt,mx+6*DPR,ly);}
+ /* the position band between the first buy and the last sell */
+ const buy=MARKS.find(m=>m.k==='BOUGHT'), sell=MARKS.find(m=>m.k==='SOLD');
+ if(buy&&sell&&sell.i>buy.i){
+  const x1=sx+12*DPR+buy.i*bw, x2=sx+12*DPR+sell.i*bw;
+  hx.fillStyle='rgba(125,240,200,.06)';
+  hx.fillRect(x1,sy+20*DPR,x2-x1,sh-28*DPR);}
+ /* screen bloom onto the room */
+ const bl=hx.createRadialGradient(W2*.5,sy+sh,10,W2*.5,sy+sh,W2*.55);
+ bl.addColorStop(0,'rgba(180,124,255,.16)');bl.addColorStop(1,'rgba(180,124,255,0)');
+ hx.fillStyle=bl;hx.fillRect(0,0,W2,H2);
+
+ /* ---- the desks, two rows going back ---- */
+ const ROWS=[{n:4,z:.26,sc:.86},{n:4,z:.72,sc:1.30}];
+ let idx=0;
+ for(const row of ROWS){
+  const yBase=HOR+Math.pow(row.z,1.5)*(H2-HOR)*1.02;
+  const spread=W2*(.20+row.z*.26);
+  for(let i=0;i<row.n&&idx<CREW.length;i++,idx++){
+   const c=CREW[idx],D=DESK[idx];
+   const cx2=W2*.5+(i-(row.n-1)/2)*spread*.62;
+   const dw=W2*.112*row.sc, dh=H2*.046*row.sc;
+
+   /* desk top as a trapezoid */
+   hx.fillStyle='#120E1E';
+   hx.beginPath();
+   hx.moveTo(cx2-dw*.52,yBase);
+   hx.lineTo(cx2+dw*.52,yBase);
+   hx.lineTo(cx2+dw*.62,yBase+dh);
+   hx.lineTo(cx2-dw*.62,yBase+dh);
+   hx.closePath();hx.fill();
+   hx.strokeStyle='rgba(180,124,255,.22)';hx.lineWidth=1*DPR;hx.stroke();
+   /* desk front edge light */
+   hx.fillStyle='rgba('+c.col+',.35)';
+   hx.fillRect(cx2-dw*.62,yBase+dh,dw*1.24,1.6*DPR);
+
+   /* monitor standing on the desk */
+   const mw=dw*.78, mh=dh*1.5, my=yBase-mh-2*DPR;
+   D.flash=Math.max(0,D.flash-.02);
+   hx.fillStyle='#07060C';hx.fillRect(cx2-mw/2,my,mw,mh);
+   hx.strokeStyle='rgba('+c.col+','+(.45+D.flash*.55)+')';
+   hx.lineWidth=(1+D.flash)*DPR;hx.strokeRect(cx2-mw/2,my,mw,mh);
+   miniChart(hx,cx2-mw/2+2*DPR,my+8*DPR,mw-4*DPR,mh-11*DPR,c.col,D,t);
+   hx.fillStyle='rgba('+c.col+',.95)';hx.font=(6.5*row.sc*DPR)+'px "JetBrains Mono",monospace';
+   hx.fillText(c.n,cx2-mw/2+3*DPR,my+7*DPR);
+   /* stand */
+   hx.fillStyle='#1B1528';hx.fillRect(cx2-2*DPR,yBase-3*DPR,4*DPR,3*DPR);
+
+   /* chair behind the desk */
+   hx.fillStyle='#15101F';
+   hx.beginPath();
+   hx.ellipse(cx2,yBase+dh*1.5,dw*.20,dh*.34,0,0,6.283);hx.fill();
+
+   /* two places to stand: the owner's seat and the far side for a visitor */
+   D.x=cx2+dw*.46; D.y=yBase; D.sc=row.sc;
+   D.vx=cx2-dw*1.02; D.vy=yBase-dh*.30;
+  }
+ }
+
+ /* ---- the crew, walking the floor ---- */
+ for(let i=0;i<CREWST.length;i++){
+  const st=CREWST[i], home=DESK[st.home];
+  st.t+=16;
+  if(st.state==='sit'&&st.t>st.dur){
+   /* get up and visit someone else's desk, or go home */
+   const goHome=st.at!==st.home&&Math.random()<.55;
+   const target=goHome?st.home:ri(0,DESK.length-1);
+   if(target!==st.at){
+    st.fromX=st.x;st.fromY=st.y;
+    const isHome=target===st.home;
+    st.toX=isHome?DESK[target].x:DESK[target].vx;
+    st.toY=isHome?DESK[target].y:DESK[target].vy;
+    st.guest=!isHome;
+    st.at=target;st.state='walk';st.t=0;st.dur=rnd(450,850);
+   }else{st.t=0;st.dur=rnd(1500,4500);}
+  }
+  if(st.state==='walk'){
+   const u=Math.min(1,st.t/st.dur), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+   st.x=st.fromX+(st.toX-st.fromX)*e;
+   st.y=st.fromY+(st.toY-st.fromY)*e - Math.sin(u*Math.PI)*H2*.035;
+   st.sc=DESK[st.at].sc;
+   st.step+=.78;
+   if(u>=1){st.state='sit';st.t=0;st.dur=rnd(1800,5500);}
+  } else {
+   const d=DESK[st.at];
+   st.x=st.guest?d.vx:d.x; st.y=st.guest?d.vy:d.y; st.sc=d.sc;
+   st.step+=.05;
+  }
+ }
+ /* draw them back to front so the near row overlaps the far one */
+ const order=CREWST.map((s2,i)=>i).sort((p,q)=>CREWST[p].y-CREWST[q].y);
+ for(const i of order){
+  const st=CREWST[i], im=CREWIMG[i];
+  if(!im.complete||!im.naturalWidth)continue;
+  const ih=H2*.105*st.sc, iw=ih*(im.naturalWidth/im.naturalHeight);
+  const bob=(st.state==='walk'?Math.abs(Math.sin(st.step))*4*DPR:Math.sin(t*.0016+i)*1.6*DPR);
+  /* a soft shadow on the floor under it */
+  hx.fillStyle='rgba(0,0,0,.45)';
+  hx.beginPath();hx.ellipse(st.x+iw*.5,st.y+2*DPR,iw*.34,ih*.10,0,0,6.283);hx.fill();
+  hx.drawImage(im,st.x,st.y-ih-bob,iw,ih);
+  /* a thread trailing behind whoever is walking */
+  if(st.state==='walk'){
+   hx.strokeStyle='rgba('+CREW[i].col+',.35)';hx.lineWidth=1*DPR;
+   hx.setLineDash([3*DPR,5*DPR]);
+   hx.beginPath();hx.moveTo(st.fromX+iw*.5,st.fromY);hx.lineTo(st.x+iw*.5,st.y);hx.stroke();
+   hx.setLineDash([]);}
+ }
+
+ /* a plant or two, for the room to read as a room */
+ for(const px2 of [W2*.09,W2*.90]){
+  const py2=H2*.93;
+  hx.fillStyle='#1A1428';hx.fillRect(px2-10*DPR,py2,20*DPR,16*DPR);
+  hx.fillStyle='rgba(125,240,200,.5)';
+  for(let k=0;k<5;k++){
+   hx.beginPath();
+   hx.ellipse(px2+(k-2)*5*DPR,py2-11*DPR-Math.abs(k-2)*3*DPR,4*DPR,11*DPR,(k-2)*.4,0,6.283);
+   hx.fill();}}
+
+ /* counters */
+ if(Math.random()<.06){walked+=ri(2,24);
+  if(Math.random()<.25)held=Math.min(72,held+1);
+  if(Math.random()<.08)snipeN++;
+  if(Math.random()<.12)smartN++;}
+ $('#sf1').textContent=fmt(walked);
+ $('#sf2').textContent=held+'%';
+ $('#sf3').textContent=snipeN;$('#sf4').textContent=smartN;
+}
+setTimeout(()=>{for(let i=0;i<CREWST.length;i++){
+ CREWST[i].x=DESK[i].x;CREWST[i].y=DESK[i].y;CREWST[i].sc=DESK[i].sc;}},400);
+requestAnimationFrame(drawRoom);
+setInterval(()=>{$('#routState').textContent=['READY','SCORING','USER APPROVED'][ri(0,2)];},3400);
+
+/* ---- the hero counters tick up ---- */
+let hsA=25412,hsC=1412000;
+setInterval(()=>{
+ hsA+=ri(1,9);hsC+=ri(80,900);
+ $('#hsA').textContent=fmt(hsA);
+ $('#hsC').textContent=(hsC/1e6).toFixed(2)+'M';
+ $('#hsD').textContent=ri(11,19)+'s';},1300);
+
+/* ---- chips that orbit the mark, naming what the swarm just found ---- */
+const OCH=[
+ ['holder graph built','180,124,255'],['504 wallets left','255,93,122'],
+ ['14 snipers flagged','255,209,102'],['19 smart wallets','110,208,255'],
+ ['4 bundles tied','255,209,102'],['books rebuilt','125,240,200'],
+ ['1 240 dust dropped','150,142,170'],['score written 84','125,240,200']];
+const orbit=$('#orbit');
+OCH.forEach((o,i)=>{
+ const el=document.createElement('div');
+ el.className='ochip';el.id='oc'+i;
+ el.style.setProperty('--oc','rgb('+o[1]+')');
+ el.innerHTML=o[0];
+ orbit.appendChild(el);});
+let ocT=0;
+setInterval(()=>{
+ ocT+=0.012;
+ OCH.forEach((o,i)=>{
+  const el=document.getElementById('oc'+i);
+  const a=ocT+i/OCH.length*6.283;
+  const rx=40, ry=30;
+  el.style.left=(50+Math.cos(a)*rx)+'%';
+  el.style.top=(46+Math.sin(a)*ry)+'%';
+  /* only the ones in front are visible */
+  el.classList.toggle('on',Math.sin(a)>-0.35);});
+},40);
+
+/* ---- the rail of tokens the swarm walked ---- */
+(function(){
+ const row=[];
+ for(let i=0;i<14;i++){
+  const sc=ri(8,96);
+  const cls=sc>=70?'ok':sc>=35?'mid':'bad';
+  const key=sc>=70?'TAUT':sc>=35?'PATCHED':'TORN';
+  row.push('<span class="ti"><b>$'+TICK[ri(0,TICK.length-1)]+'</b>'+
+   '<span>'+fmt(ri(180,3400))+' holders</span>'+
+   '<u class="'+cls+'">'+sc+' '+key+'</u></span>');}
+ $('#ticker').innerHTML=row.join('')+row.join('');
+})();
+
+/* ---------- crawler cards ---------- */
+const DESC=[
+ ['Pulls every transfer and lays the holders out, parent to child, first buyer to last.','2 187 nodes','41 308 edges'],
+ ['Walks the graph backwards and marks every wallet no longer holding, with what it took out.','504 gone','23% of supply'],
+ ['Flags everything taken in the first three blocks, before a human could read the ticker.','14 wallets','11% of supply'],
+ ['Follows each holder into every other pons token and scores them on closed trades.','19 found','71% winrate'],
+ ['Looks for wallets funded by the same source within minutes of each other.','4 clusters','7% of supply'],
+ ['Weighted average cost per wallet. Bought, sold, what is left, what it is worth now.','2 187 books','+52.7% avg'],
+ ['Dust under $50, transfers in with no cost basis, wallets whose first trade is this one.','1 240 removed','clean set'],
+ ['Collapses everything the swarm found into one score and one verdict.','84 / 100','THE WEB HOLDS']];
+$('#crawlerGrid').innerHTML=CREW.map((c,i)=>
+ '<div class="crawler"><div class="pic"><div class="silk"></div>'+
+ '<img src="data:image/png;base64,'+c.spr+'" style="animation-delay:'+(i*.35)+'s"></div>'+
+ '<div class="nm">'+c.n+'</div>'+
+ '<div class="ro" style="color:rgb('+c.col+')">'+c.r+'</div>'+
+ '<div class="ds">'+DESC[i][0]+'</div>'+
+ '<div class="st"><span><b>'+DESC[i][1]+'</b></span><span><b>'+DESC[i][2]+'</b></span></div></div>').join('');
+
+/* ---------- live trace ---------- */
+const STEPS=[['WEAVER','pulled transfer batch','1 000 edges','g'],
+ ['WEAVER','placed holders in ring 3','412 nodes','g'],
+ ['TRACKER','wallet left, took 0.8% supply','gone','r'],
+ ['SNARE','block 2 buyer flagged','sniper','y'],
+ ['SCOUT','traced wallet across 31 tokens','wr 74%','c'],
+ ['KNOT','two wallets funded 40s apart','bundle','y'],
+ ['LEDGER','rebuilt book, 11 fills','+88%','g'],
+ ['SIEVE','dropped dust position','$12','g'],
+ ['TRACKER','wallet left, took 0.3% supply','gone','r'],
+ ['SCOUT','smart wallet found','19 total','c'],
+ ['SNARE','sniper already exited','out','y'],
+ ['LEDGER','cohort average computed','+52.7%','g'],
+ ['ORACLE','score written','84 / 100','g']];
+/* ---------- crawlers at work: a holder table and the log that reads it ---------- */
+const WAL=[];
+(function buildTable(){
+ const flagsets=[['deployer'],['virgin','transfer'],['clean'],['virgin'],['virgin','sniper'],
+  ['clean'],['short history','transfer'],['virgin','sniper'],['clean','smart'],['transfer']];
+ let share=5.8;
+ for(let i=0;i<10;i++){
+  WAL.push({ad:'0x'+hex4()+'…'+hex4(),share:share.toFixed(1),fl:flagsets[i]});
+  share=Math.max(1.2,share-rnd(.2,.6));
+ }
+ $('#wtable').innerHTML=WAL.map((w,i)=>{
+  const bad=w.fl.some(f=>f==='deployer'||f==='sniper');
+  const warn=!bad&&w.fl.some(f=>f==='virgin'||f==='transfer'||f==='short history');
+  const ok=w.fl.includes('clean');
+  return '<div class="wrw '+(bad?'bad':warn?'warn':ok?'ok':'')+'" id="wrw'+i+'">'+
+   '<span class="ad">'+w.ad+'</span><span class="sh">'+w.share+'%</span>'+
+   '<span class="fl">'+w.fl.map(f=>'<span class="tag '+f.split(' ')[0]+'">'+f+'</span>').join('')+'</span></div>';
+ }).join('');
+})();
+
+const LOGS=[
+ ()=>{const i=ri(0,WAL.length-1);return {i,
+  html:'<b class="c-crawler">crawler_0'+ri(1,6)+'</b> <b class="c-dim">'+WAL[i].ad+'</b> · '+
+   (WAL[i].fl.includes('clean')?'<b class="c-ok">clean</b>'
+    :WAL[i].fl.includes('deployer')?'<b class="c-bad">deployer · '+WAL[i].share+'%</b>'
+    :WAL[i].fl.includes('sniper')?'<b class="c-bad">virgin wallet · sniper</b>'
+    :'<b class="c-dim">funded by transfer</b>')};},
+ ()=>{const a=ri(0,WAL.length-1),b=ri(0,WAL.length-1);return {i:a,
+  html:'<b class="c-link">link</b> '+WAL[a].ad+' ⇄ '+WAL[b].ad+' · <b class="c-dim">'+
+   (Math.random()<.5?'pack':'proven')+'</b>'};},
+ ()=>({i:ri(0,WAL.length-1),
+  html:'<b class="c-cluster">cluster</b> '+ri(3,7)+' wallets, '+rnd(8,24).toFixed(1)+'% of float'}),
+ ()=>({i:ri(0,WAL.length-1),
+  html:'<b class="c-crawler">trace</b> '+WAL[ri(0,WAL.length-1)].ad+' across <b>'+ri(9,41)+'</b> tokens · wr <b>'+ri(31,79)+'%</b>'}),
+ ()=>{const sc=ri(24,88);
+  const key=sc<35?['TORN','c-bad']:sc<70?['THIN','c-link']:['HOLDING','c-ok'];
+  return {i:ri(0,WAL.length-1),
+   html:'<b class="c-verdict">verdict</b> '+sc+' <b class="'+key[1]+'">'+key[0]+
+    '</b> · pack of '+ri(3,6)+' wallets'};}];
+/* the log is mostly crawlers walking, with the occasional link, cluster or verdict */
+const LOGMIX=[0,0,0,0,0,1,1,2,3,3,4];
+
+let lastRow=null;
+let LOGCLOCK=Math.floor(Date.now()/1000);
+function logTick(){
+ const g=LOGS[LOGMIX[ri(0,LOGMIX.length-1)]]();
+ LOGCLOCK+=ri(1,3);
+ const d=new Date(LOGCLOCK*1000);
+ const ts=String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')+':'+
+  String(d.getUTCSeconds()).padStart(2,'0');
+ const el=$('#ltail');
+ el.insertAdjacentHTML('beforeend',
+  '<div class="lrw"><span class="ts">'+ts+' →</span><span class="ms">'+g.html+'</span></div>');
+ while(el.children.length>11)el.firstChild.remove();
+ /* the row the swarm is reading right now */
+ if(lastRow)lastRow.classList.remove('now');
+ const row=document.getElementById('wrw'+g.i);
+ if(row){row.classList.add('now');
+  row.style.setProperty('--litcol','rgb('+CREW[ri(0,CREW.length-1)].col+')');
+  lastRow=row;}
+}
+setInterval(logTick,1250);
+for(let i=0;i<7;i++)logTick();
+
+/* ---------- the execution HUD above the table ---------- */
+let fills=0,sizeIn=0,pnl=0,toks=0;
+const pnlHist=new Array(60).fill(0);
+const QUEUE=['indexing transfers','resolving funders','tracing 41 wallets',
+ 'scoring closed trades','clustering 6 wallets','rebuilding books','writing the card'];
+function drawSpark(){
+ const c=$('#hSpark');if(!c)return;
+ const w=Math.round(c.clientWidth*2),h=60;
+ if(c.width!==w||c.height!==h){c.width=w;c.height=h;}
+ const d=c.getContext('2d');d.clearRect(0,0,w,h);
+ const mx=Math.max(1,...pnlHist.map(Math.abs));
+ d.strokeStyle='rgba(125,240,200,.85)';d.lineWidth=2;
+ d.beginPath();
+ pnlHist.forEach((v,i)=>{const x=i/(pnlHist.length-1)*w,y=h/2-(v/mx)*(h/2-4);
+  i?d.lineTo(x,y):d.moveTo(x,y);});
+ d.stroke();
+ d.strokeStyle='rgba(255,255,255,.08)';d.lineWidth=1;
+ d.beginPath();d.moveTo(0,h/2);d.lineTo(w,h/2);d.stroke();
+}
+function hudTick(){
+ if(Math.random()<.42){
+  fills++;
+  const sz=ri(120,1800);
+  sizeIn+=sz;
+  if(Math.random()<.3)toks++;
+  const win=Math.random()<.58;
+  pnl+=win?ri(40,1400):-ri(30,520);
+  pnlHist.shift();pnlHist.push(pnl);
+  $('#hFills').textContent=fills;
+  $('#hFillSub').textContent='last fill $'+fmt(sz)+' · '+(win?'green':'red');
+  $('#hSize').textContent='$'+fmt(sizeIn);
+  $('#hSizeSub').textContent='across '+Math.max(1,toks)+' tokens';
+  const el=$('#hPnl');
+  el.textContent=(pnl>=0?'+$':'−$')+fmt(Math.abs(pnl));
+  el.className='hv '+(pnl>=0?'up':'down');
+ }
+ $('#hWait').textContent=QUEUE[ri(0,QUEUE.length-1)];
+ $('#hWaitSub').textContent=ri(2,9)+' in queue · '+ri(1,4)+' crawlers idle';
+ drawSpark();
+}
+setInterval(hudTick,900);
+for(let i=0;i<9;i++)hudTick();
+
+/* ---------- the account strip ---------- */
+const BAL=[],BARS=[];
+let bal=1200;
+for(let i=0;i<74;i++){
+ bal*= 1+(i>26? rnd(.002,.045) : rnd(-.01,.016));
+ BAL.push(bal);BARS.push(rnd(-1,1));}
+function drawAcct(){
+ const c=$('#acChart');if(!c)return;
+ const w=Math.round(c.clientWidth*2),h=380;
+ if(c.width!==w||c.height!==h){c.width=w;c.height=h;}
+ const d=c.getContext('2d');d.clearRect(0,0,w,h);
+ const lo=Math.min(...BAL),hi=Math.max(...BAL);
+ const X=i=>26+i/(BAL.length-1)*(w-52);
+ const Y=v=>h*.70-((v-lo)/(hi-lo))*(h*.56);
+ /* the fill under the curve */
+ const g=d.createLinearGradient(0,0,0,h*.72);
+ g.addColorStop(0,'rgba(125,240,200,.22)');g.addColorStop(1,'rgba(125,240,200,0)');
+ d.beginPath();d.moveTo(X(0),h*.72);
+ BAL.forEach((v,i)=>d.lineTo(X(i),Y(v)));
+ d.lineTo(X(BAL.length-1),h*.72);d.closePath();d.fillStyle=g;d.fill();
+ d.beginPath();BAL.forEach((v,i)=>i?d.lineTo(X(i),Y(v)):d.moveTo(X(i),Y(v)));
+ d.strokeStyle='#7DF0C8';d.lineWidth=3;d.stroke();
+ d.fillStyle='#fff';d.beginPath();d.arc(X(BAL.length-1),Y(BAL[BAL.length-1]),6,0,6.283);d.fill();
+ /* the trade bars beneath */
+ const bw=(w-52)/BARS.length;
+ BARS.forEach((v,i)=>{const bh=Math.abs(v)*h*.16;
+  d.fillStyle=v>0?'rgba(125,240,200,.6)':'rgba(255,93,122,.55)';
+  d.fillRect(26+i*bw,h*.80-(v>0?bh:0),bw*.62,bh);});
+}
+function acctTick(){
+ bal*=1+rnd(-.004,.012);
+ BAL.shift();BAL.push(bal);
+ BARS.shift();BARS.push(rnd(-1,1));
+ $('#acBal').textContent='$'+bal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+ $('#acDelta').textContent='+$'+(bal-1200).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+ $('#acPath').textContent='$1 200 → $'+fmt(bal*.42)+' → $'+fmt(bal);
+ drawAcct();
+}
+setInterval(acctTick,1100);acctTick();
+let ROOMTOK='$VRAX';
+setInterval(()=>{ROOMTOK='$'+TICK[ri(0,TICK.length-1)];},9000);
+
+/* ============ the crawl ============ */
+const cc2=$('#crawl'),cx2=cc2.getContext('2d');
+let CW,CH,CG=null,cbugs=[],crawlOn=false,t0=0;
+function csz(){const r=cc2.getBoundingClientRect();
+ cc2.width=r.width*DPR;cc2.height=r.height*DPR;CW=cc2.width;CH=cc2.height;}
+function drawCrawl(t){requestAnimationFrame(drawCrawl);
+ if(!crawlOn||!CG||!CW)return;
+ for(const b of cbugs){b.t+=b.v;
+  if(b.t>=1){const n=CG.nodes[CG.links[b.li][1]];
+   if(n.st==='raw')n.st=b.tag;
+   b.li=ri(0,CG.links.length-1);b.t=0;}}
+ drawChain(cx2,CG,CW,CH,t,cbugs,true);
+ $('#ovT').textContent=((performance.now()-t0)/1000).toFixed(1)+'s';}
+requestAnimationFrame(drawCrawl);
+
+const PASSES=[['WEAVER','mapping transfers',1700],['TRACKER','marking exits',1400],
+ ['SNARE','scanning first blocks',1100],['SCOUT','tracing wallets across pons',2000],
+ ['KNOT','clustering funding sources',1200],['LEDGER','rebuilding books',1700],
+ ['SIEVE','filtering noise',1000],['ORACLE','writing the card',1300]];
+
+const BANDS=[
+ {max:34,key:'TORN',col:'#FF5D7A',rgb:'255,93,122',line:'torn: the early cohort is gone',
+  verdict:'DO NOT TOUCH',sub:'nothing left holding, exit pressure is the whole chart'},
+ {max:69,key:'PATCHED',col:'#FFD166',rgb:'255,209,102',line:'patched: the web is thinning out',
+  verdict:'HANDLE WITH CARE',sub:'half the early cohort left, snipers still sitting on supply'},
+ {max:100,key:'TAUT',col:'#7DF0C8',rgb:'125,240,200',line:'the web holds: the early cohort is still here',
+  verdict:'SAFE TO WALK IN',sub:'smart wallets on the supply, snipers already out'}];
+const bandOf=sc=>BANDS.find(b=>sc<=b.max);
+
+let REPORT=null;
+function makeReport(tick,ca){
+ const sc=ri(14,96),b=bandOf(sc),good=sc>=70,mid=sc>=35;
+ const hold=good?ri(44,62):mid?ri(22,40):ri(3,16);
+ const smartSup=good?ri(30,46):mid?ri(9,22):ri(0,6);
+ const snipeSup=good?ri(6,13):mid?ri(14,26):ri(27,44);
+ return {tick,ca,sc,band:b,
+  holders:ri(380,3200),transfers:ri(9000,64000),
+  hold,smart:good?ri(14,24):mid?ri(4,11):ri(0,3),smartSup,snipeSup,
+  gone:Math.max(4,100-hold-smartSup-snipeSup),
+  firstMin:good?ri(52,71):mid?ri(21,44):ri(2,14),
+  dev:good?'clean':mid?'sold half':'dumped it',
+  bundles:good?ri(0,4):ri(5,14),
+  winrate:good?ri(63,79):mid?ri(41,58):ri(18,34),
+  exit:good?ri(8,22):mid?ri(26,44):ri(52,81),
+  sniperWallets:ri(6,31),sniperOut:ri(2,22),
+  crawlTime:rnd(9,22).toFixed(1)};
+}
+function fillCA(v){$('#caInput').value=v;}
+function showStep(id){for(const k of ['stepInput','stepRun','stepReport'])
+ document.getElementById(k).classList.toggle('on',k===id);}
+function runCrawl(){$('#ov').classList.add('on');showStep('stepInput');
+ $('#ovCmd').innerHTML='&gt; waiting for a contract<span class="car"></span>';
+ $('#ovN').textContent='0';$('#ovE').textContent='0';$('#ovT').textContent='0.0s';
+ setTimeout(()=>$('#caInput').focus(),120);}
+function resetCrawl(){showStep('stepInput');$('#caInput').value='';}
+function closeCrawl(){crawlOn=false;$('#ov').classList.remove('on');}
+
+async function startCrawl(){
+ const raw=($('#caInput').value||'').trim();
+ const tick=raw.startsWith('$')?raw.toUpperCase():'$'+TICK[ri(0,TICK.length-1)];
+ const hex=n=>Array.from({length:n},()=>'0123456789abcdef'[ri(0,15)]).join('');
+ const ca=raw.startsWith('0x')?(raw.length>22?raw.slice(0,10)+'…'+raw.slice(-8):raw):'0x'+hex(8)+'…'+hex(8);
+ REPORT=makeReport(tick,ca);
+ showStep('stepRun');setTimeout(csz,30);
+ $('#ovCmd').innerHTML='&gt; walk <b>'+ca+'</b> --depth full<span class="car"></span>';
+ CG=buildChain(11,[4,7]);cbugs=[];
+ for(let i=0;i<10;i++)cbugs.push({li:ri(0,CG.links.length-1),t:Math.random(),v:rnd(.010,.022),
+  tag:['hold','smart','snipe','gone','hold','hold','smart','gone','hold','snipe'][i],leg:rnd(0,6.28)});
+ crawlOn=true;t0=performance.now();
+ $('#ovRows').innerHTML='';
+ $('#ovProg').innerHTML=PASSES.map((p,i)=>
+  '<div class="pg" id="pg'+i+'"><div class="n"><span>'+p[0]+'</span><b id="pgv'+i+'">queued</b></div>'+
+  '<div class="t"><i id="pgi'+i+'"></i></div></div>').join('');
+ let nodes=0,edges=0;
+ for(let i=0;i<PASSES.length;i++){
+  const [nm,ln,dur]=PASSES[i];
+  $('#pgv'+i).textContent='running';
+  const until=performance.now()+dur;
+  while(performance.now()<until){
+   if(!crawlOn)return;
+   $('#pgi'+i).style.width=Math.round((1-(until-performance.now())/dur)*100)+'%';
+   nodes+=ri(2,24);edges+=ri(8,60);
+   $('#ovN').textContent=fmt(nodes);$('#ovE').textContent=fmt(edges);
+   if(Math.random()<.22){const st=STEPS[ri(0,STEPS.length-1)];
+    $('#ovRows').insertAdjacentHTML('afterbegin',
+     '<div class="lrow"><span class="c">'+nm+'</span><span class="m">'+st[1]+'</span>'+
+     '<span class="v '+st[3]+'">'+st[2]+'</span></div>');
+    const el=$('#ovRows');while(el.children.length>8)el.lastChild.remove();}
+   await sleep(45);}
+  $('#pgi'+i).style.width='100%';$('#pg'+i).classList.add('done');$('#pgv'+i).textContent='done';}
+ for(const n of CG.nodes)if(n.st==='raw')n.st=['hold','hold','smart','snipe','gone'][ri(0,4)];
+ await sleep(450);crawlOn=false;
+ renderReport();showStep('stepReport');
+}
+
+function renderReport(){
+ const R=REPORT,b=R.band;
+ $('#gLetter').textContent=b.key;$('#gLetter').style.color=b.col;
+ $('#gScore').textContent=R.sc;$('#gLine').textContent=b.line;
+ $('#gMark').style.left=R.sc+'%';
+ const q=[
+  ['WEB','retention',R.hold+'%',R.hold,b.col,'Do the early holders still hold?',
+   [['5m',Math.min(99,R.hold+22)+'%'],['15m',Math.min(99,R.hold+13)+'%'],['1h',Math.min(99,R.hold+5)+'%'],['6h',R.hold+'%'],['24h',Math.max(0,R.hold-9)+'%']],
+   [R.firstMin+'% of the first minute is still in',
+    fmt(R.holders)+' holders right now, '+fmt(R.transfers)+' transfers walked']],
+  ['SILK','smart money',R.smart,Math.min(100,R.smartSup*2),'#6ED0FF','Does anyone here know what they are doing?',
+   null,[R.smart+' wallets above the winrate gate',
+    'they hold '+R.smartSup+'% of supply, avg winrate '+R.winrate+'%']],
+  ['SNARE','snipers',R.snipeSup+'%',R.snipeSup*2,'#FFD166','How much went before a human could read it?',
+   null,[R.sniperWallets+' wallets bought in the first three blocks',
+    R.sniperOut+' of them have already sold',
+    R.bundles+' bundled wallets funded from one source']],
+  ['EXIT','pressure',R.exit+'%',R.exit,'#FF5D7A','Is anyone leaving right now?',
+   null,[R.exit+'% of supply moved toward an exit in the last hour',
+    'dev wallet: '+R.dev, R.gone+'% of supply is already gone']]];
+ $('#quads').innerHTML=q.map(([n,s2,v,pct,col,qq,pills,lis])=>
+  '<div class="quad"><div class="qh"><span class="qn" style="color:'+col+'">'+n+'</span>'+
+  '<span class="qs">· '+s2+'</span><span class="qv">'+v+'</span></div>'+
+  '<div class="qbar"><i style="width:'+Math.min(100,pct)+'%;background:'+col+'"></i></div>'+
+  '<div class="qq">'+qq+'</div>'+
+  (pills?'<div class="pills">'+pills.map(p=>'<span>'+p[0]+' <b>'+p[1]+'</b></span>').join('')+'</div>':'')+
+  lis.map(l=>'<li>'+l+'</li>').join('')+'</div>').join('');
+ $('#shareLabel').textContent='web score '+R.sc+' · '+b.key.toLowerCase();
+ drawShare($('#prevCard'));drawShare($('#shareCard'));
+}
+
+/* ============ the share card ============ */
+const MARKIMG=new Image();MARKIMG.src='data:image/png;base64,'+MARK64;
+function openShare(){if(!REPORT)REPORT=makeReport('$VRAX','0x9c41ea77…b30d5a12');
+ drawShare($('#shareCard'));$('#share').classList.add('on');}
+function closeShare(){$('#share').classList.remove('on');}
+
+function drawShare(cv){
+ if(!cv)return;
+ const R=REPORT||makeReport('$VRAX','0x9c41ea77…b30d5a12');
+ const b=R.band,S=1080,x=cv.getContext('2d');
+ x.fillStyle='#07060A';x.fillRect(0,0,S,S);
+ /* a wash of the band colour from the bottom, like the reference card */
+ const g=x.createLinearGradient(0,S*.42,0,S);
+ g.addColorStop(0,'rgba(0,0,0,0)');
+ g.addColorStop(1,'rgba('+b.rgb+',.14)');
+ x.fillStyle=g;x.fillRect(0,0,S,S);
+ x.strokeStyle='rgba(255,255,255,.035)';x.lineWidth=1;
+ for(let i=0;i<S;i+=48){x.beginPath();x.moveTo(0,i);x.lineTo(S,i);x.stroke();}
+
+ /* ---- top left: the mark in a ring, then the ticker */
+ x.save();
+ x.beginPath();x.arc(140,138,62,0,6.283);x.closePath();
+ x.fillStyle='#0E0A16';x.fill();
+ x.strokeStyle=b.col;x.lineWidth=5;x.stroke();
+ x.clip();
+ try{x.drawImage(MARKIMG,86,84,108,108);}catch(e){}
+ x.restore();
+
+ x.fillStyle=b.col;x.font='700 84px "Tiny5",monospace';
+ x.fillText('$',228,166);
+ const dw=x.measureText('$').width;
+ x.fillStyle='#FFFFFF';
+ x.fillText(R.tick.replace('$',''),228+dw+6,166);
+
+ /* ---- top right: the score */
+ x.textAlign='right';
+ x.fillStyle=b.col;x.shadowColor='rgba('+b.rgb+',.5)';x.shadowBlur=36;
+ x.font='700 150px "Tiny5",monospace';x.fillText(String(R.sc),S-70,166);x.shadowBlur=0;
+ const sw=x.measureText(String(R.sc)).width;
+ x.fillStyle='#5A5270';x.font='34px "JetBrains Mono",monospace';
+ x.fillText('/100',S-76-sw,160);
+ x.fillStyle=b.col;x.font='700 42px "Tiny5",monospace';
+ x.fillText(b.key,S-70,226);
+ x.textAlign='left';
+
+ /* ---- the band bar */
+ const bx=70,bw=S-140,by=292;
+ x.fillStyle='#8C2F3F';x.fillRect(bx,by,bw*.34,16);
+ x.fillStyle='#8A7A2A';x.fillRect(bx+bw*.34,by,bw*.35,16);
+ x.fillStyle='#2F7D55';x.fillRect(bx+bw*.69,by,bw*.31,16);
+ x.fillStyle='#FFFFFF';x.fillRect(bx+bw*(R.sc/100)-3,by-6,6,28);
+ x.fillStyle='#5A5270';x.font='24px "JetBrains Mono",monospace';
+ x.fillText('1',bx,352);
+ x.fillText('35',bx+bw*.34,352);
+ x.fillText('70',bx+bw*.69,352);
+ x.textAlign='right';x.fillText('100',bx+bw,352);x.textAlign='left';
+
+ /* ---- the three lines of facts */
+ x.fillStyle='#D8D2E4';x.font='30px "JetBrains Mono",monospace';
+ x.fillText(R.hold+'% still holding · '+R.gone+'% already gone',70,428);
+ x.fillText(R.smart+' smart wallets on '+R.smartSup+'% · dev '+R.dev,70,472);
+ x.fillText(R.snipeSup+'% sniped · '+fmt(R.holders)+' holders',70,516);
+
+ /* ---- verdict plate */
+ x.fillStyle='rgba('+b.rgb+',.12)';x.fillRect(70,566,S-140,104);
+ x.fillStyle=b.col;x.fillRect(70,566,7,104);
+ x.font='700 50px "Tiny5",monospace';x.fillText(b.verdict,100,622);
+ x.fillStyle='#8A82A0';x.font='21px "JetBrains Mono",monospace';
+ x.fillText(b.sub,100,654);
+
+ /* ---- the spider, big, bottom right */
+ try{x.drawImage(MARKIMG,S-404,S-430,380,380);}catch(e){}
+
+ /* ---- bottom left brand block */
+ x.fillStyle=b.col;x.font='700 54px "Tiny5",monospace';x.fillText('JUMPER',70,922);
+ x.fillStyle='#8A82A0';x.font='27px "JetBrains Mono",monospace';x.fillText('Crawler terminal',70,962);
+ x.fillStyle='#5A5270';x.font='22px "JetBrains Mono",monospace';
+ x.fillText('jumper.xyz',70,996);
+ x.fillText(R.ca+' · '+R.crawlTime+'s',70,1026);
+}
+MARKIMG.onload=()=>{drawShare($('#shareCard'));};
+</script>
+</body>
+</html>

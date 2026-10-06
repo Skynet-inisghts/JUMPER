@@ -1,0 +1,6 @@
+[
+  { "token": "0xb41c7ac9d46a980f8bdf1894b392a2a07ec9992a", "symbol": "RBD", "holders": 7951, "score": 58, "band": "PATCHED" },
+  { "token": "0x144cbe84027292d33a954012f73250535011f76a", "symbol": "SODS", "holders": 80, "score": 11, "band": "TORN" },
+  { "token": "0xb163228b3c371a752f297605a1dce34e12c85983", "symbol": "TWAIN", "holders": 311, "score": 0, "band": "TORN" },
+  { "token": "0xac79255f6f404eba14f316e8669d76573a2d7b1e", "symbol": "COPY", "holders": 440, "score": 3, "band": "TORN" }
+]
