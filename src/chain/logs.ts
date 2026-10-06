@@ -33,11 +33,38 @@ async function readChunked(
   toBlock: number,
   onProgress?: (doneBlocks: number, totalBlocks: number, logs: number) => void,
 ): Promise<{ logs: RawLog[]; complete: boolean }> {
+  const total = Math.max(1, toBlock - fromBlock + 1);
+  // A long window splits into segments read side by side: a busy token's
+  // log is hundreds of 10k-log pages, and one lane spends most of its time
+  // waiting on each response. The RPC gate still caps requests in flight.
+  const lanes = total > 4 * START_CHUNK ? 4 : total > START_CHUNK ? 2 : 1;
+  const size = Math.ceil(total / lanes);
+  const done = new Array<number>(lanes).fill(0);
+  let found = 0;
+  const parts = await Promise.all(Array.from({ length: lanes }, (_, i) => {
+    const a = fromBlock + i * size;
+    const b = Math.min(toBlock, a + size - 1);
+    return readSegment(address, a, b, (blocks, logs) => {
+      done[i] = blocks;
+      found += logs;
+      onProgress?.(done.reduce((x, y) => x + y, 0), total, found);
+    });
+  }));
+  // concat, not push(...): a busy token's log overflows the argument stack
+  const logs = ([] as RawLog[]).concat(...parts.map((p) => p.logs));
+  return { logs, complete: parts.every((p) => p.complete) };
+}
+
+async function readSegment(
+  address: Address,
+  fromBlock: number,
+  toBlock: number,
+  onPage: (doneBlocks: number, newLogs: number) => void,
+): Promise<{ logs: RawLog[]; complete: boolean }> {
   const logs: RawLog[] = [];
   let complete = true;
   let chunk = START_CHUNK;
   let start = fromBlock;
-  const total = Math.max(1, toBlock - fromBlock + 1);
   while (start <= toBlock) {
     const end = Math.min(toBlock, start + chunk - 1);
     try {
@@ -45,7 +72,7 @@ async function readChunked(
       logs.push(...batch);
       start = end + 1;
       if (chunk < START_CHUNK) chunk = Math.min(START_CHUNK, chunk * 2);
-      onProgress?.(start - fromBlock, total, logs.length);
+      onPage(start - fromBlock, batch.length);
     } catch {
       if (chunk > MIN_CHUNK) { chunk = Math.max(MIN_CHUNK, Math.floor(chunk / 4)); continue; }
       complete = false; // a hole in the window, not an empty window
