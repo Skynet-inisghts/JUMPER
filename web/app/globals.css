@@ -404,7 +404,7 @@ button.inputchip{all:unset}
 
 /* the report: score block and a card as tall as it, then the holders across the full width */
 .repwrap{grid-template-columns:minmax(0,1fr) auto;max-width:1680px}
-.repcore{min-width:0}
+.repcore{min-width:0;align-self:start}
 .repside{align-self:start}
 .repside .shareprev img{width:100%;height:100%;object-fit:contain;display:block}
 .repfull{grid-column:1/-1;min-width:0}

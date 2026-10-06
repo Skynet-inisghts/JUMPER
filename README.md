@@ -31,13 +31,17 @@ Read only. No wallet connection, no keys for the basics, no signatures, no trans
 
 ### One crawl, start to finish
 
-<p align="center"><img src="assets/readme/site-crawl.png" width="100%" alt="A crawl running: contract, transactions, holders and wallet history in four layers, crawlers coloring nodes" /></p>
+<p align="center"><img src="assets/readme/site-crawl.png" width="100%" alt="A crawl running in the room: the holder graph building on the back wall, finished desks green, KNOT working, the rest waiting their turn" /></p>
 
-The swarm walks the token in four layers: the contract, its transactions, the holders, and every other token those holders ever traded. Nodes turn green for wallets still holding, cyan for smart money, yellow for snipers, red for wallets that left. Each crawler's bar runs queued, running, done as the stream comes in.
+A crawl plays out in the room. The holder graph builds on the back wall in four layers: the contract, its transactions, the holders, and every other token those holders ever traded; nodes turn green for wallets still holding, cyan for smart money, yellow for snipers, red for wallets that left. Each crawler's desk lights up while it works, with its live progress and its newest line; waiting crawlers doze, finished desks turn green with their result.
 
-<p align="center"><img src="assets/readme/site-report.png" width="100%" alt="The report: band, score, the WEB, SILK, SNARE and EXIT quadrants, and the share card" /></p>
+<p align="center"><img src="assets/readme/site-report.png" width="100%" alt="The report: band, score and the points that built it, the WEB, SILK, SNARE and EXIT quadrants, the share card beside them" /></p>
 
-The report folds it into four questions. **WEB**: do the early holders still hold, at 5m, 15m, 1h, 6h, 24h. **SILK**: does anyone here know what they are doing. **SNARE**: how much went before a human could read the ticker. **EXIT**: is anyone leaving right now. The card on the right is the share image, rendered on the server from the same report.
+The report folds it into four questions. **WEB**: do the people who bought still hold, at 5m, 15m, 1h, 6h, 24h. **SILK**: does anyone here know what they are doing. **SNARE**: how much went before a human could read the ticker. **EXIT**: what the last hour did, both sides. Above them, the points that built the score. The card beside them is the share image, rendered on the server from the same report.
+
+<p align="center"><img src="assets/readme/site-holders.png" width="100%" alt="The top 50 holders: each wallet with its roles (whale, insider, dev, fresh wallet, trader, smart, bot, sniper), share, time held, value and return" /></p>
+
+Below, the top 50 holders by share of supply, and who each one is: **dev**, **insider** (got tokens from the dev, was funded by it, or sat in the launch bundle), **sniper**, **bot** (thousands of markets, or a 90% winrate over fifty trades), **whale** (3% of supply or $25k), **smart**, **bundle**, **fresh wallet** (this token is its first trade), **trader** with its record. Each row links to the wallet on Blockscout.
 
 ## Run it
 
