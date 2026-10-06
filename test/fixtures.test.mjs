@@ -1,0 +1,55 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { crawlTape } from "../.jumper-build/crawlers/pipeline.js";
+import { fixture } from "./helpers.mjs";
+
+// Two recorded crawls of real tokens. The numbers below were read off the
+// live crawl and checked by hand against the tape (see the comments); a
+// formula change that moves them has to say why in its commit.
+
+test("$TWAIN: six snipers took half the supply in block +1 and all left", () => {
+  const tape = fixture("twain");
+  const r = crawlTape(tape);
+  assert.equal(r.metrics.sniperWallets, 6);
+  assert.equal(r.metrics.sniperExited, 6);
+  // 8.49 + 9.20 + 8.90 + 8.86 + 6.58 + 7.94 = 49.97% of supply, in block +1
+  assert.ok(Math.abs(r.metrics.sniperSupply - 50) < 0.1, `sniperSupply ${r.metrics.sniperSupply}`);
+  assert.equal(r.metrics.devState, "dumped");
+  assert.equal(r.metrics.holders, 311);
+  assert.equal(r.metrics.transfers, 7395);
+  assert.equal(r.score, 0);
+  assert.equal(r.band, "TORN");
+  assert.equal(r.verdict, "DO NOT TOUCH");
+});
+
+test("$TWAIN: snipers are the event recipients, never a relayer", () => {
+  const tape = fixture("twain");
+  const r = crawlTape(tape);
+  const recipients = new Set(tape.trades.filter((t) => t.block <= tape.launch.launchBlock + 2).map((t) => t.wallet.toLowerCase()));
+  const snipers = r.holders.filter((h) => h.flags.includes("sniper")).map((h) => h.wallet);
+  for (const s of snipers) assert.ok(recipients.has(s), `${s} was not a CurveBuy recipient`);
+  // a relayer would show up as one wallet behind many buys; six distinct traders do not
+  const snare = r.crawlers.find((c) => c.name === "SNARE");
+  assert.equal(snare.lines.filter((l) => l.kind === "flag").length, 6);
+});
+
+test("$SODS: a quiet launch, no snipers, smart money present", () => {
+  const r = crawlTape(fixture("sods"));
+  assert.equal(r.metrics.sniperWallets, 0);
+  assert.equal(r.metrics.holders, 80);
+  assert.equal(r.metrics.smart, 6);
+  assert.equal(r.metrics.devState, "clean");
+  assert.equal(r.score, 11);
+  assert.equal(r.band, "TORN");
+});
+
+test("replays are deterministic", () => {
+  const tape = fixture("sods");
+  assert.deepEqual(crawlTape(tape), crawlTape(tape));
+});
+
+test("every report carries eight crawlers in brand order", () => {
+  const r = crawlTape(fixture("sods"));
+  assert.deepEqual(r.crawlers.map((c) => c.name), ["WEAVER", "TRACKER", "SNARE", "SCOUT", "KNOT", "LEDGER", "SIEVE", "ORACLE"]);
+  assert.equal(r.facts.length, 3);
+});

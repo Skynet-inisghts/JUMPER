@@ -1,0 +1,35 @@
+{
+  "name": "jumper",
+  "version": "0.1.0",
+  "description": "Crawler terminal for Pons v2 tokens on Robinhood Chain. It can jump over any token.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "jumper": "bin/jumper.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.15.1",
+  "scripts": {
+    "build:cli": "tsc -p tsconfig.cli.json",
+    "jumper": "node bin/jumper.mjs",
+    "typecheck": "tsc -p tsconfig.cli.json --noEmit",
+    "test": "pnpm build:cli && node --test test/*.test.mjs",
+    "dev": "pnpm --filter jumper-web dev",
+    "build": "pnpm --filter jumper-web build",
+    "lint": "pnpm --filter jumper-web lint",
+    "check": "pnpm typecheck && pnpm test && pnpm --filter jumper-web typecheck && pnpm lint && pnpm build",
+    "render:readme": "pnpm build:cli && node scripts/render-readme.mjs"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.9",
+    "commander": "^14.0.0",
+    "viem": "^2.56.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "typescript": "^5.9.3"
+  }
+}

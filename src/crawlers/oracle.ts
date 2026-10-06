@@ -1,0 +1,294 @@
+import { bandOf, CRAWLERS, labelOf } from "../score/scale.js";
+import { scoreParts } from "../score/score.js";
+import { blockTs, devSet, grouped, lc, pctOf, pctText, short } from "./common.js";
+import type {
+  CrawlerName, CrawlerReport, Fill, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, WeaverOut,
+} from "./types.js";
+
+export interface Crawled {
+  web: WeaverOut;
+  tracked: TrackerOut;
+  snared: SnareOut;
+  scouted: ScoutOut;
+  knotted: KnotOut;
+  books: LedgerOut;
+  sieved: SieveOut;
+}
+
+const SUBLINES = {
+  TORN: "most of the web has already let go",
+  PATCHED: "the web holds, with holes in it",
+  TAUT: "the web is holding its weight",
+} as const;
+
+/**
+ * ORACLE: collapses everything the swarm found into one score and one
+ * verdict, plus the material every surface prints: the three fact lines,
+ * the holder table with its flags, each crawler's log, the smart wallets'
+ * fills and a small graph for the run view.
+ */
+export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
+  const supply = tape.launch.totalSupply;
+  const { web, tracked, snared, scouted, knotted, books, sieved } = c;
+
+  const hold = pctOf(web.holdSupply, supply);
+  // Gone is a flow (peaks of wallets now empty) and churn can push it past
+  // the whole supply; it is capped at what holders do not hold.
+  const gone = Math.min(100 - hold, pctOf(tracked.goneSupply, supply));
+  const smartSupply = pctOf(scouted.smartSupply, supply);
+  const sniperSupply = pctOf(snared.sniperTokens, supply);
+  const bundleSupply = pctOf(knotted.bundleSupply, supply);
+  const exitPressure = pctOf(tracked.exitPressureTokens, supply);
+  const firstMinuteKept = Math.round(snared.firstMinuteKept * 1000) / 10;
+
+  const parts = scoreParts({ hold, gone, firstMinuteKept, smartSupply, sniperSupply, exitPressure, bundleSupply, devState: tracked.devState });
+  const score = parts.score;
+  const band = bandOf(score);
+
+  const metrics: Metrics = {
+    holders: web.holders.length,
+    transfers: web.transfers,
+    hold,
+    gone,
+    smart: scouted.smart.length,
+    smartSupply,
+    sniperSupply,
+    sniperWallets: snared.snipers.length,
+    sniperExited: snared.sniperExited,
+    bundles: knotted.clusters.length,
+    bundleSupply,
+    firstMinuteKept,
+    devState: tracked.devState,
+    exitPressure,
+    winrate: scouted.avgWinrate === null ? null : Math.round(scouted.avgWinrate * 10) / 10,
+    score,
+  };
+
+  const qd = 10 ** tape.launch.pairDecimals;
+  const takenOut = Number(tracked.takenOutQuote) / qd;
+
+  const smartWord = scouted.smart.length === 1 ? "smart wallet" : "smart wallets";
+  const devPhrase = tracked.devState === "dumped" ? "dev dumped it" : tracked.devState === "sold half" ? "dev sold half" : "dev kept it";
+  const facts: [string, string, string] = [
+    `${pctText(hold)} still holding · ${pctText(gone)} already gone`,
+    scouted.online
+      ? `${scouted.smart.length} ${smartWord} on ${pctText(smartSupply)} · ${devPhrase}`
+      : `smart money unread · ${devPhrase}`,
+    `${pctText(sniperSupply)} sniped · ${grouped(web.holders.length)} holders`,
+  ];
+
+  return {
+    version: 1,
+    token: {
+      address: tape.launch.token,
+      symbol: tape.launch.symbol,
+      name: tape.launch.name,
+      pairSymbol: tape.launch.pairSymbol,
+      graduated: tape.launch.graduated,
+      phaseLabel: tape.launch.phaseLabel,
+      curveProgress: tape.launch.curveProgress,
+      launchedAt: tape.launch.launchedAt,
+      ageSec: Math.max(0, tape.now - tape.launch.launchedAt),
+      deployer: tape.launch.deployer,
+    },
+    score,
+    band: band.band,
+    label: labelOf(score),
+    verdict: band.verdict,
+    subline: SUBLINES[band.band],
+    metrics,
+    quadrants: {
+      web: { retention: snared.retention, hold, gone, firstMinuteKept },
+      silk: { smart: scouted.smart.length, smartSupply, winrate: metrics.winrate, scanned: scouted.scanned, online: scouted.online },
+      snare: { sniperSupply, sniperWallets: snared.snipers.length, sniperExited: snared.sniperExited, bundles: knotted.clusters.length, bundleSupply },
+      exit: { exitPressure, devState: tracked.devState, devSoldPct: Math.round(tracked.devSoldPct * 1000) / 10, takenOut, pairSymbol: tape.launch.pairSymbol },
+    },
+    facts,
+    crawlers: crawlerReports(tape, c, metrics),
+    holders: holderRows(tape, c),
+    fills: fills(tape, c),
+    graph: graph(tape, c),
+  };
+}
+
+function holderRows(tape: Tape, c: Crawled): HolderRow[] {
+  const dev = devSet(tape);
+  const snipers = new Set(c.snared.snipers.map((s) => s.wallet));
+  const smart = new Map(c.scouted.smart.map((s) => [s.wallet, s.winrate]));
+  const virgins = new Set(c.scouted.virgins);
+  const shortHist = new Set(c.scouted.shortHistory);
+  const clean = new Set(c.sieved.clean);
+  return c.web.holders.slice(0, 40).map((h) => {
+    const flags: Flag[] = [];
+    if (dev.has(h.address)) flags.push("deployer");
+    if (snipers.has(h.address)) flags.push("sniper");
+    if (virgins.has(h.address)) flags.push("virgin");
+    if (h.bought === 0n && h.received > 0n) flags.push("transfer");
+    if (shortHist.has(h.address)) flags.push("short history");
+    if (smart.has(h.address)) flags.push("smart");
+    if (!flags.length && clean.has(h.address)) flags.push("clean");
+    const book = c.books.books.get(h.address);
+    const hist = tape.history?.[h.address];
+    return {
+      wallet: h.address,
+      share: pctOf(h.balance, tape.launch.totalSupply),
+      flags,
+      valueUsd: book?.valueUsd ?? null,
+      pnlPct: book?.pnlPct ?? null,
+      winrate: hist?.winrate ?? null,
+    };
+  });
+}
+
+/**
+ * The smart cohort's trades on this token, or the top holders' when no wallet
+ * is smart. Every buy and sale the transfer log shows, curve and pool alike;
+ * a curve trade carries its own quote, a pool trade is priced at the
+ * wallet's average entry or exit and marked estimated.
+ */
+function fills(tape: Tape, c: Crawled): Fill[] {
+  const watch = new Set(c.scouted.smart.length ? c.scouted.smart.map((s) => s.wallet) : c.web.holders.slice(0, 10).map((h) => h.address));
+  const qd = 10 ** tape.launch.pairDecimals;
+  const exact = new Map<string, number>();
+  for (const t of c.web.trades) {
+    if (!watch.has(t.wallet)) continue;
+    const key = `${t.kind}:${t.block}:${t.wallet}`;
+    exact.set(key, (exact.get(key) ?? 0) + Number(t.quoteWei) / qd);
+  }
+  const out: Fill[] = [];
+  const push = (kind: "buy" | "sell", e: { wallet: string; block: number; tokens: bigint }) => {
+    if (!watch.has(e.wallet)) return;
+    const tokens = Number(e.tokens) / 1e18;
+    const key = `${kind}:${e.block}:${e.wallet}`;
+    const own = exact.get(key);
+    let quote: number;
+    let estimated = false;
+    if (own !== undefined) {
+      quote = own;
+      exact.delete(key);
+    } else {
+      const b = c.books.books.get(e.wallet);
+      const avg = kind === "buy" ? b?.avgEntryQuote ?? null : b && b.sold > 0 ? b.proceedsQuote / b.sold : null;
+      const px = avg ?? c.books.priceQuote;
+      if (px === null) return;
+      quote = tokens * px;
+      estimated = true;
+    }
+    out.push({ wallet: e.wallet, kind, block: e.block, ts: Math.round(blockTs(tape, e.block)), tokens, quote, usd: tape.quoteUsd !== null ? quote * tape.quoteUsd : null, estimated });
+  };
+  for (const b of c.web.buys) push("buy", b);
+  for (const s of c.web.sells) push("sell", s);
+  out.sort((a, b) => a.block - b.block);
+  return out.slice(-200);
+}
+
+/** A small four-layer picture: contract, a sample of trades, the top holders, their other markets. */
+function graph(tape: Tape, c: Crawled): Report["graph"] {
+  const nodes: Report["graph"]["nodes"] = [{ id: tape.launch.token, layer: 0, kind: "contract", state: "neutral" }];
+  const links: [number, number][] = [];
+  const smart = new Set(c.scouted.smart.map((s) => s.wallet));
+  const snipers = new Set(c.snared.snipers.map((s) => s.wallet));
+  const holders = c.web.holders.slice(0, 18).map((h) => h.address);
+  const exited = c.tracked.exited.slice(0, 6).map((w) => w.address);
+  const people = [...holders, ...exited];
+  const stateOf = (w: string): Report["graph"]["nodes"][number]["state"] =>
+    smart.has(w) ? "smart" : snipers.has(w) ? "sniper" : exited.includes(w) ? "gone" : "held";
+
+  const txIdx: number[] = [];
+  const sampleTrades = c.web.trades.filter((t) => people.includes(t.wallet)).slice(0, 14);
+  for (const t of sampleTrades) {
+    txIdx.push(nodes.length);
+    nodes.push({ id: `${t.block}:${t.logIndex}`, layer: 1, kind: "tx", state: "neutral" });
+    links.push([0, nodes.length - 1]);
+  }
+  const holderIdx = new Map<string, number>();
+  for (const w of people) {
+    holderIdx.set(w, nodes.length);
+    nodes.push({ id: w, layer: 2, kind: "holder", state: stateOf(w) });
+  }
+  sampleTrades.forEach((t, i) => {
+    const h = holderIdx.get(t.wallet);
+    if (h !== undefined) links.push([txIdx[i], h]);
+  });
+  for (const w of holders) if (!sampleTrades.some((t) => t.wallet === w)) links.push([0, holderIdx.get(w)!]);
+  let hist = 0;
+  for (const w of holders) {
+    const h = tape.history?.[w];
+    if (!h || h.markets === 0 || hist >= 12) continue;
+    nodes.push({ id: `${w}:history`, layer: 3, kind: "history", state: smart.has(w) ? "smart" : "neutral" });
+    links.push([holderIdx.get(w)!, nodes.length - 1]);
+    hist++;
+  }
+  return { nodes, links };
+}
+
+function crawlerReports(tape: Tape, c: Crawled, m: Metrics): CrawlerReport[] {
+  const { web, tracked, snared, scouted, knotted, books, sieved } = c;
+  const unit = tape.launch.pairSymbol;
+  const supply = tape.launch.totalSupply;
+  const q = (x: number) => (x >= 100 ? x.toFixed(0) : x >= 1 ? x.toFixed(2) : x.toPrecision(2));
+  const lines: Record<CrawlerName, LogLine[]> = { WEAVER: [], TRACKER: [], SNARE: [], SCOUT: [], KNOT: [], LEDGER: [], SIEVE: [], ORACLE: [] };
+  const say = (crawler: CrawlerName, kind: LogLine["kind"], text: string, wallet?: string) => lines[crawler].push({ crawler, kind, text, wallet });
+
+  for (const h of web.holders.slice(0, 24)) {
+    const parent = h.parent === lc(tape.launch.curve) ? "curve" : web.wallets.has(h.parent) ? short(h.parent) : "pool";
+    say("WEAVER", h.bought === 0n ? "link" : "walk", `${short(h.address)} • ${parent === "curve" || parent === "pool" ? `bought from the ${parent}` : `funded by transfer from ${parent}`}`, h.address);
+  }
+  say("WEAVER", "verdict", `graph ${grouped(web.nodes)} nodes, ${grouped(web.edges)} edges, ${grouped(web.transfers)} transfers`);
+
+  for (const w of tracked.exited.slice(0, 16)) {
+    say("TRACKER", "trace", `${short(w.address)} • left, peak ${pctText(pctOf(w.peak, supply))} of supply`, w.address);
+  }
+  say("TRACKER", "verdict", `${grouped(tracked.exited.length)} gone with ${pctText(m.gone)} of supply · dev ${tracked.devState}`);
+
+  for (const s of snared.snipers.slice(0, 12)) {
+    say("SNARE", "flag", `${short(s.wallet)} • took ${pctText(pctOf(s.tokens, supply))} in block +${s.block - tape.launch.launchBlock}${s.exited ? ", already out" : ""}`, s.wallet);
+  }
+  say("SNARE", "verdict", `${snared.snipers.length} snipers on ${pctText(m.sniperSupply)} · ${snared.sniperExited} already out`);
+
+  if (scouted.online) {
+    for (const h of web.holders.slice(0, 40)) {
+      const rec = tape.history?.[h.address];
+      if (!rec) continue;
+      const wr = rec.winrate === null ? "no closed trades" : `winrate ${Math.round(rec.winrate)}%`;
+      say("SCOUT", "walk", `${short(h.address)} • ${grouped(rec.markets)} other tokens, ${wr}`, h.address);
+    }
+    for (const s of scouted.smart.slice(0, 8)) say("SCOUT", "flag", `${short(s.wallet)} • smart, ${Math.round(s.winrate)}% over ${s.positions} closed`, s.wallet);
+    say("SCOUT", "verdict", `${scouted.smart.length} smart of ${scouted.scanned} scanned`);
+  } else {
+    say("SCOUT", "verdict", "index offline · wallet histories not read");
+  }
+
+  for (const f of tape.funding.slice(0, 16)) say("KNOT", "link", `${short(f.wallet)} • funded by ${short(f.funder)}`, f.wallet);
+  for (const k of knotted.clusters.slice(0, 6)) {
+    say("KNOT", "cluster", `cluster ${k.wallets.length} wallets, ${pctText(pctOf(k.supply, supply))} of float${k.declared ? " · declared at launch" : ""}`);
+  }
+  say("KNOT", "verdict", `${knotted.clusters.length} clusters · funding read for ${knotted.read} of ${knotted.looked}`);
+
+  for (const b of [...books.books.values()].slice(0, 20)) {
+    if (b.pnlPct === null) continue;
+    say("LEDGER", "walk", `${short(b.wallet)} • entry ${b.avgEntryQuote === null ? "n/a" : q(b.avgEntryQuote)} ${unit} · ${b.pnlPct >= 0 ? "+" : ""}${b.pnlPct.toFixed(0)}%`, b.wallet);
+  }
+  say("LEDGER", "verdict", `${grouped(books.books.size)} books${books.avgPnlPct === null ? "" : ` · ${books.avgPnlPct >= 0 ? "+" : ""}${books.avgPnlPct.toFixed(1)}% avg`}`);
+
+  for (const w of sieved.dust.slice(0, 6)) say("SIEVE", "walk", `${short(w)} • dust, dropped`, w);
+  for (const w of sieved.transferOnly.slice(0, 6)) say("SIEVE", "walk", `${short(w)} • no cost basis, dropped`, w);
+  for (const w of sieved.virgins.slice(0, 6)) say("SIEVE", "walk", `${short(w)} • first trade of its life, dropped`, w);
+  say("SIEVE", "verdict", `${grouped(sieved.removed)} removed · ${grouped(sieved.clean.length)} clean`);
+
+  say("ORACLE", "verdict", `${m.score} / 100 · ${bandOf(m.score).band} · ${bandOf(m.score).verdict}`);
+
+  const stats: Record<CrawlerName, [string, string]> = {
+    WEAVER: [`${grouped(web.nodes)} nodes`, `${grouped(web.edges)} edges`],
+    TRACKER: [`${grouped(tracked.exited.length)} gone`, `${pctText(m.gone)} of supply`],
+    SNARE: [`${snared.snipers.length} wallets`, `${pctText(m.sniperSupply)} of supply`],
+    SCOUT: scouted.online ? [`${scouted.smart.length} found`, m.winrate === null ? "no smart money" : `${Math.round(m.winrate)}% winrate`] : ["offline", "index not set"],
+    KNOT: [`${knotted.clusters.length} clusters`, `${pctText(m.bundleSupply)} of supply`],
+    LEDGER: [`${grouped(books.books.size)} books`, books.avgPnlPct === null ? "no price" : `${books.avgPnlPct >= 0 ? "+" : ""}${books.avgPnlPct.toFixed(1)}% avg`],
+    SIEVE: [`${grouped(sieved.removed)} removed`, "clean set"],
+    ORACLE: [`${m.score} / 100`, bandOf(m.score).band === "TAUT" ? "THE WEB HOLDS" : bandOf(m.score).band === "PATCHED" ? "THE WEB SAGS" : "THE WEB TORE"],
+  };
+
+  return CRAWLERS.map((meta) => ({ name: meta.name, color: meta.color, role: meta.role, stats: stats[meta.name], lines: lines[meta.name] }));
+}

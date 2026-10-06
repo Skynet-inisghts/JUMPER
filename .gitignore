@@ -1,0 +1,16 @@
+# dependencies and builds
+node_modules/
+.next/
+.jumper-build/
+*.tsbuildinfo
+next-env.d.ts
+/out/
+
+# local environment; keys never enter the repo
+.env
+.env.local
+
+# editor and OS noise
+.DS_Store
+.vercel
+__pycache__/
