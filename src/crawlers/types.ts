@@ -286,7 +286,11 @@ export interface Panels {
   knot: { rows: { funder: string; wallets: number; pct: number; declared: boolean }[]; read: number; looked: number };
   ledger: { pnlBuckets: number[]; avgPnlPct: number | null; priceQuote: number | null; priceUsd: number | null };
   sieve: { dust: number; transferOnly: number; virgins: number; clean: number };
-  oracle: { retention: number; kept: number; smart: number; sniper: number; exit: number; bundle: number; dev: number; base: number };
+  oracle: {
+    retention: number; kept: number; smart: number; sniper: number; exit: number; bundle: number; dev: number; base: number;
+    /** points each positive term added, so a reader can rebuild the score */
+    points: { holding: number; kept: number; smart: number };
+  };
 }
 
 export interface Report {

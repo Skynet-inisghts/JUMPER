@@ -337,9 +337,9 @@ export default function Room({ report }: { report: Report | null }) {
         ctx.globalAlpha = 1;
         ctx.fillRect(x + 2, y + F * 1.7, (w - 4) * sc, F * 0.55);
         const parts: [string, number, string][] = [
-          ["web", P.oracle.retention * 45, "125,240,200"],
-          ["kept", P.oracle.kept * 30, "125,240,200"],
-          ["silk", P.oracle.smart * 25, "110,208,255"],
+          ["web", P.oracle.points?.holding ?? 0, "125,240,200"],
+          ["kept", P.oracle.points?.kept ?? 0, "125,240,200"],
+          ["silk", P.oracle.points?.smart ?? 0, "110,208,255"],
           ["snipe", -P.oracle.sniper, "255,209,102"],
           ["exit", -P.oracle.exit, "255,93,122"],
         ];

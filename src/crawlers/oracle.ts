@@ -1,5 +1,6 @@
 import { bandOf, CRAWLERS, labelOf } from "../score/scale.js";
 import { scoreParts, type ScoreParts } from "../score/score.js";
+import { SCORE } from "../score/config.js";
 import { blockTs, devSet, grouped, lc, pctOf, pctText, short } from "./common.js";
 import type {
   CrawlerName, CrawlerReport, Fill, Panels, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
@@ -376,7 +377,10 @@ function panels(tape: Tape, c: Crawled, parts: ScoreParts): Panels {
     knot: { rows: knotted.clusters.slice(0, 5).map((k) => ({ funder: k.funder, wallets: k.wallets.length, pct: pctOf(k.supply, supply), declared: k.declared })), read: knotted.read, looked: knotted.looked },
     ledger: { pnlBuckets, avgPnlPct: books.avgPnlPct, priceQuote: books.priceQuote, priceUsd: books.priceUsd },
     sieve: { dust: sieved.dust.length, transferOnly: sieved.transferOnly.length, virgins: sieved.virgins.length, clean: sieved.clean.length },
-    oracle: { retention: parts.retention, kept: parts.kept, smart: parts.smart, sniper: parts.sniper, exit: parts.exit, bundle: parts.bundle, dev: parts.dev, base: parts.base },
+    oracle: {
+      retention: parts.retention, kept: parts.kept, smart: parts.smart, sniper: parts.sniper, exit: parts.exit, bundle: parts.bundle, dev: parts.dev, base: parts.base,
+      points: { holding: 100 * SCORE.weights.retention * parts.retention, kept: 100 * SCORE.weights.firstMinuteKept * parts.kept, smart: 100 * SCORE.weights.smartSupply * parts.smart },
+    },
   };
 }
 

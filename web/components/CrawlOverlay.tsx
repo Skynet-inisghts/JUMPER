@@ -79,7 +79,15 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
   const autoDone = useRef<string | null>(null);
 
   const pushFeed = useCallback((c: string, m: string, v: string, cls: string) => {
-    setFeed((f) => [{ id: feedId.current++, c, m, v, cls }, ...f].slice(0, 8));
+    setFeed((f) => [{ id: feedId.current++, c, m, v, cls }, ...f].slice(0, 4));
+  }, []);
+  /* progress rewrites the crawler's live row instead of stacking new ones */
+  const progressFeed = useCallback((c: string, m: string, v: string) => {
+    setFeed((f) => {
+      const top = f[0];
+      if (top && top.c === c && top.cls === "y") return [{ ...top, m, v }, ...f.slice(1)];
+      return [{ id: feedId.current++, c, m, v, cls: "y" }, ...f].slice(0, 4);
+    });
   }, []);
 
   const toInput = useCallback((f: Failure | null) => {
@@ -150,7 +158,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           const e = data as { crawler: string; done: number; total: number; detail?: string };
           const pct = e.total > 0 ? Math.min(99, (e.done / e.total) * 100) : 0;
           setPass(e.crawler, (p) => (p.state === "done" ? p : { state: "running", pct: Math.max(p.pct, pct) }));
-          pushFeed(e.crawler, e.detail ?? "reading logs", `${fmt(e.done)} / ${fmt(e.total)}`, "y");
+          progressFeed(e.crawler, e.detail ? `reading logs · ${e.detail}` : "reading logs", `${Math.round(pct)}%`);
         } else if (event === "report") {
           finished = true;
           const r = data as Report;
@@ -174,7 +182,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
       return;
     }
     if (!finished && !ac.signal.aborted) toInput({ message: "the crawl ended without a report; try again in a moment" });
-  }, [pushFeed, toInput]);
+  }, [pushFeed, progressFeed, toInput]);
 
   /* running bars creep toward done while the engine works without a count */
   useEffect(() => {
@@ -369,7 +377,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                   <u style={{ left: Math.max(0, Math.min(99.4, r.score)) + "%" }} />
                 </div>
                 <div className="gradeticks"><span>1</span><span>35</span><span>70</span><span>100</span></div>
-                <div className="gradenote">a score on the web scale, SILK (nobody is leaving) down to TORN (everyone left). it measures the past, it does not predict. not financial advice.</div>
+                <ScoreBuild r={r} />
+                <div className="gradenote">0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in. it measures the past, it does not predict. not financial advice.</div>
               </div>
               <Quads r={r} />
               <div className="repmeta">
@@ -439,6 +448,40 @@ function Quads({ r }: { r: Report }) {
           {lis.map((l) => <li key={l}>{l}</li>)}
         </div>
       ))}
+    </div>
+  );
+}
+
+/**
+ * Where the number came from: the three things that add to it, the four that
+ * take away, in points. The engine sends the points with the report, so the
+ * page never recomputes the score itself.
+ */
+function ScoreBuild({ r }: { r: Report }) {
+  const o = r.panels?.oracle;
+  if (!o) return null;
+  if (!o.points) return null;
+  const pos: [string, number, string][] = [
+    ["still holding", o.points.holding, "var(--ac2)"],
+    ["first minute kept", o.points.kept, "var(--ac2)"],
+    ["smart money", o.points.smart, "var(--cy)"],
+  ];
+  const neg: [string, number, string][] = [
+    ["sniped", o.sniper, "var(--ye)"],
+    ["exit pressure", o.exit, "var(--rd)"],
+    ["bundles", o.bundle, "var(--rd)"],
+    ["dev sold", o.dev, "var(--rd)"],
+  ];
+  const f = (x: number) => (x < 10 && x > 0 && Math.round(x) !== x ? x.toFixed(1) : String(Math.round(x)));
+  return (
+    <div className="scorebuild">
+      {pos.map(([k, v, c]) => (
+        <span key={k}><b style={{ color: c }}>+{f(v)}</b> {k}</span>
+      ))}
+      {neg.filter(([, v]) => v > 0.05).map(([k, v, c]) => (
+        <span key={k}><b style={{ color: c }}>-{f(v)}</b> {k}</span>
+      ))}
+      <span className="eq">= <b>{r.score}</b></span>
     </div>
   );
 }
