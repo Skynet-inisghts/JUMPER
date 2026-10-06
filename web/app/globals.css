@@ -276,7 +276,7 @@ footer{border-top:1px solid var(--ln);padding:34px 0 46px;color:var(--dm2);font-
 .gradeticks{display:flex;justify-content:space-between;font-size:11px;color:var(--dm2);margin-top:6px}
 .gradenote{color:var(--dm2);font-size:11.5px;margin-top:8px;line-height:1.6}
 .quads{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.quad{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:12px 16px}
+.quad{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:11px 15px}
 .quad .qh{display:flex;align-items:baseline;gap:9px}
 .quad .qn{color:var(--ac);font-size:15px;font-weight:700}
 .quad .qs{color:var(--dm2);font-size:11.5px}
@@ -284,7 +284,7 @@ footer{border-top:1px solid var(--ln);padding:34px 0 46px;color:var(--dm2);font-
 .quad .qbar{height:4px;background:#1A1426;margin:8px 0 9px;border-radius:2px;overflow:hidden}
 .quad .qbar i{display:block;height:100%}
 .quad .qq{font-size:13px;margin-bottom:7px}
-.quad li{list-style:none;color:var(--dm);font-size:12px;padding-left:14px;position:relative;
+.quad li{list-style:none;color:var(--dm);font-size:11.5px;padding-left:14px;position:relative;
  margin-bottom:3px;line-height:1.5}
 .quad li:before{content:"■";position:absolute;left:0;color:var(--ac);font-size:8px;top:3px}
 .quad .pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}
@@ -402,25 +402,43 @@ button.inputchip{all:unset}
 .scorebuild .eq{margin-left:auto;color:var(--tx)}
 .scorebuild .eq b{color:var(--tx)}
 
-/* the top holders under the card: fills the column, scrolls inside itself */
-@media(min-width:1001px){#stepReport .repside{height:calc(100vh - 56px - 36px);height:calc(100dvh - 56px - 36px)}}
-.tophold{border:1px solid var(--ln);background:var(--pan);border-radius:5px;display:flex;flex-direction:column;
- flex:1;min-height:0;overflow:hidden}
-.tophold .th{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--ln);
- font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dm2)}
-.tophold .tb{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:#2A2140 transparent}
-.tophold .tr{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;
- padding:6px 12px;border-bottom:1px solid rgba(36,27,51,.6);color:inherit;text-decoration:none;font-size:11.5px}
+/* the report: score block and a card as tall as it, then the holders across the full width */
+.repwrap{grid-template-columns:minmax(0,1fr) auto;max-width:1680px}
+.repcore{min-width:0}
+.repside{align-self:start}
+.repside .shareprev img{width:100%;height:100%;object-fit:contain;display:block}
+.repfull{grid-column:1/-1;min-width:0}
+.tophold{border:1px solid var(--ln);background:var(--pan);border-radius:5px;overflow:hidden}
+.tophold .th{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid var(--ln);flex-wrap:wrap}
+.tophold .th b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm);margin-right:14px}
+.tophold .th .sum{display:inline-flex;gap:6px;flex-wrap:wrap;vertical-align:middle}
+.tophold .th .btns{display:flex;gap:10px}
+.tophold .th .btns .btn{padding:8px 18px}
+.tophold .thead,.tophold .tr{display:grid;grid-template-columns:34px 130px minmax(0,1fr) 70px 56px 92px 70px;gap:12px;align-items:center;padding:7px 16px}
+.tophold .thead{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dm2);border-bottom:1px solid var(--ln)}
+.tophold .tr{border-bottom:1px solid rgba(36,27,51,.6);color:inherit;text-decoration:none;font-size:12px;font-variant-numeric:tabular-nums}
+.tophold .tr:last-child{border-bottom:0}
 .tophold .tr:hover{background:rgba(180,124,255,.06)}
-.tophold .tr .n{color:var(--dm2);font-variant-numeric:tabular-nums}
-.tophold .tr .w{display:flex;flex-direction:column;min-width:0}
-.tophold .tr .w b{font-weight:400;color:var(--tx)}
-.tophold .tr .w i,.tophold .tr .v i{font-style:normal;color:var(--dm);font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tophold .tr .v{display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums}
-.tophold .tr .v b{font-weight:400;color:var(--tx)}
-.tophold .tr.bad .w b{color:var(--rd)}
-.tophold .tr.smart .w b{color:var(--cy)}
-@media(max-width:1000px){.tophold{height:420px;flex:none}}
+.tophold .tr .n{color:var(--dm2)}
+.tophold .tr .w{color:var(--tx)}
+.tophold .tr.bad .w{color:var(--rd)}
+.tophold .tr.smart .w{color:var(--cy)}
+.tophold .tr .who{display:flex;gap:6px;align-items:center;min-width:0}
+.tophold .tr .who i{font-style:normal;color:var(--dm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tophold .tr .v{text-align:right;color:var(--tx)}
+.tophold .tr .v.d{color:var(--dm)}.tophold .tr .v.g{color:var(--ac2)}.tophold .tr .v.rd{color:var(--rd)}
+.role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
+.role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
+.role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}
+.role.c{color:var(--cy);border-color:rgba(110,208,255,.45)}
+.role.d{color:var(--dm);border-color:var(--ln2)}
+@media(max-width:1000px){
+ .repwrap{grid-template-columns:minmax(0,1fr)}
+ .tophold .thead{display:none}
+ .tophold .tr{grid-template-columns:26px minmax(0,1fr) 56px;row-gap:3px}
+ .tophold .tr .who{grid-column:2/-1;flex-wrap:wrap}
+ .tophold .tr .v.d,.tophold .tr .v.g,.tophold .tr .v.rd{display:none}
+}
 
 /* spiders walk everywhere, the crawl overlay included */
 body:has(#ov.on) #web{z-index:65}

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 · 2026-10-07
+
+- The crawl plays out in the room: the holder graph builds on the back wall, each crawler's desk lights up while it works with its live progress and newest line, crawlers run errands to the wall, waiting ones doze, finished desks turn green with their result.
+- Spiders walk the crawl screen too, and no longer freeze while it is open.
+- The report: the share card is a square as tall as the score block beside it; the top 50 holders run the full width below with roles: dev, insider (got tokens from or was funded by the dev, or sat in the launch bundle), sniper, bot, whale (3% of supply or $25k), smart, bundle, fresh wallet, trader.
+
 ## 0.3.1 · 2026-10-07
 
 - The report lists the top 50 holders by share of supply and says who each one is: the launcher, a sniper, a trading bot, smart money, a bundle, a trader with its record, a first-timer.

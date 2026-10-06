@@ -369,7 +369,8 @@ export default function SpiderLayer({ report }: { report: Report | null }) {
       if (sx < 0 || sy < 0 || sx > innerWidth || sy > innerHeight) return null;
       const el = document.elementFromPoint(sx, sy) as HTMLElement | null;
       if (!el) return null;
-      if (el.closest("#ov") || el.closest("#share") || el.closest("nav")) return null;
+      // the crawl screen is walked too; only its command bar, the card lightbox and the nav are off limits
+      if (el.closest(".ovtop") || el.closest("#share") || el.closest("nav")) return null;
       return el.classList && el.classList.contains("w")
         ? el
         : (el.closest(".w,.btn,.sf,.crawler,.frow,.wrw,.lrw,.hud,.tag") as HTMLElement | null);
@@ -406,7 +407,7 @@ export default function SpiderLayer({ report }: { report: Report | null }) {
       raf = requestAnimationFrame(loop);
       const dt = Math.min(60, t - lastT || 16);
       lastT = t;
-      if (document.hidden || document.getElementById("ov")) return;
+      if (document.hidden) return;
       stepSwarm(t, dt);
       drawWeb(t, true);
     };

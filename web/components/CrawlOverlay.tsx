@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
 import type { RecentRow } from "./types";
-import { buildChain, drawChain, graphFromReport, type Bug, type Graph, type NodeState } from "@/lib/chain";
+import { buildChain, graphFromReport, type Bug, type Graph, type NodeState } from "@/lib/chain";
+import { createCrawlRoom } from "@/lib/crawlroom";
 import { bandInfo, CREW, dprNow, fmt, fontsFor, MARK, reducedMotion, ri, rnd, short, type Report } from "@/lib/util";
 import type { CheckpointLabel } from "@engine/crawlers/types.js";
 
@@ -77,6 +78,43 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
   const cvRef = useRef<HTMLCanvasElement | null>(null);
   const feedId = useRef(0);
   const autoDone = useRef<string | null>(null);
+  /* the card is a square as tall as the score block beside it */
+  const coreRef = useRef<HTMLDivElement | null>(null);
+  const [side, setSide] = useState<number | null>(null);
+  useEffect(() => {
+    const el = coreRef.current;
+    if (!el || step !== "report") return;
+    /* The card is square and the score block grows taller as it narrows, so
+     * the side that makes them equal is found by measuring: bisect on the
+     * card's side, laying the block out at the width that would leave it. */
+    const fit = () => {
+      const wrap = el.parentElement;
+      if (!wrap || window.innerWidth <= 1000) { setSide(null); return; }
+      const cs = getComputedStyle(wrap);
+      const avail = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const gap = parseFloat(cs.columnGap) || 24;
+      const heightAt = (s: number) => { el.style.width = `${avail - s - gap}px`; return el.offsetHeight; };
+      let lo = 320, hi = Math.round(avail * 0.5);
+      for (let i = 0; i < 12; i++) {
+        const mid = (lo + hi) / 2;
+        if (heightAt(mid) > mid) lo = mid; else hi = mid;
+      }
+      el.style.width = "";
+      setSide(Math.round(lo));
+    };
+    /* measured after paint; again once fonts settle; again on every resize */
+    let raf = requestAnimationFrame(fit);
+    const later = window.setTimeout(fit, 400);
+    const onResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); };
+    window.addEventListener("resize", onResize);
+    void document.fonts?.ready.then(() => requestAnimationFrame(fit));
+    return () => { cancelAnimationFrame(raf); clearTimeout(later); window.removeEventListener("resize", onResize); };
+  }, [step, report]);
+  /* what the crawl room reads every frame: kept in refs, not state */
+  const passesRef = useRef<Pass[]>(PASSES.map(() => ({ state: "queued", pct: 0 })));
+  const saidRef = useRef<(string | undefined)[]>([]);
+  const resultsRef = useRef<([string, string] | undefined)[]>([]);
+  useEffect(() => { passesRef.current = passes; }, [passes]);
 
   const pushFeed = useCallback((c: string, m: string, v: string, cls: string) => {
     setFeed((f) => [{ id: feedId.current++, c, m, v, cls }, ...f].slice(0, 4));
@@ -112,6 +150,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
     setFeed([]);
     setKv({ n: "...", e: "..." });
     setPasses(PASSES.map(() => ({ state: "queued", pct: 0 })));
+    saidRef.current = [];
+    resultsRef.current = [];
     const shown = target.startsWith("0x") && target.length > 22 ? target.slice(0, 10) + "…" + target.slice(-8) : target;
     setCmd(<>&gt; walk <b>{shown}</b> --depth full<span className="car" /></>);
     graphRef.current = buildChain(11, [4, 7]);
@@ -154,15 +194,19 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           const i = PASSES.findIndex((p) => p[0] === e.crawler);
           setPass(e.crawler, (p) => ({ state: e.state === "done" ? "done" : p.state === "done" ? "done" : "running", pct: e.state === "done" ? 100 : Math.max(p.pct, 4) }));
           pushFeed(e.crawler, e.detail ?? (i >= 0 ? PASSES[i][1] : ""), e.state, e.state === "done" ? "g" : "c");
+          if (i >= 0) saidRef.current[i] = e.detail ?? (e.state === "done" ? "done" : PASSES[i][1]);
         } else if (event === "progress") {
           const e = data as { crawler: string; done: number; total: number; detail?: string };
           const pct = e.total > 0 ? Math.min(99, (e.done / e.total) * 100) : 0;
           setPass(e.crawler, (p) => (p.state === "done" ? p : { state: "running", pct: Math.max(p.pct, pct) }));
           progressFeed(e.crawler, e.detail ? `reading logs · ${e.detail}` : "reading logs", `${Math.round(pct)}%`);
+          { const k = PASSES.findIndex((p) => p[0] === e.crawler); if (k >= 0) saidRef.current[k] = e.detail ? `reading ${e.detail}` : "reading logs"; }
         } else if (event === "report") {
           finished = true;
           const r = data as Report;
           setPasses(PASSES.map(() => ({ state: "done", pct: 100 })));
+          resultsRef.current = PASSES.map((p) => r.crawlers.find((c) => c.name === p[0])?.stats);
+          saidRef.current = PASSES.map((p) => r.crawlers.find((c) => c.name === p[0])?.lines.at(-1)?.text);
           const real = graphFromReport(r.graph);
           if (real) graphRef.current = real;
           const w = r.crawlers.find((c) => c.name === "WEAVER")?.stats;
@@ -233,6 +277,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
     csz();
     const { mono } = fontsFor();
     const still = reducedMotion();
+    const room = createCrawlRoom();
     let raf = 0, last = 0;
     const frame = (t: number) => {
       raf = requestAnimationFrame(frame);
@@ -252,7 +297,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           }
         }
       }
-      drawChain(ctx, CG, CW, CH, t, bugsRef.current, true, DPR, mono);
+      room(ctx, CW, CH, t, { passes: passesRef.current, said: saidRef.current, results: resultsRef.current, graph: CG, bugs: bugsRef.current }, DPR, mono, !still);
       if (elapsedRef.current) elapsedRef.current.textContent = ((performance.now() - t0Ref.current) / 1000).toFixed(1) + "s";
     };
     raf = requestAnimationFrame(frame);
@@ -361,7 +406,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
       {r && b && (
         <div className={"step" + (step === "report" ? " on" : "")} id="stepReport">
           <div className="repwrap">
-            <div>
+            <div className="repcore" ref={coreRef}>
               <div className="gradehead">
                 <div className="gradeltr" style={{ color: b.color }}>{r.label}</div>
                 <div>
@@ -381,14 +426,9 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                 <div className="gradenote">0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in. it measures the past, it does not predict. not financial advice.</div>
               </div>
               <Quads r={r} />
-              <div className="repmeta">
-                block <b>{fmt(r.provenance.block)}</b> · observed <b>{r.provenance.observedAt.slice(0, 16).replace("T", " ")} UTC</b> · <b>{(r.provenance.ms / 1000).toFixed(1)}s</b> · sources <b>{r.provenance.sources.join(", ")}</b>
-                {r.provenance.partial && <> · <b style={{ color: "var(--ye)" }}>partial: some log ranges could not be read</b></>}
-                <br />contract <b>{r.token.address}</b>
-              </div>
             </div>
             <div className="repside">
-              <div className="shareprev" onClick={() => onCard(cardSrc, cardLabel)}>
+              <div className="shareprev" style={side ? { width: side, height: side } : undefined} onClick={() => onCard(cardSrc, cardLabel)}>
                 {cardState === "error" && <div className="pending">card failed to render</div>}
                 <img
                   src={cardSrc}
@@ -399,11 +439,17 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                 />
                 <div className="shareprevhint">{cardState === "loading" ? "rendering the card" : "click to open full size"}</div>
               </div>
-              <div className="sharebtns">
+            </div>
+            <div className="repfull">
+              <TopHolders r={r}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
+              </TopHolders>
+              <div className="repmeta">
+                block <b>{fmt(r.provenance.block)}</b> · observed <b>{r.provenance.observedAt.slice(0, 16).replace("T", " ")} UTC</b> · <b>{(r.provenance.ms / 1000).toFixed(1)}s</b> · sources <b>{r.provenance.sources.join(", ")}</b>
+                {r.provenance.partial && <> · <b style={{ color: "var(--ye)" }}>partial: some log ranges could not be read</b></>}
+                <br />contract <b>{r.token.address}</b>
               </div>
-              <TopHolders r={r} />
             </div>
           </div>
         </div>
@@ -515,27 +561,48 @@ function exitQuad(e: Report["quadrants"]["exit"]): [string, string, string, numb
 
 const compact = (n: number) => (n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "K" : n.toFixed(2));
 
-/** The top fifty holders by share of supply, and who each one is. */
-function TopHolders({ r }: { r: Report }) {
+/** The top fifty holders by share of supply, what kind of wallet each is, and what it is doing. */
+const ROLE: Record<string, { label: string; cls: string }> = {
+  dev: { label: "dev", cls: "r" }, insider: { label: "insider", cls: "r" }, sniper: { label: "sniper", cls: "r" },
+  bot: { label: "bot", cls: "y" }, whale: { label: "whale", cls: "c" }, smart: { label: "smart", cls: "c" },
+  bundle: { label: "bundle", cls: "y" }, fresh: { label: "fresh wallet", cls: "y" }, trader: { label: "trader", cls: "d" },
+  router: { label: "via router", cls: "d" }, transfer: { label: "transfer in", cls: "y" },
+};
+
+function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) {
   const rows = r.holders;
-  const bad = (f: string[]) => f.includes("deployer") || f.includes("sniper");
   const age = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`);
+  const counts = new Map<string, number>();
+  for (const h of rows) for (const k of h.roles ?? []) counts.set(k, (counts.get(k) ?? 0) + 1);
+  const worst = (h: Report["holders"][number]) => (h.roles ?? []).some((x) => x === "dev" || x === "insider" || x === "sniper") ? " bad" : (h.roles ?? []).includes("smart") ? " smart" : "";
   return (
     <div className="tophold">
-      <div className="th"><span>top {rows.length} holders</span><span>share · held · pnl</span></div>
-      <div className="tb">
-        {rows.map((h, i) => (
-          <a key={h.wallet} className={"tr" + (bad(h.flags) ? " bad" : h.flags.includes("smart") ? " smart" : "")}
-            href={`https://robinhoodchain.blockscout.com/address/${h.wallet}`} target="_blank" rel="noreferrer">
-            <span className="n">{i + 1}</span>
-            <span className="w"><b>{short(h.wallet)}</b><i>{h.who ?? h.flags.join(", ")}</i></span>
-            <span className="v">
-              <b>{h.share < 1 ? h.share.toFixed(2) : h.share.toFixed(1)}%</b>
-              <i>{h.heldSec != null ? age(h.heldSec) : ""}{h.pnlPct != null ? ` · ${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</i>
-            </span>
-          </a>
-        ))}
+      <div className="th">
+        <div>
+          <b>top {rows.length} holders</b>
+          <span className="sum">
+            {[...counts.entries()].filter(([k]) => k !== "trader" && k !== "router").map(([k, n]) => (
+              <span key={k} className={"role " + (ROLE[k]?.cls ?? "d")}>{n} {ROLE[k]?.label ?? k}</span>
+            ))}
+          </span>
+        </div>
+        <div className="btns">{children}</div>
       </div>
+      <div className="thead"><span>#</span><span>wallet</span><span>who</span><span>share</span><span>held</span><span>value</span><span>pnl</span></div>
+      {rows.map((h, i) => (
+        <a key={h.wallet} className={"tr" + worst(h)} href={`https://robinhoodchain.blockscout.com/address/${h.wallet}`} target="_blank" rel="noreferrer">
+          <span className="n">{i + 1}</span>
+          <span className="w">{short(h.wallet)}</span>
+          <span className="who">
+            {(h.roles ?? []).map((k) => <span key={k} className={"role " + (ROLE[k]?.cls ?? "d")}>{ROLE[k]?.label ?? k}</span>)}
+            <i>{h.who ?? h.flags.join(", ")}</i>
+          </span>
+          <span className="v">{h.share < 1 ? h.share.toFixed(2) : h.share.toFixed(1)}%</span>
+          <span className="v d">{h.heldSec != null ? age(h.heldSec) : ""}</span>
+          <span className="v d">{h.valueUsd != null ? "$" + fmt(h.valueUsd) : ""}</span>
+          <span className={"v " + (h.pnlPct == null ? "d" : h.pnlPct >= 0 ? "g" : "rd")}>{h.pnlPct != null ? `${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</span>
+        </a>
+      ))}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, Fill, Panels, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  CrawlerName, CrawlerReport, Fill, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, WeaverOut,
 } from "./types.js";
 
@@ -157,6 +157,8 @@ function holderRows(tape: Tape, c: Crawled): HolderRow[] {
   const virgins = new Set(c.scouted.virgins);
   const shortHist = new Set(c.scouted.shortHistory);
   const clean = new Set(c.sieved.clean);
+  const funding = new Map(tape.funding.map((f) => [f.wallet, f.funder]));
+  const declared = new Set(tape.launch.exemptions.map((a) => a.toLowerCase()));
   const clusters = new Map<string, number>();
   c.knotted.clusters.forEach((k) => k.wallets.forEach((w) => clusters.set(w, k.wallets.length)));
   return c.web.holders.slice(0, 50).map((h) => {
@@ -188,9 +190,29 @@ function holderRows(tape: Tape, c: Crawled): HolderRow[] {
     else if (!tape.history) who = "holder, history not read";
     else who = "holder";
 
+    // roles: what kind of wallet this is, independent of the sentence above
+    const share = pctOf(h.balance, tape.launch.totalSupply);
+    const funder = funding.get(h.address);
+    const insider = !dev.has(h.address) && (dev.has(h.parent) || (funder !== undefined && dev.has(funder)) || declared.has(h.address));
+    const roles: Role[] = [];
+    if (dev.has(h.address)) roles.push("dev");
+    if (insider) roles.push("insider");
+    if (sn) roles.push("sniper");
+    if (hist && isBotRecord(hist)) roles.push("bot");
+    if (share >= THRESHOLDS.whalePct || (book?.valueUsd ?? 0) >= THRESHOLDS.whaleUsd) roles.push("whale");
+    if (sm) roles.push("smart");
+    if (clusters.has(h.address)) roles.push("bundle");
+    if (virgins.has(h.address)) roles.push("fresh");
+    else if (hist && hist.markets > 0 && !roles.includes("bot") && !roles.includes("smart")) roles.push("trader");
+    else if (!hist?.markets && h.routed) roles.push("router");
+    if (h.bought === 0n && h.received > 0n) roles.push("transfer");
+    if (insider && who === `got it by transfer from ${short(h.parent)}`) who = `insider, got it from the dev`;
+    else if (insider && !dev.has(h.address) && !sn) who = funder && dev.has(funder) ? "insider, funded by the dev" : declared.has(h.address) ? "insider, declared in the launch bundle" : who;
+
     return {
       wallet: h.address,
-      share: pctOf(h.balance, tape.launch.totalSupply),
+      share,
+      roles,
       flags,
       valueUsd: book?.valueUsd ?? null,
       pnlPct: book?.pnlPct ?? null,

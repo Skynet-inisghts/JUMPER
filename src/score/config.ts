@@ -65,6 +65,9 @@ export const THRESHOLDS = {
   /** KNOT looks up the funding of this many top holders and snipers, inside the budget. */
   knotWallets: 40,
   knotBudgetMs: 25_000,
+  /** A whale holds at least this share of supply, or a position worth at least this much. */
+  whalePct: 3,
+  whaleUsd: 25_000,
   /** SIEVE: positions worth less than this are dust. */
   dustUsd: 50,
   /** TRACKER: dev sold this share of its peak = "sold half", this much = "dumped". */

@@ -250,6 +250,8 @@ export interface Metrics {
 
 export type Flag = "deployer" | "sniper" | "virgin" | "transfer" | "short history" | "clean" | "smart" | "bundle";
 
+export type Role = "dev" | "insider" | "sniper" | "bot" | "whale" | "smart" | "bundle" | "fresh" | "trader" | "router" | "transfer";
+
 export interface HolderRow {
   wallet: string;
   share: number; // % supply
@@ -259,6 +261,8 @@ export interface HolderRow {
   winrate: number | null;
   /** Who this wallet is, in a few words: dev, sniper, bot, smart money, trader, first-timer. */
   who: string;
+  /** Roles, most telling first: dev, insider, sniper, bot, whale, smart, bundle, fresh, trader, router. */
+  roles: Role[];
   /** Other Pons tokens it ever traded; null when the index did not read it. */
   markets: number | null;
   /** Seconds since it first got this token. */
