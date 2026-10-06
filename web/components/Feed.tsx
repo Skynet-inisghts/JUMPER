@@ -218,7 +218,7 @@ export default function Feed({ report, label }: { report: Report | null; label: 
       return { id: id++, ts, line };
     };
     const push = (batch: Row[]) => {
-      setRows((prev) => [...prev, ...batch].slice(-11));
+      setRows((prev) => [...prev, ...batch].slice(-12));
       const last = [...batch].reverse().find((r) => r.line.wallet);
       if (last?.line.wallet) {
         const crew = CREW.find((c) => c.n === last.line.crawler);

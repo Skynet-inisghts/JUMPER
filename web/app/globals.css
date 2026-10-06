@@ -155,14 +155,15 @@ h2{font-family:var(--f-tiny),monospace;font-size:40px;margin-bottom:10px}
 .ad{font-family:var(--f-tiny),monospace;font-size:20px;color:var(--tx);margin-top:16px;white-space:nowrap}
 @media(max-width:1000px){.abody{grid-template-columns:1fr}.abig{border-left:0;border-top:1px solid var(--ln);text-align:left}}
 .workrow{display:grid;grid-template-columns:1fr 1.12fr;gap:18px}
+/* the holder table and the log stand side by side at one height */
 .panel{border:1px solid var(--ln);background:var(--pan);border-radius:6px;padding:16px 18px;
- min-height:430px}
+ height:470px;overflow:hidden}
 .whead{display:grid;grid-template-columns:150px 76px 1fr;gap:12px;color:var(--dm2);
  font-size:12px;padding:0 10px 10px}
 .wrw{display:grid;grid-template-columns:150px 76px 1fr;gap:12px;align-items:center;
- padding:10px;border-radius:4px;font-variant-numeric:tabular-nums;font-size:13px;
+ padding:7px 10px;min-height:38px;border-radius:4px;font-variant-numeric:tabular-nums;font-size:13px;
  transition:background .25s,box-shadow .25s;position:relative}
-.wrw .ad{color:var(--tx)}
+.wrw .ad{color:var(--tx);font-family:inherit;font-size:13px;margin:0}
 .wrw .sh{color:var(--dm)}
 .wrw .fl{display:flex;gap:6px;flex-wrap:wrap}
 .tag{border:1px solid;padding:1px 8px;border-radius:3px;font-size:11.5px;line-height:1.5}
@@ -186,6 +187,7 @@ h2{font-family:var(--f-tiny),monospace;font-size:40px;margin-bottom:10px}
 .lrw{display:grid;grid-template-columns:78px 1fr;gap:12px;font-size:12.5px;padding:5px 8px;
  font-variant-numeric:tabular-nums;animation:sl .3s;border-radius:3px}
 .lrw .ts{color:var(--dm2)}
+.lrw .ms{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .lrw .ms b{font-weight:400}
 .lrw.hit{box-shadow:inset 0 0 0 1px rgba(180,124,255,.4)}
 .c-crawler{color:var(--cy)}.c-link{color:var(--ye)}.c-cluster{color:var(--ye)}
@@ -362,7 +364,7 @@ button.inputchip{all:unset}
  .hudrow{grid-template-columns:1fr 1fr;gap:10px}
  .hv{font-size:28px}
  .hv.small{font-size:14px}
- .panel{padding:14px 10px;min-height:0}
+ .panel{padding:14px 10px;height:auto;max-height:520px}
  .whead,.wrw{grid-template-columns:104px 52px 1fr;gap:8px;font-size:12px}
  .whead{padding:0 6px 10px}.wrw{padding:8px 6px}
  .lrw{grid-template-columns:62px 1fr;gap:8px;font-size:11.5px;padding:5px 4px}
