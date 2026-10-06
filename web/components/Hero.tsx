@@ -115,7 +115,7 @@ export default function Hero({ version, pulse, report, onRun, onSample }: {
         <h1>JUM<span>PER</span></h1>
         <div className="sub"><Words text="It can jump over any token." /></div>
         <p className="lede">
-          <Words text="25,000 tokens launch on Pons every day. JUMPER drops a swarm on one of them: the spiders walk the contract, every transaction, every holder and every wallet those holders ever touched. What comes back is" />{" "}
+          <Words text="Thousands of tokens launch on Pons every day. JUMPER drops a swarm on one of them: the spiders walk the contract, every transaction, every holder and every wallet those holders ever touched. What comes back is" />{" "}
           <b><Words text="who stayed, who left, who sniped it and who actually knows what they are doing." /></b>
         </p>
         <div className="cta">
