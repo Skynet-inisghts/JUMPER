@@ -188,8 +188,10 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
   /* deep link: /?token=0x.. opens straight into a crawl */
   useEffect(() => {
     if (!open || !autoTarget || autoDone.current === autoTarget) return;
-    autoDone.current = autoTarget;
+    /* the flag is set when the crawl actually starts: a strict-mode double
+     * run clears the first timer, and the second must still fire */
     const id = setTimeout(() => {
+      autoDone.current = autoTarget;
       setValue(autoTarget);
       void start(autoTarget);
     }, 0);
@@ -412,14 +414,14 @@ function Quads({ r }: { r: Report }) {
     ["SILK", "smart money", String(q.silk.smart), Math.min(100, q.silk.smartSupply * 2), "#6ED0FF", "Does anyone here know what they are doing?",
       null,
       q.silk.online
-        ? [`${q.silk.smart} wallets above the winrate gate, ${fmt(q.silk.scanned)} scanned`,
+        ? [`${q.silk.smart} wallet${q.silk.smart === 1 ? "" : "s"} above the winrate gate, ${fmt(q.silk.scanned)} scanned`,
           `they hold ${pct0(q.silk.smartSupply)} of supply${q.silk.winrate != null ? `, avg winrate ${pct0(q.silk.winrate)}` : ""}`]
         : ["the wallet index was offline: smart money was not read", "the score leaves this lane out"]],
     ["SNARE", "snipers", pct0(q.snare.sniperSupply), q.snare.sniperSupply * 2, "#FFD166", "How much went before a human could read it?",
       null,
-      [`${q.snare.sniperWallets} wallets bought in the first three blocks`,
-        `${q.snare.sniperExited} of them have already sold`,
-        `${q.snare.bundles} bundled clusters funded from one source, ${pct0(q.snare.bundleSupply)} of supply`]],
+      [`${q.snare.sniperWallets} wallet${q.snare.sniperWallets === 1 ? "" : "s"} bought in the first three blocks`,
+        `${q.snare.sniperWallets === 1 ? (q.snare.sniperExited ? "it has already sold" : "it still holds") : `${q.snare.sniperExited} of them have already sold`}`,
+        `${q.snare.bundles} bundled cluster${q.snare.bundles === 1 ? "" : "s"} funded from one source, ${pct0(q.snare.bundleSupply)} of supply`]],
     ["EXIT", "pressure", pct0(q.exit.exitPressure), q.exit.exitPressure, "#FF5D7A", "Is anyone leaving right now?",
       null,
       [`${pct0(q.exit.exitPressure)} of supply moved toward an exit in the last hour`,

@@ -40,7 +40,7 @@ export const grouped = (n: number): string => Math.round(n).toString().replace(/
 
 export function pctText(x: number): string {
   if (x === 0) return "0%";
-  if (x < 1) return `${x.toFixed(1)}%`;
+  if (x < 0.95) return `${x.toFixed(1)}%`;
   return `${Math.round(x)}%`;
 }
 

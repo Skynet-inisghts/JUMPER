@@ -1,4 +1,4 @@
-import { parseEventLogs, type Address } from "viem";
+import { parseAbi, parseEventLogs, type AbiEvent, type Address, type Hex } from "viem";
 import { curveAbi, erc20Abi } from "./abi.js";
 import { publicClient } from "./chain.js";
 
@@ -13,6 +13,14 @@ import { publicClient } from "./chain.js";
  */
 
 const START_CHUNK = 900_000;
+
+/** A read ran past the caller's deadline: the token's history is longer than the time it was given. */
+export class DeadlineError extends Error {
+  constructor(public readonly logsRead: number) {
+    super("deadline passed while reading logs");
+  }
+}
+
 const MIN_CHUNK = 500;
 
 export interface ChunkedResult<T> {
@@ -27,11 +35,16 @@ type RawLog = Awaited<ReturnType<typeof publicClient.getLogs>>[number];
  * every clean read doubles it back. A launch-hour hot zone reads in small
  * bites, the quiet weeks after in 1M-block strides.
  */
+/** An optional event + indexed-argument filter, for reads on a shared contract like the v4 PoolManager. */
+interface Filter { event: AbiEvent; args: Record<string, unknown> }
+
 async function readChunked(
   address: Address,
   fromBlock: number,
   toBlock: number,
   onProgress?: (doneBlocks: number, totalBlocks: number, logs: number) => void,
+  filter?: Filter,
+  deadline = Infinity,
 ): Promise<{ logs: RawLog[]; complete: boolean }> {
   const total = Math.max(1, toBlock - fromBlock + 1);
   // A long window splits into segments read side by side: a busy token's
@@ -44,7 +57,7 @@ async function readChunked(
   const parts = await Promise.all(Array.from({ length: lanes }, (_, i) => {
     const a = fromBlock + i * size;
     const b = Math.min(toBlock, a + size - 1);
-    return readSegment(address, a, b, (blocks, logs) => {
+    return readSegment(address, a, b, filter, deadline, (blocks, logs) => {
       done[i] = blocks;
       found += logs;
       onProgress?.(done.reduce((x, y) => x + y, 0), total, found);
@@ -59,6 +72,8 @@ async function readSegment(
   address: Address,
   fromBlock: number,
   toBlock: number,
+  filter: Filter | undefined,
+  deadline: number,
   onPage: (doneBlocks: number, newLogs: number) => void,
 ): Promise<{ logs: RawLog[]; complete: boolean }> {
   const logs: RawLog[] = [];
@@ -66,9 +81,12 @@ async function readSegment(
   let chunk = START_CHUNK;
   let start = fromBlock;
   while (start <= toBlock) {
+    if (Date.now() > deadline) throw new DeadlineError(logs.length);
     const end = Math.min(toBlock, start + chunk - 1);
     try {
-      const batch = await publicClient.getLogs({ address, fromBlock: BigInt(start), toBlock: BigInt(end) });
+      const batch = filter
+        ? ((await publicClient.getLogs({ address, event: filter.event, args: filter.args, fromBlock: BigInt(start), toBlock: BigInt(end) } as never)) as RawLog[])
+        : await publicClient.getLogs({ address, fromBlock: BigInt(start), toBlock: BigInt(end) });
       logs.push(...batch);
       start = end + 1;
       if (chunk < START_CHUNK) chunk = Math.min(START_CHUNK, chunk * 2);
@@ -98,8 +116,8 @@ export interface CurveTrade {
 }
 
 /** Every CurveBuy and CurveSell on a curve over a block window, in order. */
-export async function readCurveTrades(curve: Address, fromBlock: number, toBlock: number): Promise<ChunkedResult<CurveTrade>> {
-  const { logs, complete } = await readChunked(curve, fromBlock, toBlock);
+export async function readCurveTrades(curve: Address, fromBlock: number, toBlock: number, deadline = Infinity): Promise<ChunkedResult<CurveTrade>> {
+  const { logs, complete } = await readChunked(curve, fromBlock, toBlock, undefined, undefined, deadline);
   const events: CurveTrade[] = [];
   for (const log of parseEventLogs({ abi: curveAbi, logs })) {
     const base = { block: Number(log.blockNumber), logIndex: Number(log.logIndex) };
@@ -127,11 +145,56 @@ export async function readTransfers(
   fromBlock: number,
   toBlock: number,
   onProgress?: (doneBlocks: number, totalBlocks: number, logs: number) => void,
+  deadline = Infinity,
 ): Promise<ChunkedResult<TokenTransfer>> {
-  const { logs, complete } = await readChunked(token, fromBlock, toBlock, onProgress);
+  const { logs, complete } = await readChunked(token, fromBlock, toBlock, onProgress, undefined, deadline);
   const events: TokenTransfer[] = [];
   for (const log of parseEventLogs({ abi: erc20Abi, logs, eventName: "Transfer" })) {
     events.push({ from: log.args.from, to: log.args.to, value: log.args.value, block: Number(log.blockNumber), logIndex: Number(log.logIndex) });
+  }
+  events.sort((a, b) => a.block - b.block || a.logIndex - b.logIndex);
+  return { events, complete };
+}
+
+const poolAbi = parseAbi([
+  "event Swap(bytes32 indexed id, address indexed sender, int128 amount0, int128 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick, uint24 fee)",
+]);
+
+export interface PoolSwap {
+  /** Seen from the trader: true when the token left the pool. */
+  buy: boolean;
+  tokens: bigint;
+  quote: bigint;
+  /** Quote base units per token base unit after the swap, from sqrtPriceX96. */
+  price: number;
+  block: number;
+  logIndex: number;
+}
+
+/**
+ * Every swap on the token's Uniswap v4 pool after graduation. The pool
+ * manager is shared by every pool, so the read filters on the pool id; the
+ * sender is a router, never the trader, and is not kept. Amounts in a v4
+ * Swap are the trader's deltas: positive is what the trader received.
+ */
+export async function readPoolSwaps(poolManager: Address, poolId: Hex, tokenIsCurrency0: boolean, fromBlock: number, toBlock: number, deadline = Infinity): Promise<ChunkedResult<PoolSwap>> {
+  const event = poolAbi[0] as AbiEvent;
+  const { logs, complete } = await readChunked(poolManager, fromBlock, toBlock, undefined, { event, args: { id: poolId } }, deadline);
+  const events: PoolSwap[] = [];
+  for (const log of parseEventLogs({ abi: poolAbi, logs })) {
+    const { amount0, amount1, sqrtPriceX96 } = log.args;
+    const tokenDelta = tokenIsCurrency0 ? amount0 : amount1;
+    const quoteDelta = tokenIsCurrency0 ? amount1 : amount0;
+    const sp = Number(sqrtPriceX96) / 2 ** 96;
+    const p1per0 = sp * sp; // currency1 per currency0, base units
+    events.push({
+      buy: tokenDelta > 0n,
+      tokens: tokenDelta < 0n ? -tokenDelta : tokenDelta,
+      quote: quoteDelta < 0n ? -quoteDelta : quoteDelta,
+      price: tokenIsCurrency0 ? p1per0 : p1per0 > 0 ? 1 / p1per0 : 0,
+      block: Number(log.blockNumber),
+      logIndex: Number(log.logIndex),
+    });
   }
   events.sort((a, b) => a.block - b.block || a.logIndex - b.logIndex);
   return { events, complete };

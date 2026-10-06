@@ -37,6 +37,9 @@ const shared = (g.__jumper ??= { reportCache: new TtlCache<Report>(300), runs: n
 export const reportCache = shared.reportCache;
 const runs = shared.runs;
 
+/** Log reads stop here so the error reaches the page before the 300 s function limit does. */
+const CRAWL_BUDGET_MS = 240_000;
+
 /**
  * Start a crawl for `token` or join the one already running. A listener
  * that joins late sees events from the moment it joined; everyone gets the
@@ -62,7 +65,7 @@ export function crawlShared(token: Address, listener?: Listener): { promise: Pro
                 /* a closed stream must not break the crawl */
               }
             }
-          });
+          }, { budgetMs: CRAWL_BUDGET_MS });
           reportCache.set(key, report, reportTtlMs(report.token.ageSec));
           return report;
         } finally {

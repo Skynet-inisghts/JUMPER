@@ -9,7 +9,7 @@
     "phaseLabel": "pool",
     "curveProgress": 0,
     "launchedAt": 1791309013,
-    "ageSec": 3774,
+    "ageSec": 6746,
     "deployer": "0xd729bebb17a4D664659757b6bECdAC7DbDdC4995"
   },
   "score": 0,
@@ -18,12 +18,12 @@
   "verdict": "DO NOT TOUCH",
   "subline": "most of the web has already let go",
   "metrics": {
-    "holders": 311,
-    "transfers": 7395,
-    "hold": 53.5359,
-    "gone": 46.4641,
-    "smart": 16,
-    "smartSupply": 4.9309,
+    "holders": 297,
+    "transfers": 7828,
+    "hold": 53.7081,
+    "gone": 46.2919,
+    "smart": 14,
+    "smartSupply": 3.7064,
     "sniperSupply": 50,
     "sniperWallets": 6,
     "sniperExited": 6,
@@ -31,8 +31,8 @@
     "bundleSupply": 0,
     "firstMinuteKept": 4.4,
     "devState": "dumped",
-    "exitPressure": 15.9014,
-    "winrate": 68.7,
+    "exitPressure": 0,
+    "winrate": 70.6,
     "score": 0
   },
   "quadrants": {
@@ -42,15 +42,15 @@
         "15m": 0.06666666666666667,
         "1h": 0.044444444444444446
       },
-      "hold": 53.5359,
-      "gone": 46.4641,
+      "hold": 53.7081,
+      "gone": 46.2919,
       "firstMinuteKept": 4.4
     },
     "silk": {
-      "smart": 16,
-      "smartSupply": 4.9309,
-      "winrate": 68.7,
-      "scanned": 300,
+      "smart": 14,
+      "smartSupply": 3.7064,
+      "winrate": 70.6,
+      "scanned": 297,
       "online": true
     },
     "snare": {
@@ -61,17 +61,17 @@
       "bundleSupply": 0
     },
     "exit": {
-      "exitPressure": 15.9014,
+      "exitPressure": 0,
       "devState": "dumped",
       "devSoldPct": 100,
-      "takenOut": 40.5028027481349,
+      "takenOut": 42.13202739286241,
       "pairSymbol": "ETH"
     }
   },
   "facts": [
     "54% still holding · 46% already gone",
-    "16 smart wallets on 5% · dev dumped it",
-    "50% sniped · 311 holders"
+    "14 smart wallets on 4% · dev dumped it",
+    "50% sniped · 297 holders"
   ],
   "crawlers": [
     {
@@ -79,27 +79,15 @@
       "color": "#B47CFF",
       "role": "maps the holder graph",
       "stats": [
-        "1 016 nodes",
-        "1 823 edges"
+        "1 056 nodes",
+        "1 917 edges"
       ],
       "lines": [
         {
           "crawler": "WEAVER",
           "kind": "walk",
-          "text": "0xcae4…2db2 • bought from the pool",
-          "wallet": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2"
-        },
-        {
-          "crawler": "WEAVER",
-          "kind": "walk",
           "text": "0x528b…99af • bought from the curve",
           "wallet": "0x528bb6cbf8c8c9c42a46cb09a58357e920b599af"
-        },
-        {
-          "crawler": "WEAVER",
-          "kind": "walk",
-          "text": "0x1c66…b4ea • bought from the pool",
-          "wallet": "0x1c66ae54d5e4ee86980c90edbc55ddb29161b4ea"
         },
         {
           "crawler": "WEAVER",
@@ -110,14 +98,14 @@
         {
           "crawler": "WEAVER",
           "kind": "walk",
-          "text": "0xcc66…675c • bought from the pool",
-          "wallet": "0xcc66036909d2c99fc70c4555f550f2038fa1675c"
+          "text": "0xcae4…2db2 • bought from the pool",
+          "wallet": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2"
         },
         {
           "crawler": "WEAVER",
           "kind": "walk",
-          "text": "0x7496…8318 • bought from the curve",
-          "wallet": "0x74961dfc65b91f35c6c829b5da6713ef78258318"
+          "text": "0xcc66…675c • bought from the pool",
+          "wallet": "0xcc66036909d2c99fc70c4555f550f2038fa1675c"
         },
         {
           "crawler": "WEAVER",
@@ -140,14 +128,26 @@
         {
           "crawler": "WEAVER",
           "kind": "walk",
+          "text": "0x7fe4…c216 • bought from the curve",
+          "wallet": "0x7fe407b3230a8e665b7c85f3c238cb74e81ac216"
+        },
+        {
+          "crawler": "WEAVER",
+          "kind": "walk",
+          "text": "0x5340…8030 • bought from the pool",
+          "wallet": "0x5340bd616d98b5845cd2fe62959ccc9bfe8e8030"
+        },
+        {
+          "crawler": "WEAVER",
+          "kind": "walk",
           "text": "0xa225…4641 • bought from the curve",
           "wallet": "0xa225f16f154e177b652e51e264be3ad22fa84641"
         },
         {
           "crawler": "WEAVER",
           "kind": "walk",
-          "text": "0x4678…0721 • bought from the pool",
-          "wallet": "0x46782366ff6d9adcf978d2877a26508266850721"
+          "text": "0x2943…c84e • bought from the curve",
+          "wallet": "0x2943b2585dabfc68876955fffb2d60f958dec84e"
         },
         {
           "crawler": "WEAVER",
@@ -170,6 +170,12 @@
         {
           "crawler": "WEAVER",
           "kind": "walk",
+          "text": "0xbb3b…5c6e • bought from the curve",
+          "wallet": "0xbb3b614f7b70cb65e8175f2fd3f00cd26af45c6e"
+        },
+        {
+          "crawler": "WEAVER",
+          "kind": "walk",
           "text": "0x0be8…3d2f • bought from the curve",
           "wallet": "0x0be8c04b10a4531bd265858a9f0105e3f7d13d2f"
         },
@@ -188,6 +194,12 @@
         {
           "crawler": "WEAVER",
           "kind": "walk",
+          "text": "0x8c61…6b88 • bought from the pool",
+          "wallet": "0x8c618f4638c7d44e31fc90c30bcb737c03146b88"
+        },
+        {
+          "crawler": "WEAVER",
+          "kind": "walk",
           "text": "0x078b…0d4b • bought from the pool",
           "wallet": "0x078b62986b0956027c8e87384799b9e58ca40d4b"
         },
@@ -200,8 +212,8 @@
         {
           "crawler": "WEAVER",
           "kind": "walk",
-          "text": "0xfc76…b67b • bought from the pool",
-          "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b"
+          "text": "0x89bb…adfe • bought from the curve",
+          "wallet": "0x89bb40652857b1a4746b2bc8fff04b694c87adfe"
         },
         {
           "crawler": "WEAVER",
@@ -217,20 +229,8 @@
         },
         {
           "crawler": "WEAVER",
-          "kind": "walk",
-          "text": "0xc6e1…66a6 • bought from the curve",
-          "wallet": "0xc6e11464a401185728fabacad4851807573966a6"
-        },
-        {
-          "crawler": "WEAVER",
-          "kind": "walk",
-          "text": "0x1a6f…e3c2 • bought from the pool",
-          "wallet": "0x1a6f5dd8f6e2b3a36dd22a6a411c0b434650e3c2"
-        },
-        {
-          "crawler": "WEAVER",
           "kind": "verdict",
-          "text": "graph 1 016 nodes, 1 823 edges, 7 395 transfers"
+          "text": "graph 1 056 nodes, 1 917 edges, 7 828 transfers"
         }
       ]
     },
@@ -239,7 +239,7 @@
       "color": "#FF5D7A",
       "role": "follows who left",
       "stats": [
-        "716 gone",
+        "773 gone",
         "46% of supply"
       ],
       "lines": [
@@ -342,7 +342,7 @@
         {
           "crawler": "TRACKER",
           "kind": "verdict",
-          "text": "716 gone with 46% of supply · dev dumped"
+          "text": "773 gone with 46% of supply · dev dumped"
         }
       ]
     },
@@ -403,27 +403,15 @@
       "color": "#6ED0FF",
       "role": "finds smart money",
       "stats": [
-        "16 found",
-        "69% winrate"
+        "14 found",
+        "71% winrate"
       ],
       "lines": [
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0xcae4…2db2 • 2 other tokens, no closed trades",
-          "wallet": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "walk",
           "text": "0x528b…99af • 0 other tokens, no closed trades",
           "wallet": "0x528bb6cbf8c8c9c42a46cb09a58357e920b599af"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "walk",
-          "text": "0x1c66…b4ea • 644 other tokens, winrate 47%",
-          "wallet": "0x1c66ae54d5e4ee86980c90edbc55ddb29161b4ea"
         },
         {
           "crawler": "SCOUT",
@@ -434,14 +422,14 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0xcc66…675c • 286 other tokens, winrate 40%",
-          "wallet": "0xcc66036909d2c99fc70c4555f550f2038fa1675c"
+          "text": "0xcae4…2db2 • 2 other tokens, no closed trades",
+          "wallet": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2"
         },
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0x7496…8318 • 0 other tokens, no closed trades",
-          "wallet": "0x74961dfc65b91f35c6c829b5da6713ef78258318"
+          "text": "0xcc66…675c • 286 other tokens, winrate 40%",
+          "wallet": "0xcc66036909d2c99fc70c4555f550f2038fa1675c"
         },
         {
           "crawler": "SCOUT",
@@ -464,14 +452,26 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
+          "text": "0x7fe4…c216 • 0 other tokens, no closed trades",
+          "wallet": "0x7fe407b3230a8e665b7c85f3c238cb74e81ac216"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "walk",
+          "text": "0x5340…8030 • 75 other tokens, winrate 46%",
+          "wallet": "0x5340bd616d98b5845cd2fe62959ccc9bfe8e8030"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "walk",
           "text": "0xa225…4641 • 0 other tokens, no closed trades",
           "wallet": "0xa225f16f154e177b652e51e264be3ad22fa84641"
         },
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0x4678…0721 • 144 other tokens, winrate 31%",
-          "wallet": "0x46782366ff6d9adcf978d2877a26508266850721"
+          "text": "0x2943…c84e • 0 other tokens, no closed trades",
+          "wallet": "0x2943b2585dabfc68876955fffb2d60f958dec84e"
         },
         {
           "crawler": "SCOUT",
@@ -494,6 +494,12 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
+          "text": "0xbb3b…5c6e • 0 other tokens, no closed trades",
+          "wallet": "0xbb3b614f7b70cb65e8175f2fd3f00cd26af45c6e"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "walk",
           "text": "0x0be8…3d2f • 0 other tokens, no closed trades",
           "wallet": "0x0be8c04b10a4531bd265858a9f0105e3f7d13d2f"
         },
@@ -512,6 +518,12 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
+          "text": "0x8c61…6b88 • 43 other tokens, winrate 12%",
+          "wallet": "0x8c618f4638c7d44e31fc90c30bcb737c03146b88"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "walk",
           "text": "0x078b…0d4b • 20 other tokens, winrate 44%",
           "wallet": "0x078b62986b0956027c8e87384799b9e58ca40d4b"
         },
@@ -524,8 +536,8 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0xfc76…b67b • 15 other tokens, winrate 57%",
-          "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b"
+          "text": "0x89bb…adfe • 0 other tokens, no closed trades",
+          "wallet": "0x89bb40652857b1a4746b2bc8fff04b694c87adfe"
         },
         {
           "crawler": "SCOUT",
@@ -538,6 +550,12 @@
           "kind": "walk",
           "text": "0x3f0f…970f • 255 other tokens, winrate 43%",
           "wallet": "0x3f0ffbcefcbf5ac0f9761c42ec77e5485bb1970f"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "walk",
+          "text": "0xfde4…b50f • 9 other tokens, no closed trades",
+          "wallet": "0xfde46066af48ba876ff6c24bdf42a9bc8440b50f"
         },
         {
           "crawler": "SCOUT",
@@ -562,12 +580,6 @@
           "kind": "walk",
           "text": "0x03f0…469b • 0 other tokens, no closed trades",
           "wallet": "0x03f050d9bee7d235767fc01abea1a1919eb7469b"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "walk",
-          "text": "0x9bf2…bea9 • 4 888 other tokens, winrate 39%",
-          "wallet": "0x9bf265c742d96aacf1083ef24c9110240af0bea9"
         },
         {
           "crawler": "SCOUT",
@@ -602,32 +614,14 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0xdf43…041b • 0 other tokens, no closed trades",
-          "wallet": "0xdf43beb3f9759e0474e155ffb1e59b3f029e041b"
+          "text": "0xd694…30e7 • 8 other tokens, winrate 20%",
+          "wallet": "0xd694f1abe27a69b55850ef8ede3555c2dd5930e7"
         },
         {
           "crawler": "SCOUT",
           "kind": "walk",
           "text": "0x60e2…1602 • 99 other tokens, winrate 36%",
           "wallet": "0x60e2809a42790565f58557bf114d85157da41602"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "walk",
-          "text": "0xbb75…2cc7 • 2 758 other tokens, winrate 55%",
-          "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "walk",
-          "text": "0x27ac…7f6e • 125 other tokens, winrate 40%",
-          "wallet": "0x27ac77432c233afe1ea9fbe9d59b803e9c697f6e"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "walk",
-          "text": "0x8c61…6b88 • 43 other tokens, winrate 12%",
-          "wallet": "0x8c618f4638c7d44e31fc90c30bcb737c03146b88"
         },
         {
           "crawler": "SCOUT",
@@ -644,8 +638,14 @@
         {
           "crawler": "SCOUT",
           "kind": "walk",
-          "text": "0xd27e…7d0e • 247 other tokens, winrate 44%",
-          "wallet": "0xd27e7a586860199ff3e6cb9d13247309c6587d0e"
+          "text": "0x4ce4…f618 • 61 other tokens, winrate 54%",
+          "wallet": "0x4ce4718166171ffed44c6d52dcfda4514fdef618"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "walk",
+          "text": "0x4613…c79c • 7 other tokens, winrate 50%",
+          "wallet": "0x46133aa68c84dbe1f0269b183b1db737ac8fc79c"
         },
         {
           "crawler": "SCOUT",
@@ -668,19 +668,7 @@
         {
           "crawler": "SCOUT",
           "kind": "flag",
-          "text": "0xfc76…b67b • smart, 57% over 6 closed",
-          "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "flag",
-          "text": "0xbb75…2cc7 • smart, 55% over 2469 closed",
-          "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7"
-        },
-        {
-          "crawler": "SCOUT",
-          "kind": "flag",
-          "text": "0xe543…6ba3 • smart, 82% over 93 closed",
+          "text": "0xe543…6ba3 • smart, 82% over 94 closed",
           "wallet": "0xe543ad841acd0e7b8a0e5120ea819c1daa696ba3"
         },
         {
@@ -697,8 +685,20 @@
         },
         {
           "crawler": "SCOUT",
+          "kind": "flag",
+          "text": "0xf3cd…7f79 • smart, 70% over 9 closed",
+          "wallet": "0xf3cd568a1622a9af7beb0b88177dce35823e7f79"
+        },
+        {
+          "crawler": "SCOUT",
+          "kind": "flag",
+          "text": "0xb84e…a19c • smart, 70% over 39 closed",
+          "wallet": "0xb84efaef8693965d1153300ad268a024b2c6a19c"
+        },
+        {
+          "crawler": "SCOUT",
           "kind": "verdict",
-          "text": "16 smart of 300 scanned"
+          "text": "14 smart of 297 scanned"
         }
       ]
     },
@@ -728,92 +728,80 @@
       "color": "#7DF0C8",
       "role": "rebuilds every book",
       "stats": [
-        "311 books",
-        "-26.3% avg"
+        "297 books",
+        "-24.9% avg"
       ],
       "lines": [
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0xcae4…2db2 • entry 9.0e-9 ETH · +21%",
+          "text": "0xcae4…2db2 • entry 9.0e-9 ETH · +26%",
           "wallet": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x1c66…b4ea • entry 7.4e-9 ETH · +47%",
-          "wallet": "0x1c66ae54d5e4ee86980c90edbc55ddb29161b4ea"
-        },
-        {
-          "crawler": "LEDGER",
-          "kind": "walk",
-          "text": "0xcc66…675c • entry 2.0e-8 ETH · -44%",
+          "text": "0xcc66…675c • entry 2.0e-8 ETH · -42%",
           "wallet": "0xcc66036909d2c99fc70c4555f550f2038fa1675c"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x6341…eaf0 • entry 7.4e-9 ETH · +48%",
+          "text": "0x6341…eaf0 • entry 7.4e-9 ETH · +55%",
           "wallet": "0x6341fbf46df9fd701d06f872e7be0f128465eaf0"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x234a…c3e3 • entry 1.3e-8 ETH · -16%",
+          "text": "0x234a…c3e3 • entry 1.3e-8 ETH · -12%",
           "wallet": "0x234aaf24816e8ee6b699d7f88a4da0b3fd81c3e3"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x4678…0721 • entry 8.7e-9 ETH · +26%",
-          "wallet": "0x46782366ff6d9adcf978d2877a26508266850721"
+          "text": "0x5340…8030 • entry 1.2e-8 ETH · -5%",
+          "wallet": "0x5340bd616d98b5845cd2fe62959ccc9bfe8e8030"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0xdae1…d2ed • entry 2.9e-8 ETH · -62%",
+          "text": "0xdae1…d2ed • entry 2.9e-8 ETH · -60%",
           "wallet": "0xdae1e457b5fe801072ca6038650b4dfe9aa0d2ed"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x11b6…7dc3 • entry 1.3e-8 ETH · -13%",
+          "text": "0x11b6…7dc3 • entry 1.3e-8 ETH · -9%",
           "wallet": "0x11b6b351535e7b846d8300a7e0bf2e9cbeb47dc3"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x41e7…0716 • entry 1.7e-8 ETH · -35%",
+          "text": "0x41e7…0716 • entry 1.7e-8 ETH · -32%",
           "wallet": "0x41e72584faf6694beb08f489fd3dc31ad0860716"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x994b…424b • entry 1.1e-8 ETH · -4%",
+          "text": "0x994b…424b • entry 1.1e-8 ETH · -0%",
           "wallet": "0x994bec5d3de7455bd8702dddde520df4e94d424b"
         },
         {
           "crawler": "LEDGER",
           "kind": "walk",
-          "text": "0x078b…0d4b • entry 2.4e-8 ETH · -54%",
+          "text": "0x8c61…6b88 • entry 1.6e-8 ETH · -30%",
+          "wallet": "0x8c618f4638c7d44e31fc90c30bcb737c03146b88"
+        },
+        {
+          "crawler": "LEDGER",
+          "kind": "walk",
+          "text": "0x078b…0d4b • entry 2.4e-8 ETH · -52%",
           "wallet": "0x078b62986b0956027c8e87384799b9e58ca40d4b"
         },
         {
           "crawler": "LEDGER",
-          "kind": "walk",
-          "text": "0x2e54…6bbc • entry 1.9e-8 ETH · -44%",
-          "wallet": "0x2e5453a5f77a80fe7bfd09d98fd53d2cf2f46bbc"
-        },
-        {
-          "crawler": "LEDGER",
-          "kind": "walk",
-          "text": "0xfc76…b67b • entry 1.1e-8 ETH · +88%",
-          "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b"
-        },
-        {
-          "crawler": "LEDGER",
           "kind": "verdict",
-          "text": "311 books · -26.3% avg"
+          "text": "297 books · -24.9% avg"
         }
       ]
     },
@@ -822,45 +810,45 @@
       "color": "#968EAA",
       "role": "throws out the noise",
       "stats": [
-        "250 removed",
+        "233 removed",
         "clean set"
       ],
       "lines": [
         {
           "crawler": "SIEVE",
           "kind": "walk",
-          "text": "0xaaf8…c894 • dust, dropped",
-          "wallet": "0xaaf873f923c4bcd01d717bdff9dfd6a8b32ac894"
+          "text": "0xe317…d017 • dust, dropped",
+          "wallet": "0xe317a1daa3756c82bbd0d4e57d9f68eeafc5d017"
         },
         {
           "crawler": "SIEVE",
           "kind": "walk",
-          "text": "0x0c90…6d78 • dust, dropped",
-          "wallet": "0x0c90ad63b9c979d2dd73b893775500fc8d1f6d78"
+          "text": "0x8531…0798 • dust, dropped",
+          "wallet": "0x8531ab43b7cdd9e4668b1b1b270d878f20cb0798"
         },
         {
           "crawler": "SIEVE",
           "kind": "walk",
-          "text": "0x75a9…786d • dust, dropped",
-          "wallet": "0x75a9275b1ae95ecde0b62e225b3dfc0b4720786d"
+          "text": "0x8f77…2193 • dust, dropped",
+          "wallet": "0x8f77d5ac5d0ef10f4cad534580d40994036a2193"
         },
         {
           "crawler": "SIEVE",
           "kind": "walk",
-          "text": "0x5107…403c • dust, dropped",
-          "wallet": "0x510775f29e8182d725b252fe6438d2934aa6403c"
+          "text": "0x6dee…0f95 • dust, dropped",
+          "wallet": "0x6dee520d9cc7aa13b72c268173f40265f8910f95"
         },
         {
           "crawler": "SIEVE",
           "kind": "walk",
-          "text": "0x3e65…7efb • dust, dropped",
-          "wallet": "0x3e654fcccec5d71b9c5e7ea97e3ebc64bbb67efb"
+          "text": "0x36bc…ac6f • dust, dropped",
+          "wallet": "0x36bcfcf8cdd3f4efa95a2dbeb084db2949e9ac6f"
         },
         {
           "crawler": "SIEVE",
           "kind": "walk",
-          "text": "0x6332…eee2 • dust, dropped",
-          "wallet": "0x63324e57c31a4ff63ce00b4882ad3e335768eee2"
+          "text": "0xe678…3f95 • dust, dropped",
+          "wallet": "0xe6786b71a8c6733daecc8d6b340ac7c4bdd03f95"
         },
         {
           "crawler": "SIEVE",
@@ -894,8 +882,14 @@
         },
         {
           "crawler": "SIEVE",
+          "kind": "walk",
+          "text": "0x074d…c97e • first trade of its life, dropped",
+          "wallet": "0x074d5cd25a66c8173ccaa94be5a40e71ae00c97e"
+        },
+        {
+          "crawler": "SIEVE",
           "kind": "verdict",
-          "text": "250 removed · 61 clean"
+          "text": "233 removed · 64 clean"
         }
       ]
     },
@@ -916,45 +910,742 @@
       ]
     }
   ],
+  "chart": [
+    {
+      "t": 1791309013,
+      "o": 1.7494532958450482e-9,
+      "h": 3.3778045868238415e-8,
+      "l": 1.7494532958450482e-9,
+      "c": 3.1077574522161407e-8,
+      "v": 40.81264223671096
+    },
+    {
+      "t": 1791309118,
+      "o": 3.1077574522161407e-8,
+      "h": 3.373657790184242e-8,
+      "l": 1.622965209598187e-8,
+      "c": 1.6300512742219153e-8,
+      "v": 14.395983977143391
+    },
+    {
+      "t": 1791309224,
+      "o": 1.6300512742219153e-8,
+      "h": 2.2569199355588345e-8,
+      "l": 1.2525780214908834e-8,
+      "c": 1.414153537263202e-8,
+      "v": 8.997072591609804
+    },
+    {
+      "t": 1791309329,
+      "o": 1.414153537263202e-8,
+      "h": 1.788649977703863e-8,
+      "l": 9.065194369272379e-9,
+      "c": 1.254340455122906e-8,
+      "v": 4.875628214381285
+    },
+    {
+      "t": 1791309435,
+      "o": 1.254340455122906e-8,
+      "h": 1.6117506244420913e-8,
+      "l": 1.2495495377206101e-8,
+      "c": 1.521833498944344e-8,
+      "v": 1.8462197893510972
+    },
+    {
+      "t": 1791309540,
+      "o": 1.521833498944344e-8,
+      "h": 1.6100446227939668e-8,
+      "l": 1.2552511102016855e-8,
+      "c": 1.5302006007595886e-8,
+      "v": 2.363093453023643
+    },
+    {
+      "t": 1791309645,
+      "o": 1.5302006007595886e-8,
+      "h": 1.7438670911321394e-8,
+      "l": 1.504468492425725e-8,
+      "c": 1.6855579950819355e-8,
+      "v": 1.060433514190526
+    },
+    {
+      "t": 1791309751,
+      "o": 1.6855579950819355e-8,
+      "h": 2.3359017705489632e-8,
+      "l": 1.501212483956045e-8,
+      "c": 2.006075938308981e-8,
+      "v": 4.735302439552639
+    },
+    {
+      "t": 1791309856,
+      "o": 2.006075938308981e-8,
+      "h": 2.270555991670331e-8,
+      "l": 1.648949496443136e-8,
+      "c": 1.8094417118473397e-8,
+      "v": 3.6461684981072935
+    },
+    {
+      "t": 1791309962,
+      "o": 1.8094417118473397e-8,
+      "h": 2.3073553636286927e-8,
+      "l": 1.7672446671092793e-8,
+      "c": 2.0279931748723535e-8,
+      "v": 1.9831253367207
+    },
+    {
+      "t": 1791310067,
+      "o": 2.0279931748723535e-8,
+      "h": 2.8267324802234412e-8,
+      "l": 2.026833606030546e-8,
+      "c": 2.373358127808728e-8,
+      "v": 4.433272797882164
+    },
+    {
+      "t": 1791310172,
+      "o": 2.373358127808728e-8,
+      "h": 3.048762814620291e-8,
+      "l": 2.3658673425221073e-8,
+      "c": 2.944645371943067e-8,
+      "v": 2.142633718254
+    },
+    {
+      "t": 1791310278,
+      "o": 2.944645371943067e-8,
+      "h": 3.0280297377081594e-8,
+      "l": 2.517046281348051e-8,
+      "c": 2.519656491956965e-8,
+      "v": 1.8389564862414383
+    },
+    {
+      "t": 1791310383,
+      "o": 2.519656491956965e-8,
+      "h": 2.6903068591005855e-8,
+      "l": 1.8917665275379047e-8,
+      "c": 1.9038817803160344e-8,
+      "v": 2.454388195371587
+    },
+    {
+      "t": 1791310489,
+      "o": 1.9038817803160344e-8,
+      "h": 1.919452721731827e-8,
+      "l": 1.1069475487304208e-8,
+      "c": 1.768659840281649e-8,
+      "v": 4.379698638349369
+    },
+    {
+      "t": 1791310594,
+      "o": 1.768659840281649e-8,
+      "h": 2.259522394121235e-8,
+      "l": 1.768659840281649e-8,
+      "c": 1.9178611443335636e-8,
+      "v": 1.1277238209853242
+    },
+    {
+      "t": 1791310700,
+      "o": 1.9178611443335636e-8,
+      "h": 2.011392267027997e-8,
+      "l": 1.5318594441141422e-8,
+      "c": 1.93208629730577e-8,
+      "v": 1.3700275462346758
+    },
+    {
+      "t": 1791310805,
+      "o": 1.93208629730577e-8,
+      "h": 1.9414391116233385e-8,
+      "l": 1.0031703364814666e-8,
+      "c": 1.3210985270616393e-8,
+      "v": 2.521612650220202
+    },
+    {
+      "t": 1791310910,
+      "o": 1.3210985270616393e-8,
+      "h": 1.3210985270616393e-8,
+      "l": 1.0115029524158327e-8,
+      "c": 1.0678992238340654e-8,
+      "v": 1.1895030164903515
+    },
+    {
+      "t": 1791311016,
+      "o": 1.0678992238340654e-8,
+      "h": 1.1478990266036924e-8,
+      "l": 7.618144254294508e-9,
+      "c": 7.627477874247432e-9,
+      "v": 1.1411295712478826
+    },
+    {
+      "t": 1791311121,
+      "o": 7.627477874247432e-9,
+      "h": 9.446222462220094e-9,
+      "l": 7.300991573514605e-9,
+      "c": 8.705406475196198e-9,
+      "v": 0.6605277039288732
+    },
+    {
+      "t": 1791311227,
+      "o": 8.705406475196198e-9,
+      "h": 9.69430605274199e-9,
+      "l": 8.699405775234195e-9,
+      "c": 9.69430605274199e-9,
+      "v": 0.16319156544670943
+    },
+    {
+      "t": 1791311332,
+      "o": 9.69430605274199e-9,
+      "h": 9.699412104950744e-9,
+      "l": 8.012035425961589e-9,
+      "c": 8.012035425961589e-9,
+      "v": 0.3033420592319797
+    },
+    {
+      "t": 1791311437,
+      "o": 8.012035425961589e-9,
+      "h": 8.245274963174748e-9,
+      "l": 6.795439726205731e-9,
+      "c": 7.020071670500727e-9,
+      "v": 0.4553810976975675
+    },
+    {
+      "t": 1791311543,
+      "o": 7.020071670500727e-9,
+      "h": 7.020071670500727e-9,
+      "l": 6.847206231931684e-9,
+      "c": 6.99810513336825e-9,
+      "v": 0.07741432149254136
+    },
+    {
+      "t": 1791311648,
+      "o": 6.99810513336825e-9,
+      "h": 9.89891857953652e-9,
+      "l": 6.973301345201165e-9,
+      "c": 9.881782389645587e-9,
+      "v": 0.47861818235527054
+    },
+    {
+      "t": 1791311754,
+      "o": 9.881782389645587e-9,
+      "h": 1.0046600045434188e-8,
+      "l": 9.07133108550448e-9,
+      "c": 9.07133108550448e-9,
+      "v": 0.19023899132914684
+    },
+    {
+      "t": 1791311859,
+      "o": 9.07133108550448e-9,
+      "h": 9.55162282277458e-9,
+      "l": 9.07133108550448e-9,
+      "c": 9.55162282277458e-9,
+      "v": 0.07397241063369384
+    },
+    {
+      "t": 1791311964,
+      "o": 9.55162282277458e-9,
+      "h": 9.55162282277458e-9,
+      "l": 8.710518265978814e-9,
+      "c": 8.773999756027538e-9,
+      "v": 0.15024929939267287
+    },
+    {
+      "t": 1791312070,
+      "o": 8.773999756027538e-9,
+      "h": 8.858700866119268e-9,
+      "l": 8.773999756027538e-9,
+      "c": 8.834608248817437e-9,
+      "v": 0.017229155890015595
+    },
+    {
+      "t": 1791312175,
+      "o": 8.834608248817437e-9,
+      "h": 8.834608248817437e-9,
+      "l": 7.63272758002302e-9,
+      "c": 7.63272758002302e-9,
+      "v": 0.20532751941434937
+    },
+    {
+      "t": 1791312281,
+      "o": 7.63272758002302e-9,
+      "h": 9.215108539974942e-9,
+      "l": 6.8928868830115065e-9,
+      "c": 8.302349025325042e-9,
+      "v": 0.6641708697113241
+    },
+    {
+      "t": 1791312386,
+      "o": 8.302349025325042e-9,
+      "h": 9.008268196920972e-9,
+      "l": 8.302349025325042e-9,
+      "c": 9.008268196920972e-9,
+      "v": 0.13186923439279108
+    },
+    {
+      "t": 1791312491,
+      "o": 9.008268196920972e-9,
+      "h": 1.3001581116439991e-8,
+      "l": 8.974853921401928e-9,
+      "c": 1.2775645003747906e-8,
+      "v": 0.8709622672685238
+    },
+    {
+      "t": 1791312597,
+      "o": 1.2775645003747906e-8,
+      "h": 1.2796292582626764e-8,
+      "l": 9.882993039362132e-9,
+      "c": 1.1223770359872009e-8,
+      "v": 0.6581898883335959
+    },
+    {
+      "t": 1791312702,
+      "o": 1.1223770359872009e-8,
+      "h": 1.1309913388635924e-8,
+      "l": 1.0281466273320912e-8,
+      "c": 1.0281466273320912e-8,
+      "v": 0.17378291618107328
+    },
+    {
+      "t": 1791312808,
+      "o": 1.0281466273320912e-8,
+      "h": 1.333835336894006e-8,
+      "l": 9.893875464116724e-9,
+      "c": 1.333835336894006e-8,
+      "v": 0.530570236948334
+    },
+    {
+      "t": 1791312913,
+      "o": 1.333835336894006e-8,
+      "h": 1.333835336894006e-8,
+      "l": 1.0467512834118888e-8,
+      "c": 1.1653302901047868e-8,
+      "v": 0.6743085314339364
+    },
+    {
+      "t": 1791313018,
+      "o": 1.1653302901047868e-8,
+      "h": 1.2597522030919579e-8,
+      "l": 1.1651435649476815e-8,
+      "c": 1.2597522030919579e-8,
+      "v": 0.12605260919614708
+    },
+    {
+      "t": 1791313124,
+      "o": 1.2597522030919579e-8,
+      "h": 1.326108009962573e-8,
+      "l": 1.2597522030919579e-8,
+      "c": 1.326108009962573e-8,
+      "v": 0.08740439356268466
+    },
+    {
+      "t": 1791313229,
+      "o": 1.326108009962573e-8,
+      "h": 1.326108009962573e-8,
+      "l": 1.1247292206471062e-8,
+      "c": 1.1853510846592671e-8,
+      "v": 0.3554494261416191
+    },
+    {
+      "t": 1791313335,
+      "o": 1.1853510846592671e-8,
+      "h": 1.2006529935119126e-8,
+      "l": 1.1530827045101704e-8,
+      "c": 1.1530827045101704e-8,
+      "v": 0.10082252915387267
+    },
+    {
+      "t": 1791313440,
+      "o": 1.1530827045101704e-8,
+      "h": 1.1611634504276492e-8,
+      "l": 1.1530827045101704e-8,
+      "c": 1.1577448357399835e-8,
+      "v": 0.015644120535911656
+    },
+    {
+      "t": 1791313546,
+      "o": 1.1577448357399835e-8,
+      "h": 1.1647988368902551e-8,
+      "l": 1.152239472695851e-8,
+      "c": 1.1647988368902551e-8,
+      "v": 0.024579865139717754
+    },
+    {
+      "t": 1791313651,
+      "o": 1.1647988368902551e-8,
+      "h": 1.1647988368902551e-8,
+      "l": 1.0570922254241163e-8,
+      "c": 1.0754184257729404e-8,
+      "v": 0.17711035116092005
+    },
+    {
+      "t": 1791313756,
+      "o": 1.0754184257729404e-8,
+      "h": 1.0754184257729404e-8,
+      "l": 1.0258120488105998e-8,
+      "c": 1.0258120488105998e-8,
+      "v": 0.0805239332278577
+    },
+    {
+      "t": 1791313862,
+      "o": 1.0258120488105998e-8,
+      "h": 1.0258120488105998e-8,
+      "l": 1.0246002201614692e-8,
+      "c": 1.0246002201614692e-8,
+      "v": 0.001751992513063827
+    },
+    {
+      "t": 1791313967,
+      "o": 1.0246002201614692e-8,
+      "h": 1.0246002201614692e-8,
+      "l": 1.0009561833291293e-8,
+      "c": 1.00780241571392e-8,
+      "v": 0.04439287342002692
+    },
+    {
+      "t": 1791314073,
+      "o": 1.00780241571392e-8,
+      "h": 1.00780241571392e-8,
+      "l": 9.776056425542163e-9,
+      "c": 9.776056425542163e-9,
+      "v": 0.044366974364992096
+    },
+    {
+      "t": 1791314178,
+      "o": 9.776056425542163e-9,
+      "h": 9.776056425542163e-9,
+      "l": 9.470797699980741e-9,
+      "c": 9.470797699980741e-9,
+      "v": 0.047339561505476246
+    },
+    {
+      "t": 1791314283,
+      "o": 9.470797699980741e-9,
+      "h": 9.812711322019919e-9,
+      "l": 9.30364037777405e-9,
+      "c": 9.812711322019919e-9,
+      "v": 0.1014856088362606
+    },
+    {
+      "t": 1791314389,
+      "o": 9.812711322019919e-9,
+      "h": 9.812711322019919e-9,
+      "l": 9.79302157009336e-9,
+      "c": 9.79370674572846e-9,
+      "v": 0.0030124737855183143
+    },
+    {
+      "t": 1791314494,
+      "o": 9.79370674572846e-9,
+      "h": 9.79370674572846e-9,
+      "l": 9.114285722454694e-9,
+      "c": 9.16536829028712e-9,
+      "v": 0.11012696307013783
+    },
+    {
+      "t": 1791314600,
+      "o": 9.16536829028712e-9,
+      "h": 9.302593183006443e-9,
+      "l": 9.16536829028712e-9,
+      "c": 9.267563168454138e-9,
+      "v": 0.026226041156001665
+    },
+    {
+      "t": 1791314705,
+      "o": 9.267563168454138e-9,
+      "h": 9.267563168454138e-9,
+      "l": 9.181271613138414e-9,
+      "c": 9.223328794062233e-9,
+      "v": 0.019569985512591023
+    },
+    {
+      "t": 1791314810,
+      "o": 9.223328794062233e-9,
+      "h": 1.103686357719705e-8,
+      "l": 9.223328794062233e-9,
+      "c": 1.1029018792446015e-8,
+      "v": 0.2656031676560793
+    },
+    {
+      "t": 1791314916,
+      "o": 1.1029018792446015e-8,
+      "h": 1.1543457282188995e-8,
+      "l": 1.1029018792446015e-8,
+      "c": 1.1543457282188995e-8,
+      "v": 0.07088978574247312
+    },
+    {
+      "t": 1791315021,
+      "o": 1.1543457282188995e-8,
+      "h": 1.2054749601624736e-8,
+      "l": 1.1543457282188995e-8,
+      "c": 1.2054749601624736e-8,
+      "v": 0.06930644141462373
+    },
+    {
+      "t": 1791315127,
+      "o": 1.2054749601624736e-8,
+      "h": 1.2577974483272322e-8,
+      "l": 1.033655357764647e-8,
+      "c": 1.2577974483272322e-8,
+      "v": 0.5635905577071472
+    },
+    {
+      "t": 1791315232,
+      "o": 1.2577974483272322e-8,
+      "h": 1.3411653428159769e-8,
+      "l": 1.2577974483272322e-8,
+      "c": 1.3411653428159769e-8,
+      "v": 0.10706962708809281
+    },
+    {
+      "t": 1791315337,
+      "o": 1.3411653428159769e-8,
+      "h": 1.3941538914602172e-8,
+      "l": 1.3411653428159769e-8,
+      "c": 1.391597111159955e-8,
+      "v": 0.06950127509407307
+    },
+    {
+      "t": 1791315443,
+      "o": 1.391597111159955e-8,
+      "h": 1.391597111159955e-8,
+      "l": 1.2754383008989161e-8,
+      "c": 1.3064300153379877e-8,
+      "v": 0.26334178092289884
+    },
+    {
+      "t": 1791315548,
+      "o": 1.3064300153379877e-8,
+      "h": 1.3064300153379877e-8,
+      "l": 1.1875477379363624e-8,
+      "c": 1.1916638283684335e-8,
+      "v": 0.22062300452870864
+    },
+    {
+      "t": 1791315654,
+      "o": 1.1916638283684335e-8,
+      "h": 1.2064764604538165e-8,
+      "l": 1.1393555059124787e-8,
+      "c": 1.1400775055816778e-8,
+      "v": 0.11152507813030492
+    }
+  ],
+  "panels": {
+    "weaver": {
+      "nodes": 1056,
+      "edges": 1917,
+      "walletEdges": 6,
+      "routers": 44,
+      "firstBuyer": "0xd729bebb17a4d664659757b6becdac7dbddc4995",
+      "lastBuyer": "0x34398353e8361fce7032f471c4a82cc22173ffa2",
+      "fanout": [
+        3,
+        1,
+        1
+      ]
+    },
+    "tracker": {
+      "exitsByBucket": [
+        162,
+        93,
+        41,
+        42,
+        76,
+        96,
+        66,
+        41,
+        36,
+        10,
+        12,
+        17,
+        12,
+        10,
+        4,
+        7,
+        9,
+        7,
+        10,
+        2,
+        6,
+        4,
+        3,
+        7
+      ],
+      "recent": [
+        {
+          "wallet": "0x6bf3606f44d9a1a7073f2506217d38c97081e417",
+          "pct": 0.7738
+        },
+        {
+          "wallet": "0x6c7b09a8aab265fa77b421e3e0a4a4e1880308f5",
+          "pct": 0.3114
+        },
+        {
+          "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
+          "pct": 0.4705
+        },
+        {
+          "wallet": "0xd27e7a586860199ff3e6cb9d13247309c6587d0e",
+          "pct": 0.4004
+        },
+        {
+          "wallet": "0x5935f14b87921aa15a89b5ef509b8f8092381927",
+          "pct": 0.3677
+        }
+      ]
+    },
+    "snare": {
+      "rows": [
+        {
+          "wallet": "0x90b725447a8021526443cc3503a2282ea940d80b",
+          "pct": 9.2091,
+          "block": 1,
+          "exited": true
+        },
+        {
+          "wallet": "0x749b20f909b04ebfdd4ed8eea7b6c2cc0d06419f",
+          "pct": 8.9045,
+          "block": 1,
+          "exited": true
+        },
+        {
+          "wallet": "0x69af2d1d546d0e1f8587880a89b4f56db24064eb",
+          "pct": 8.8618,
+          "block": 1,
+          "exited": true
+        },
+        {
+          "wallet": "0x057d826e4fad8aa78acffbc4c3e42e1e7418283e",
+          "pct": 8.494,
+          "block": 1,
+          "exited": true
+        },
+        {
+          "wallet": "0xfee2f34375ba187b6a94682254b23d3a3c989152",
+          "pct": 7.9422,
+          "block": 1,
+          "exited": true
+        },
+        {
+          "wallet": "0x910651c0248d79d744c2af939189f1da1262537f",
+          "pct": 6.5881,
+          "block": 1,
+          "exited": true
+        }
+      ]
+    },
+    "scout": {
+      "rows": [
+        {
+          "wallet": "0xd07737c6a5400e7e91649d9f0362213f48d41060",
+          "winrate": 90,
+          "markets": 17,
+          "smart": true
+        },
+        {
+          "wallet": "0xc1fb9d5207af2f485aa675b968b162073955685b",
+          "winrate": 85.71428571428571,
+          "markets": 29,
+          "smart": true
+        },
+        {
+          "wallet": "0xe543ad841acd0e7b8a0e5120ea819c1daa696ba3",
+          "winrate": 82.10526315789474,
+          "markets": 116,
+          "smart": true
+        },
+        {
+          "wallet": "0x25222bae2fedb2b0538e7d70c948fb2467ea6d05",
+          "winrate": 80,
+          "markets": 43,
+          "smart": false
+        },
+        {
+          "wallet": "0x0ba6c9c824b557a738ed5017d59a6490951ca11a",
+          "winrate": 75,
+          "markets": 5,
+          "smart": false
+        },
+        {
+          "wallet": "0x922acb0783996159519f489404849c993d89b7be",
+          "winrate": 75,
+          "markets": 22,
+          "smart": false
+        }
+      ],
+      "scanned": 297
+    },
+    "knot": {
+      "rows": [
+        {
+          "funder": "0xd729bebb17a4d664659757b6becdac7dbddc4995",
+          "wallets": 6,
+          "pct": 0,
+          "declared": true
+        }
+      ],
+      "read": 27,
+      "looked": 40
+    },
+    "ledger": {
+      "pnlBuckets": [
+        32,
+        71,
+        23,
+        5,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "avgPnlPct": -24.914453594644094,
+      "priceQuote": 1.1400775055816778e-8,
+      "priceUsd": 0.00003062
+    },
+    "sieve": {
+      "dust": 233,
+      "transferOnly": 0,
+      "virgins": 6,
+      "clean": 64
+    },
+    "oracle": {
+      "retention": 0.537081,
+      "kept": 0.044000000000000004,
+      "smart": 0.37063999999999997,
+      "sniper": 40,
+      "exit": 0,
+      "bundle": 0,
+      "dev": 15,
+      "base": 34.754645000000004
+    }
+  },
   "holders": [
+    {
+      "wallet": "0x528bb6cbf8c8c9c42a46cb09a58357e920b599af",
+      "share": 3.2819,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 1004.9285427085676,
+      "pnlPct": null,
+      "winrate": null
+    },
+    {
+      "wallet": "0xe015ac4dcc60a7abdf533c71498c6f3da551b8cb",
+      "share": 3.0424,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 931.6016536192046,
+      "pnlPct": null,
+      "winrate": null
+    },
     {
       "wallet": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2",
       "share": 2.6569,
       "flags": [
         "short history"
       ],
-      "valueUsd": 760.4133599613245,
-      "pnlPct": 21.080097778976533,
-      "winrate": null
-    },
-    {
-      "wallet": "0x528bb6cbf8c8c9c42a46cb09a58357e920b599af",
-      "share": 2.5661,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 734.4197660689669,
-      "pnlPct": null,
-      "winrate": null
-    },
-    {
-      "wallet": "0x1c66ae54d5e4ee86980c90edbc55ddb29161b4ea",
-      "share": 2.4569,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 703.1657943862,
-      "pnlPct": 47.321851546781524,
-      "winrate": 46.75675675675676
-    },
-    {
-      "wallet": "0xe015ac4dcc60a7abdf533c71498c6f3da551b8cb",
-      "share": 2.3413,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 670.094175995058,
-      "pnlPct": null,
+      "valueUsd": 813.5519595393346,
+      "pnlPct": 26.173325121319067,
       "winrate": null
     },
     {
@@ -963,19 +1654,9 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 644.3937654722268,
-      "pnlPct": -44.23566449987174,
+      "valueUsd": 689.424776336813,
+      "pnlPct": -41.889940937480205,
       "winrate": 39.52569169960474
-    },
-    {
-      "wallet": "0x74961dfc65b91f35c6c829b5da6713ef78258318",
-      "share": 1.7676,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 505.8919734415272,
-      "pnlPct": null,
-      "winrate": null
     },
     {
       "wallet": "0x6341fbf46df9fd701d06f872e7be0f128465eaf0",
@@ -983,8 +1664,8 @@
       "flags": [
         "smart"
       ],
-      "valueUsd": 447.1348110288385,
-      "pnlPct": 48.32701936206759,
+      "valueUsd": 478.3811290602039,
+      "pnlPct": 54.56638689216406,
       "winrate": 66.66666666666666
     },
     {
@@ -993,7 +1674,7 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 427.4674308565767,
+      "valueUsd": 457.33936872216555,
       "pnlPct": null,
       "winrate": null
     },
@@ -1003,9 +1684,29 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 403.26313640245314,
-      "pnlPct": -15.511430746953783,
+      "valueUsd": 431.44364907907465,
+      "pnlPct": -11.95742394543523,
       "winrate": 33.33333333333333
+    },
+    {
+      "wallet": "0x7fe407b3230a8e665b7c85f3c238cb74e81ac216",
+      "share": 1.3158,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 402.90104382169784,
+      "pnlPct": null,
+      "winrate": null
+    },
+    {
+      "wallet": "0x5340bd616d98b5845cd2fe62959ccc9bfe8e8030",
+      "share": 1.2146,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 371.92588138530874,
+      "pnlPct": -4.500364229568444,
+      "winrate": 46.2962962962963
     },
     {
       "wallet": "0xa225f16f154e177b652e51e264be3ad22fa84641",
@@ -1013,19 +1714,19 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 341.0478631515366,
+      "valueUsd": 364.88069775332116,
       "pnlPct": null,
       "winrate": null
     },
     {
-      "wallet": "0x46782366ff6d9adcf978d2877a26508266850721",
-      "share": 1.1055,
+      "wallet": "0x2943b2585dabfc68876955fffb2d60f958dec84e",
+      "share": 1.0926,
       "flags": [
         "clean"
       ],
-      "valueUsd": 316.39933707359063,
-      "pnlPct": 25.937528588907842,
-      "winrate": 31.372549019607842
+      "valueUsd": 334.55789689777197,
+      "pnlPct": null,
+      "winrate": null
     },
     {
       "wallet": "0xdae1e457b5fe801072ca6038650b4dfe9aa0d2ed",
@@ -1033,8 +1734,8 @@
       "flags": [
         "smart"
       ],
-      "valueUsd": 287.1540778118971,
-      "pnlPct": -61.901021223857086,
+      "valueUsd": 307.22074991615267,
+      "pnlPct": -60.2983898750437,
       "winrate": 66.66666666666666
     },
     {
@@ -1043,8 +1744,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 273.10743287621636,
-      "pnlPct": -13.026581546385717,
+      "valueUsd": 292.19250854890794,
+      "pnlPct": -9.368049706301093,
       "winrate": 43.66197183098591
     },
     {
@@ -1053,7 +1754,17 @@
       "flags": [
         "short history"
       ],
-      "valueUsd": 268.32982485466124,
+      "valueUsd": 287.08103553632867,
+      "pnlPct": null,
+      "winrate": null
+    },
+    {
+      "wallet": "0xbb3b614f7b70cb65e8175f2fd3f00cd26af45c6e",
+      "share": 0.9141,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 279.9073193215869,
       "pnlPct": null,
       "winrate": null
     },
@@ -1063,7 +1774,7 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 255.19259036755167,
+      "valueUsd": 273.0257553128733,
       "pnlPct": null,
       "winrate": null
     },
@@ -1073,8 +1784,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 243.43145330218766,
-      "pnlPct": -34.51963029072812,
+      "valueUsd": 260.4427358530044,
+      "pnlPct": -31.765202308693002,
       "winrate": 0
     },
     {
@@ -1083,9 +1794,19 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 240.5530851686838,
-      "pnlPct": -4.242243078356433,
+      "valueUsd": 257.3632238946575,
+      "pnlPct": -0.21419854633931446,
       "winrate": 31.25
+    },
+    {
+      "wallet": "0x8c618f4638c7d44e31fc90c30bcb737c03146b88",
+      "share": 0.8181,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 250.52203250205002,
+      "pnlPct": -29.822433655234992,
+      "winrate": 11.76470588235294
     },
     {
       "wallet": "0x078b62986b0956027c8e87384799b9e58ca40d4b",
@@ -1093,8 +1814,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 233.22778790621055,
-      "pnlPct": -53.579124113010955,
+      "valueUsd": 249.5260260547927,
+      "pnlPct": -51.62643264133167,
       "winrate": 43.75
     },
     {
@@ -1103,19 +1824,19 @@
       "flags": [
         "smart"
       ],
-      "valueUsd": 225.9573251295523,
-      "pnlPct": -43.78276576860428,
+      "valueUsd": 241.7474946005203,
+      "pnlPct": -41.41799104715592,
       "winrate": 71.63120567375887
     },
     {
-      "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b",
-      "share": 0.7873,
+      "wallet": "0x89bb40652857b1a4746b2bc8fff04b694c87adfe",
+      "share": 0.7836,
       "flags": [
-        "smart"
+        "clean"
       ],
-      "valueUsd": 225.35176777555245,
-      "pnlPct": 87.6765670882471,
-      "winrate": 57.14285714285714
+      "valueUsd": 239.96023996502728,
+      "pnlPct": null,
+      "winrate": null
     },
     {
       "wallet": "0x4930832149a9fc3910db865140c16b28294ad092",
@@ -1123,7 +1844,7 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 216.6479004034659,
+      "valueUsd": 231.78751608504984,
       "pnlPct": null,
       "winrate": null
     },
@@ -1133,9 +1854,19 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 212.07822013043963,
-      "pnlPct": -47.235828846820034,
+      "valueUsd": 226.8985010619868,
+      "pnlPct": -45.01630702495974,
       "winrate": 42.51497005988024
+    },
+    {
+      "wallet": "0xfde46066af48ba876ff6c24bdf42a9bc8440b50f",
+      "share": 0.7136,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 218.53159451088348,
+      "pnlPct": null,
+      "winrate": null
     },
     {
       "wallet": "0xc6e11464a401185728fabacad4851807573966a6",
@@ -1143,7 +1874,7 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 192.79031459619617,
+      "valueUsd": 206.26273350578361,
       "pnlPct": null,
       "winrate": null
     },
@@ -1153,8 +1884,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 181.7850109607337,
-      "pnlPct": -46.53722464126395,
+      "valueUsd": 194.48836602437686,
+      "pnlPct": -44.288316073716445,
       "winrate": 50
     },
     {
@@ -1163,8 +1894,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 177.17452744980164,
-      "pnlPct": -58.51267868954343,
+      "valueUsd": 189.55569638409946,
+      "pnlPct": -56.76751690709519,
       "winrate": 28.57142857142857
     },
     {
@@ -1173,19 +1904,9 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 176.9114686798691,
+      "valueUsd": 189.27425475113878,
       "pnlPct": null,
       "winrate": null
-    },
-    {
-      "wallet": "0x9bf265c742d96aacf1083ef24c9110240af0bea9",
-      "share": 0.5601,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 160.30739173605758,
-      "pnlPct": -32.426589812378914,
-      "winrate": 39.49367088607595
     },
     {
       "wallet": "0x1e459ccff8a2596500aa45175667a47e3cfcc965",
@@ -1193,8 +1914,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 157.48232641478302,
-      "pnlPct": -37.31049293461767,
+      "valueUsd": 168.4873806715813,
+      "pnlPct": -34.673462429024376,
       "winrate": 33.33333333333333
     },
     {
@@ -1203,8 +1924,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 157.14577108291107,
-      "pnlPct": 2.5171399516086517,
+      "valueUsd": 168.1273064485932,
+      "pnlPct": 6.829517541635244,
       "winrate": 37.5
     },
     {
@@ -1213,8 +1934,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 153.99728606412438,
-      "pnlPct": -44.828014957020855,
+      "valueUsd": 164.7588015123511,
+      "pnlPct": -42.50720858250697,
       "winrate": 75
     },
     {
@@ -1223,8 +1944,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 150.06153475550875,
-      "pnlPct": -40.264511850553205,
+      "valueUsd": 160.54801517168687,
+      "pnlPct": -37.75174198059225,
       "winrate": 41.17647058823529
     },
     {
@@ -1233,19 +1954,19 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 135.58823342024985,
-      "pnlPct": 74.5161064350405,
+      "valueUsd": 145.06330214283895,
+      "pnlPct": 81.85711640512359,
       "winrate": 36.144578313253014
     },
     {
-      "wallet": "0xdf43beb3f9759e0474e155ffb1e59b3f029e041b",
-      "share": 0.4515,
+      "wallet": "0xd694f1abe27a69b55850ef8ede3555c2dd5930e7",
+      "share": 0.4705,
       "flags": [
         "clean"
       ],
-      "valueUsd": 129.22393443840497,
-      "pnlPct": null,
-      "winrate": null
+      "valueUsd": 144.07558748456592,
+      "pnlPct": 38.94328495288886,
+      "winrate": 20
     },
     {
       "wallet": "0x60e2809a42790565f58557bf114d85157da41602",
@@ -1253,39 +1974,9 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 128.5679932204325,
-      "pnlPct": -48.8205165438949,
+      "valueUsd": 137.5524791198338,
+      "pnlPct": -46.66765451877964,
       "winrate": 36
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "share": 0.437,
-      "flags": [
-        "smart"
-      ],
-      "valueUsd": 125.09019102765826,
-      "pnlPct": 17.548168402741684,
-      "winrate": 55.020242914979754
-    },
-    {
-      "wallet": "0x27ac77432c233afe1ea9fbe9d59b803e9c697f6e",
-      "share": 0.4301,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 123.10315317215363,
-      "pnlPct": null,
-      "winrate": 39.795918367346935
-    },
-    {
-      "wallet": "0x8c618f4638c7d44e31fc90c30bcb737c03146b88",
-      "share": 0.4292,
-      "flags": [
-        "clean"
-      ],
-      "valueUsd": 122.84209872811589,
-      "pnlPct": -47.06974872304458,
-      "winrate": 11.76470588235294
     },
     {
       "wallet": "0x092c35d08a994c2416f716f837b966faf859da1d",
@@ -1293,8 +1984,8 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 121.0549829367991,
-      "pnlPct": -31.158921758003427,
+      "valueUsd": 129.51445064726724,
+      "pnlPct": -28.263125765019375,
       "winrate": 42.30769230769231
     },
     {
@@ -1303,19 +1994,29 @@
       "flags": [
         "clean"
       ],
-      "valueUsd": 120.44230152152646,
+      "valueUsd": 128.85895431827885,
       "pnlPct": null,
       "winrate": null
     },
     {
-      "wallet": "0xd27e7a586860199ff3e6cb9d13247309c6587d0e",
-      "share": 0.4004,
+      "wallet": "0x4ce4718166171ffed44c6d52dcfda4514fdef618",
+      "share": 0.4173,
       "flags": [
         "clean"
       ],
-      "valueUsd": 114.6204168375502,
-      "pnlPct": -23.74626347183815,
-      "winrate": 44.25531914893617
+      "valueUsd": 127.79263748920897,
+      "pnlPct": -1.8945158272667475,
+      "winrate": 54.347826086956516
+    },
+    {
+      "wallet": "0x46133aa68c84dbe1f0269b183b1db737ac8fc79c",
+      "share": 0.4087,
+      "flags": [
+        "clean"
+      ],
+      "valueUsd": 125.14795398585,
+      "pnlPct": -3.92482023821204,
+      "winrate": 50
     }
   ],
   "fills": [
@@ -1326,8 +2027,8 @@
       "ts": 1791309077,
       "tokens": 168703.63238022974,
       "quote": 0.00316899,
-      "usd": 8.5412836773,
-      "estimated": true
+      "usd": 8.5200197544,
+      "estimated": false
     },
     {
       "wallet": "0x6dd8aee3b08ea00eee68b470bc75d6a130abfab5",
@@ -1335,9 +2036,9 @@
       "block": 81820795,
       "ts": 1791309135,
       "tokens": 156783.30766059435,
-      "quote": 0.0048019801980198,
-      "usd": 12.942633168316826,
-      "estimated": true
+      "quote": 0.004862318791989882,
+      "usd": 13.072635811392317,
+      "estimated": false
     },
     {
       "wallet": "0xd07737c6a5400e7e91649d9f0362213f48d41060",
@@ -1345,9 +2046,9 @@
       "block": 81820862,
       "ts": 1791309142,
       "tokens": 13441.943000076442,
-      "quote": 0.000355311,
-      "usd": 0.9576590789699999,
-      "estimated": true
+      "quote": 0.0003571859129916761,
+      "usd": 0.9603157582329007,
+      "estimated": false
     },
     {
       "wallet": "0x140f10ccb221203c370b98f2346697ef531c7eaf",
@@ -1355,9 +2056,9 @@
       "block": 81821030,
       "ts": 1791309159,
       "tokens": 69323.00200264828,
-      "quote": 0.0014977050925126722,
-      "usd": 4.03671960469663,
-      "estimated": true
+      "quote": 0.0019206,
+      "usd": 5.163648336,
+      "estimated": false
     },
     {
       "wallet": "0xc1fb9d5207af2f485aa675b968b162073955685b",
@@ -1365,49 +2066,9 @@
       "block": 81821397,
       "ts": 1791309196,
       "tokens": 39406.97278071748,
-      "quote": 0.0009603,
-      "usd": 2.588267781,
-      "estimated": true
-    },
-    {
-      "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b",
-      "kind": "buy",
-      "block": 81821901,
-      "ts": 1791309247,
-      "tokens": 845634.2111171625,
-      "quote": 0.008925793842722794,
-      "usd": 24.057424370475463,
-      "estimated": true
-    },
-    {
-      "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b",
-      "kind": "buy",
-      "block": 81822141,
-      "ts": 1791309272,
-      "tokens": 1162446.160900928,
-      "quote": 0.012269790707448915,
-      "usd": 33.07039880006584,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81823562,
-      "ts": 1791309417,
-      "tokens": 3592451.6896107015,
-      "quote": 0.04023898209560043,
-      "usd": 108.45492127280897,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81824665,
-      "ts": 1791309529,
-      "tokens": 3592451.6896107015,
-      "quote": 0.048440876949762644,
-      "usd": 130.56124241638676,
-      "estimated": true
+      "quote": 0.0009609241182516218,
+      "usd": 2.58350214736658,
+      "estimated": false
     },
     {
       "wallet": "0x140f10ccb221203c370b98f2346697ef531c7eaf",
@@ -1415,39 +2076,29 @@
       "block": 81825533,
       "ts": 1791309618,
       "tokens": 64022.76644524772,
-      "quote": 0.0013831949074873278,
-      "usd": 3.7280837383033703,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81826953,
-      "ts": 1791309762,
-      "tokens": 3283516.455478644,
-      "quote": 0.036778604495842894,
-      "usd": 99.12826933951048,
-      "estimated": true
+      "quote": 0.0009603,
+      "usd": 2.581824168,
+      "estimated": false
     },
     {
       "wallet": "0x2e5453a5f77a80fe7bfd09d98fd53d2cf2f46bbc",
       "kind": "buy",
       "block": 81828030,
-      "ts": 1791309872,
+      "ts": 1791309873,
       "tokens": 1068796.4148152664,
-      "quote": 0.020800084742025084,
-      "usd": 56.061844402637945,
-      "estimated": true
+      "quote": 0.019206,
+      "usd": 51.63648336,
+      "estimated": false
     },
     {
       "wallet": "0x2e5453a5f77a80fe7bfd09d98fd53d2cf2f46bbc",
       "kind": "buy",
       "block": 81828051,
-      "ts": 1791309874,
+      "ts": 1791309875,
       "tokens": 1046679.8024022274,
-      "quote": 0.020369668428851684,
-      "usd": 54.90175622623108,
-      "estimated": true
+      "quote": 0.019206,
+      "usd": 51.63648336,
+      "estimated": false
     },
     {
       "wallet": "0x2e5453a5f77a80fe7bfd09d98fd53d2cf2f46bbc",
@@ -1455,9 +2106,9 @@
       "block": 81828251,
       "ts": 1791309895,
       "tokens": 1001916.5338950716,
-      "quote": 0.019498520504539277,
-      "usd": 52.55377736026958,
-      "estimated": true
+      "quote": 0.019206,
+      "usd": 51.63648336,
+      "estimated": false
     },
     {
       "wallet": "0x2e5453a5f77a80fe7bfd09d98fd53d2cf2f46bbc",
@@ -1465,29 +2116,9 @@
       "block": 81828347,
       "ts": 1791309905,
       "tokens": 4777691.984371441,
-      "quote": 0.09297972632458394,
-      "usd": 250.60546697086136,
-      "estimated": true
-    },
-    {
-      "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b",
-      "kind": "sell",
-      "block": 81828967,
-      "ts": 1791309968,
-      "tokens": 2008080.3720180904,
-      "quote": 0.036002871170484646,
-      "usd": 97.03745857967215,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81830130,
-      "ts": 1791310086,
-      "tokens": 3283516.455478644,
-      "quote": 0.04427517203428226,
-      "usd": 119.33354292883995,
-      "estimated": true
+      "quote": 0.09603000000000002,
+      "usd": 258.18241680000006,
+      "estimated": false
     },
     {
       "wallet": "0xf3cd568a1622a9af7beb0b88177dce35823e7f79",
@@ -1495,29 +2126,19 @@
       "block": 81831144,
       "ts": 1791310190,
       "tokens": 120253.52660928472,
-      "quote": 0.0019813372790894674,
-      "usd": 5.340238928211469,
-      "estimated": true
+      "quote": 0.0028809000000000005,
+      "usd": 7.745472504000001,
+      "estimated": false
     },
     {
       "wallet": "0xdae1e457b5fe801072ca6038650b4dfe9aa0d2ed",
       "kind": "buy",
       "block": 81832003,
-      "ts": 1791310277,
+      "ts": 1791310278,
       "tokens": 10033336.05212778,
       "quote": 0.28811881188118815,
-      "usd": 776.55799009901,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81834312,
-      "ts": 1791310513,
-      "tokens": 3273906.9023113544,
-      "quote": 0.03667096807613444,
-      "usd": 98.83816012656287,
-      "estimated": true
+      "usd": 774.6247128712872,
+      "estimated": false
     },
     {
       "wallet": "0xf3cd568a1622a9af7beb0b88177dce35823e7f79",
@@ -1525,69 +2146,39 @@
       "block": 81834923,
       "ts": 1791310575,
       "tokens": 121944.34481351644,
-      "quote": 0.0020091957646962318,
-      "usd": 5.4153250687128125,
-      "estimated": true
+      "quote": 0.0019205999999999997,
+      "usd": 5.163648336,
+      "estimated": false
     },
     {
       "wallet": "0xb84efaef8693965d1153300ad268a024b2c6a19c",
       "kind": "buy",
       "block": 81835282,
-      "ts": 1791310611,
+      "ts": 1791310612,
       "tokens": 192860.14921463255,
-      "quote": 0.003556235937059611,
-      "usd": 9.585016034078658,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81835676,
-      "ts": 1791310652,
-      "tokens": 3273906.9023113544,
-      "quote": 0.04414559612826101,
-      "usd": 118.98430087661805,
-      "estimated": true
+      "quote": 0.003556235937059612,
+      "usd": 9.561153690940989,
+      "estimated": false
     },
     {
       "wallet": "0xe543ad841acd0e7b8a0e5120ea819c1daa696ba3",
       "kind": "buy",
       "block": 81836616,
-      "ts": 1791310747,
+      "ts": 1791310748,
       "tokens": 1141991.0484895357,
-      "quote": 0.017790478672064028,
-      "usd": 47.950143450454014,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81836697,
-      "ts": 1791310756,
-      "tokens": 3226837.3674633517,
-      "quote": 0.036143743124028745,
-      "usd": 97.41714652990095,
-      "estimated": true
+      "quote": 0.017790478672064024,
+      "usd": 47.83076933856445,
+      "estimated": false
     },
     {
       "wallet": "0x7622b55265087b4305491d69375b270f2d38a720",
       "kind": "buy",
       "block": 81837018,
-      "ts": 1791310788,
+      "ts": 1791310789,
       "tokens": 34845.680142270336,
-      "quote": 0.00028470778454007666,
-      "usd": 0.7673643504373324,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81837547,
-      "ts": 1791310842,
-      "tokens": 3226837.3674633517,
-      "quote": 0.04351090713515676,
-      "usd": 117.27364267417397,
-      "estimated": true
+      "quote": 0.0006722099999999999,
+      "usd": 1.8072769175999996,
+      "estimated": false
     },
     {
       "wallet": "0xf618a84e0f292b2e0405b8fe8d7b4a7a72580f60",
@@ -1596,168 +2187,68 @@
       "ts": 1791310869,
       "tokens": 165038.27041393085,
       "quote": 0.0028809,
-      "usd": 7.764803343,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81837876,
-      "ts": 1791310876,
-      "tokens": 3711771.545165441,
-      "quote": 0.04157548149660897,
-      "usd": 112.05714801336525,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81839802,
-      "ts": 1791311072,
-      "tokens": 3711771.545165441,
-      "quote": 0.05004979446347789,
-      "usd": 134.89770952357804,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81840031,
-      "ts": 1791311096,
-      "tokens": 4448155.1262388155,
-      "quote": 0.049823699787198326,
-      "usd": 134.28832332544204,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81840889,
-      "ts": 1791311183,
-      "tokens": 4448155.1262388155,
-      "quote": 0.05997924363095338,
-      "usd": 161.66025598119973,
-      "estimated": true
+      "usd": 7.745472504,
+      "estimated": false
     },
     {
       "wallet": "0x7622b55265087b4305491d69375b270f2d38a720",
       "kind": "buy",
       "block": 81840991,
-      "ts": 1791311193,
+      "ts": 1791311194,
       "tokens": 552814.8696856517,
-      "quote": 0.004516792215459924,
-      "usd": 12.173974554562669,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81841094,
-      "ts": 1791311204,
-      "tokens": 4398397.155757258,
-      "quote": 0.04926636171940714,
-      "usd": 132.78614675146648,
-      "estimated": true
+      "quote": 0.00412929,
+      "usd": 11.101843922399999,
+      "estimated": false
     },
     {
       "wallet": "0xf3cd568a1622a9af7beb0b88177dce35823e7f79",
       "kind": "buy",
       "block": 81841770,
-      "ts": 1791311273,
+      "ts": 1791311274,
       "tokens": 107503.70484582448,
-      "quote": 0.0017712669562143,
-      "usd": 4.774042689075716,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81842951,
-      "ts": 1791311393,
-      "tokens": 4398397.155757258,
-      "quote": 0.059308303578415544,
-      "usd": 159.85189138579605,
-      "estimated": true
-    },
-    {
-      "wallet": "0xfc7657fe49f0aad29824ec1bbaebbc10398bb67b",
-      "kind": "buy",
-      "block": 81844387,
-      "ts": 1791311540,
-      "tokens": 4158042.119663335,
-      "quote": 0.04388874794982829,
-      "usd": 118.2920256867337,
-      "estimated": true
+      "quote": 0.0009602999999999999,
+      "usd": 2.581824168,
+      "estimated": false
     },
     {
       "wallet": "0x6341fbf46df9fd701d06f872e7be0f128465eaf0",
       "kind": "buy",
       "block": 81845557,
-      "ts": 1791311659,
+      "ts": 1791311660,
       "tokens": 13235153.001390968,
-      "quote": 0.09762213197326561,
-      "usd": 263.1180036435836,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81845558,
-      "ts": 1791311659,
-      "tokens": 4705707.022410043,
-      "quote": 0.052708533609374233,
-      "usd": 142.06372938133808,
-      "estimated": true
+      "quote": 0.09603,
+      "usd": 258.1824168,
+      "estimated": false
     },
     {
       "wallet": "0x6341fbf46df9fd701d06f872e7be0f128465eaf0",
       "kind": "buy",
       "block": 81845750,
-      "ts": 1791311678,
+      "ts": 1791311679,
       "tokens": 2388006.014291717,
-      "quote": 0.017613868026734387,
-      "usd": 47.474130076416394,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "sell",
-      "block": 81848639,
-      "ts": 1791311973,
-      "tokens": 4705707.022410043,
-      "quote": 0.06345209192190993,
-      "usd": 171.02051979436615,
-      "estimated": true
-    },
-    {
-      "wallet": "0xbb75f6e4bde3dfa3716239e02274175f37892cc7",
-      "kind": "buy",
-      "block": 81851885,
-      "ts": 1791312304,
-      "tokens": 4370726.451001337,
-      "quote": 0.048956422689060204,
-      "usd": 131.9507773811433,
-      "estimated": true
+      "quote": 0.019206,
+      "usd": 51.63648336,
+      "estimated": false
     },
     {
       "wallet": "0x2becf72aa8d1628b2988f936643e19caecf2fbca",
       "kind": "buy",
       "block": 81855117,
-      "ts": 1791312633,
+      "ts": 1791312635,
       "tokens": 393933.3788077887,
-      "quote": 0.0043098521559489554,
-      "usd": 11.616215220364541,
-      "estimated": true
+      "quote": 0.00432135,
+      "usd": 11.618208756,
+      "estimated": false
     },
     {
       "wallet": "0x2becf72aa8d1628b2988f936643e19caecf2fbca",
       "kind": "buy",
       "block": 81855992,
-      "ts": 1791312722,
+      "ts": 1791312724,
       "tokens": 169923.68352277906,
-      "quote": 0.0018590604228406085,
-      "usd": 5.010669785869607,
-      "estimated": true
+      "quote": 0.0019205999999999997,
+      "usd": 5.163648336,
+      "estimated": false
     }
   ],
   "graph": {
@@ -1853,19 +2344,7 @@
         "state": "neutral"
       },
       {
-        "id": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2",
-        "layer": 2,
-        "kind": "holder",
-        "state": "held"
-      },
-      {
         "id": "0x528bb6cbf8c8c9c42a46cb09a58357e920b599af",
-        "layer": 2,
-        "kind": "holder",
-        "state": "held"
-      },
-      {
-        "id": "0x1c66ae54d5e4ee86980c90edbc55ddb29161b4ea",
         "layer": 2,
         "kind": "holder",
         "state": "held"
@@ -1877,13 +2356,13 @@
         "state": "held"
       },
       {
-        "id": "0xcc66036909d2c99fc70c4555f550f2038fa1675c",
+        "id": "0xcae4d7d5bab165c87d0bbbfda12856e3b8812db2",
         "layer": 2,
         "kind": "holder",
         "state": "held"
       },
       {
-        "id": "0x74961dfc65b91f35c6c829b5da6713ef78258318",
+        "id": "0xcc66036909d2c99fc70c4555f550f2038fa1675c",
         "layer": 2,
         "kind": "holder",
         "state": "held"
@@ -1907,13 +2386,25 @@
         "state": "held"
       },
       {
+        "id": "0x7fe407b3230a8e665b7c85f3c238cb74e81ac216",
+        "layer": 2,
+        "kind": "holder",
+        "state": "held"
+      },
+      {
+        "id": "0x5340bd616d98b5845cd2fe62959ccc9bfe8e8030",
+        "layer": 2,
+        "kind": "holder",
+        "state": "held"
+      },
+      {
         "id": "0xa225f16f154e177b652e51e264be3ad22fa84641",
         "layer": 2,
         "kind": "holder",
         "state": "held"
       },
       {
-        "id": "0x46782366ff6d9adcf978d2877a26508266850721",
+        "id": "0x2943b2585dabfc68876955fffb2d60f958dec84e",
         "layer": 2,
         "kind": "holder",
         "state": "held"
@@ -1937,6 +2428,12 @@
         "state": "held"
       },
       {
+        "id": "0xbb3b614f7b70cb65e8175f2fd3f00cd26af45c6e",
+        "layer": 2,
+        "kind": "holder",
+        "state": "held"
+      },
+      {
         "id": "0x0be8c04b10a4531bd265858a9f0105e3f7d13d2f",
         "layer": 2,
         "kind": "holder",
@@ -1950,12 +2447,6 @@
       },
       {
         "id": "0x994bec5d3de7455bd8702dddde520df4e94d424b",
-        "layer": 2,
-        "kind": "holder",
-        "state": "held"
-      },
-      {
-        "id": "0x078b62986b0956027c8e87384799b9e58ca40d4b",
         "layer": 2,
         "kind": "holder",
         "state": "held"
@@ -2003,12 +2494,6 @@
         "state": "neutral"
       },
       {
-        "id": "0x1c66ae54d5e4ee86980c90edbc55ddb29161b4ea:history",
-        "layer": 3,
-        "kind": "history",
-        "state": "neutral"
-      },
-      {
         "id": "0xcc66036909d2c99fc70c4555f550f2038fa1675c:history",
         "layer": 3,
         "kind": "history",
@@ -2033,7 +2518,7 @@
         "state": "neutral"
       },
       {
-        "id": "0x46782366ff6d9adcf978d2877a26508266850721:history",
+        "id": "0x5340bd616d98b5845cd2fe62959ccc9bfe8e8030:history",
         "layer": 3,
         "kind": "history",
         "state": "neutral"
@@ -2255,11 +2740,11 @@
         32
       ],
       [
-        15,
+        17,
         39
       ],
       [
-        17,
+        18,
         40
       ],
       [
@@ -2267,11 +2752,11 @@
         41
       ],
       [
-        21,
+        20,
         42
       ],
       [
-        22,
+        21,
         43
       ],
       [
@@ -2279,46 +2764,41 @@
         44
       ],
       [
-        25,
+        26,
         45
       ],
       [
-        26,
+        27,
         46
       ],
       [
-        27,
+        28,
         47
       ],
       [
-        28,
+        31,
         48
       ],
       [
-        30,
+        32,
         49
-      ],
-      [
-        31,
-        50
       ]
     ]
   },
   "provenance": {
-    "block": 81856625,
-    "observedAt": "2026-10-06T18:53:07.000Z",
-    "rpcCalls": 0,
-    "ms": 0,
+    "block": 81885756,
+    "observedAt": "2026-10-06T19:42:39.000Z",
+    "rpcCalls": 13,
+    "ms": 29739,
     "sources": [
       "robinhood rpc",
       "wallet index",
       "blockscout",
       "blockscout rate",
-      "dexscreener price",
-      "tape replay"
+      "dexscreener price"
     ],
     "partial": false,
-    "indexTip": 81853883,
+    "indexTip": 81884882,
     "fundingRead": "27 of 40"
   }
 }

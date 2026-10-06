@@ -53,3 +53,13 @@ test("every report carries eight crawlers in brand order", () => {
   assert.deepEqual(r.crawlers.map((c) => c.name), ["WEAVER", "TRACKER", "SNARE", "SCOUT", "KNOT", "LEDGER", "SIEVE", "ORACLE"]);
   assert.equal(r.facts.length, 3);
 });
+
+test("the room's material: candles over the token's life and a panel per crawler", () => {
+  const r = crawlTape(fixture("twain"));
+  assert.equal(r.chart.length, 64);
+  for (const c of r.chart) assert.ok(c.h >= Math.max(c.o, c.c) && c.l <= Math.min(c.o, c.c));
+  assert.equal(r.panels.snare.rows.length, 6);
+  assert.ok(r.panels.snare.rows.every((s) => s.block === 1 && s.exited));
+  assert.equal(r.panels.tracker.exitsByBucket.reduce((a, b) => a + b, 0), Number(r.crawlers[1].stats[0].split(" ")[0].replace(/\s/g, "")));
+  assert.equal(r.panels.sieve.clean + r.panels.sieve.dust + r.panels.sieve.transferOnly + r.panels.sieve.virgins >= r.metrics.holders, true);
+});

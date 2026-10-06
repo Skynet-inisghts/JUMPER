@@ -5,11 +5,15 @@
   <a href="https://github.com/Skynet-inisghts/JUMPER/actions/workflows/ci.yml"><img src="https://github.com/Skynet-inisghts/JUMPER/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
   <img src="https://img.shields.io/badge/Node-22%2B-B47CFF?style=flat-square&amp;labelColor=07060A" alt="Node 22 or newer" />
   <img src="https://img.shields.io/badge/Robinhood_Chain-4663-B47CFF?style=flat-square&amp;labelColor=07060A" alt="Robinhood Chain 4663" />
+  <img src="https://img.shields.io/badge/crawlers-8-B47CFF?style=flat-square&amp;labelColor=07060A" alt="Eight crawlers" />
   <img src="https://img.shields.io/badge/signing-none-B47CFF?style=flat-square&amp;labelColor=07060A" alt="No signing" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-B47CFF?style=flat-square&amp;labelColor=07060A" alt="MIT license" /></a>
 </p>
 
 <p align="center"><strong>It can jump over any token.</strong><br/>A crawler terminal that takes a Pons v2 token apart through its holders.</p>
+<p align="center"><a href="https://jumper-crawler.vercel.app">Website</a> · <a href="https://jumper-crawler.vercel.app/?token=0xb163228b3c371a752f297605a1dce34e12c85983">Run a crawl</a> · <a href="#run-it">Start locally</a> · <a href="#the-eight-crawlers">Crawlers</a> · <a href="#relayers-and-routers">Relayers and routers</a> · <a href="#limits">Limits</a></p>
+
+<p align="center"><img src="assets/readme/site-hero.png" width="100%" alt="The JUMPER site: hero with the hanging mascot and live counters" /></p>
 
 ## What it is
 
@@ -24,6 +28,16 @@ JUMPER drops a swarm of eight crawlers on one token. Each walks one surface: the
 ```
 
 Read only. No wallet connection, no keys for the basics, no signatures, no transactions.
+
+### One crawl, start to finish
+
+<p align="center"><img src="assets/readme/site-crawl.png" width="100%" alt="A crawl running: contract, transactions, holders and wallet history in four layers, crawlers coloring nodes" /></p>
+
+The swarm walks the token in four layers: the contract, its transactions, the holders, and every other token those holders ever traded. Nodes turn green for wallets still holding, cyan for smart money, yellow for snipers, red for wallets that left. Each crawler's bar runs queued, running, done as the stream comes in.
+
+<p align="center"><img src="assets/readme/site-report.png" width="100%" alt="The report: band, score, the WEB, SILK, SNARE and EXIT quadrants, and the share card" /></p>
+
+The report folds it into four questions. **WEB**: do the early holders still hold, at 5m, 15m, 1h, 6h, 24h. **SILK**: does anyone here know what they are doing. **SNARE**: how much went before a human could read the ticker. **EXIT**: is anyone leaving right now. The card on the right is the share image, rendered on the server from the same report.
 
 ## Run it
 
@@ -44,11 +58,19 @@ pnpm jumper doctor                  # check every source the crawl reads
 
 A crawl takes 5 to 90 seconds, most of it reading the token's transfer log from the public RPC.
 
-<p align="center"><img src="assets/readme/card-twain.png" width="520" alt="JUMPER card for $TWAIN: 0 out of 100, TORN, do not touch" /></p>
+<p align="center"><img src="assets/readme/terminal.svg" width="100%" alt="jumper in a terminal: the text report for $TWAIN" /></p>
 
-A real crawl of $TWAIN, an hour after launch: six wallets took half the supply in the block after launch and all six had sold by the time the swarm arrived. The time of the crawl is printed on the card; it describes that moment, not today. [Captured data](assets/readme/card-twain.json)
+The same report in a terminal. A real crawl of $TWAIN, an hour after launch: six wallets took half the supply in the block after launch and all six had sold by the time the swarm arrived. [Captured data](assets/readme/terminal.json)
+
+### Share cards
+
+<p align="center"><img src="assets/readme/cards-row.png" width="100%" alt="Two JUMPER cards: $TWAIN 0 TORN and $UBIK 41 PATCHED" /></p>
+
+1080x1080, one per crawl, coloured by the band: red for TORN, yellow for PATCHED, green for TAUT. Both cards above are real crawls; the block and time they describe are printed on them and in [twain](assets/readme/card-twain.json) and [ubik](assets/readme/card-ubik.json). They describe that moment, not today.
 
 ## The eight crawlers
+
+<p align="center"><img src="assets/brand/crawlers.png" width="100%" alt="The eight crawlers: WEAVER, TRACKER, SNARE, SCOUT, KNOT, LEDGER, SIEVE, ORACLE" /></p>
 
 They run as a pipeline, each handing its result to the next.
 
@@ -81,6 +103,14 @@ exitPressure       net % of supply pushed to the curve or pool in the last hour
 winrate            average winrate of the smart cohort
 score              0-100
 ```
+
+<p align="center"><img src="assets/readme/site-room.png" width="100%" alt="The room: eight crawlers at their desks, each monitor showing its findings, the token's chart replaying on the back wall" /></p>
+
+On the site the swarm works in one room. The back wall replays the token's own price, curve trades first and pool swaps after graduation, with the tracked wallets' buys and sales marked where they happened; every desk monitor shows its crawler's findings from the same crawl: WEAVER's fan of holders, TRACKER's exits over time, SNARE's snipers block by block, SCOUT's winrates, KNOT's funding grid, LEDGER's book of returns, SIEVE's field, ORACLE's score and what built it.
+
+<p align="center"><img src="assets/readme/site-feed.png" width="100%" alt="Crawlers at work: the tracked wallets' fills, the holder table with flags and crawler.log" /></p>
+
+**Crawlers at work** replays the newest crawl: the tracked wallets' fills, the holder table with its flags, and `crawler.log` line by line, each line outlining the wallet it names.
 
 The score rises with what is still held, with first-minute buyers who stayed and with supply in smart wallets; it falls with sniped supply, exit pressure, bundled supply and a dev who sold. Every weight lives in [`src/score/config.ts`](src/score/config.ts), and the tests pin the three promises the formula keeps: monotone in holding, snipers and exits only subtract, smart money only adds.
 
@@ -142,6 +172,12 @@ test/          recorded tapes of real tokens and the tests over them
 ```
 
 Chain reading is adapted from [Gemhog](https://github.com/Skynet-inisghts/GEMHOG), which adapted it from bodkin and novamp (all MIT); file headers keep the attribution.
+
+## Brand
+
+<p align="center"><img src="assets/brand/logo-lockups.png" width="100%" alt="JUMPER logo lockups and palette" /></p>
+
+Every brand image is generated by [`assets/brand/mascot.py`](assets/brand/mascot.py): the spider is a sprite grid, re-posed by editing cells, never redrawn.
 
 ## License
 

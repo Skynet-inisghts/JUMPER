@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="924" viewBox="0 0 980 924">
+<rect width="980" height="924" rx="12" fill="#07060A" stroke="#241B33"/>
+<rect width="980" height="38" rx="12" fill="#110D18"/><rect y="26" width="980" height="12" fill="#110D18"/>
+<circle cx="24" cy="19" r="6" fill="#FF5D7A"/><circle cx="44" cy="19" r="6" fill="#FFD166"/><circle cx="64" cy="19" r="6" fill="#7DF0C8"/>
+<text x="490" y="24" text-anchor="middle" fill="#7E7490" font-family="JetBrains Mono, ui-monospace, Menlo, monospace" font-size="13">$ jumper 0xB163228b3c371A752F297605a1DcE34E12C85983</text>
+<g font-family="JetBrains Mono, ui-monospace, Menlo, monospace" font-size="13.5">
+<text x="28" y="64" xml:space="preserve"><tspan fill="#D8D2E4">JUMPER · crawler terminal · pons v2 · chain 4663</tspan></text>
+<text x="28" y="83" xml:space="preserve"></text>
+<text x="28" y="102" xml:space="preserve"><tspan fill="#D8D2E4">$TWAIN  twain</tspan></text>
+<text x="28" y="121" xml:space="preserve"><tspan fill="#D8D2E4">0xB163228b3c371A752F297605a1DcE34E12C85983 · pool · age 1h 2m · quote ETH</tspan></text>
+<text x="28" y="140" xml:space="preserve"></text>
+<text x="28" y="159" xml:space="preserve"><tspan fill="#D8D2E4">  </tspan><tspan fill="#FF5D7A">0 / 100  TORN</tspan><tspan fill="#D8D2E4">   </tspan><tspan fill="#FF5D7A">TORN · DO NOT TOUCH</tspan></text>
+<text x="28" y="178" xml:space="preserve"><tspan fill="#D8D2E4">  most of the web has already let go</tspan></text>
+<text x="28" y="197" xml:space="preserve"></text>
+<text x="28" y="216" xml:space="preserve"><tspan fill="#D8D2E4">  54% still holding · 46% already gone</tspan></text>
+<text x="28" y="235" xml:space="preserve"><tspan fill="#D8D2E4">  16 smart wallets on 5% · dev dumped it</tspan></text>
+<text x="28" y="254" xml:space="preserve"><tspan fill="#D8D2E4">  50% sniped · 311 holders</tspan></text>
+<text x="28" y="273" xml:space="preserve"></text>
+<text x="28" y="292" xml:space="preserve"><tspan fill="#D8D2E4">WEB    hold 54% · gone 46% · first minute kept 4%</tspan></text>
+<text x="28" y="311" xml:space="preserve"><tspan fill="#D8D2E4">       5m 13%  15m 7%  1h 4%  6h --  24h --</tspan></text>
+<text x="28" y="330" xml:space="preserve"><tspan fill="#B47CFF">SILK</tspan><tspan fill="#D8D2E4">   16 smart on 5% · winrate 69% · 300 scanned</tspan></text>
+<text x="28" y="349" xml:space="preserve"><tspan fill="#B47CFF">SNARE</tspan><tspan fill="#D8D2E4">  6 snipers on 50% · 6 out · 1 bundle on 0%</tspan></text>
+<text x="28" y="368" xml:space="preserve"><tspan fill="#B47CFF">EXIT</tspan><tspan fill="#D8D2E4">   16% to the exit in the last hour · dev dumped (100% of peak)</tspan></text>
+<text x="28" y="387" xml:space="preserve"></text>
+<text x="28" y="406" xml:space="preserve"><tspan fill="#D8D2E4">crawler   result</tspan></text>
+<text x="28" y="425" xml:space="preserve"><tspan fill="#D8D2E4">WEAVER    1 016 nodes      1 823 edges</tspan></text>
+<text x="28" y="444" xml:space="preserve"><tspan fill="#D8D2E4">TRACKER   716 gone         46% of supply</tspan></text>
+<text x="28" y="463" xml:space="preserve"><tspan fill="#D8D2E4">SNARE     6 wallets        50% of supply</tspan></text>
+<text x="28" y="482" xml:space="preserve"><tspan fill="#D8D2E4">SCOUT     16 found         69% winrate</tspan></text>
+<text x="28" y="501" xml:space="preserve"><tspan fill="#D8D2E4">KNOT      1 cluster        0% of supply</tspan></text>
+<text x="28" y="520" xml:space="preserve"><tspan fill="#D8D2E4">LEDGER    311 books        -26.3% avg</tspan></text>
+<text x="28" y="539" xml:space="preserve"><tspan fill="#D8D2E4">SIEVE     250 removed      clean set</tspan></text>
+<text x="28" y="558" xml:space="preserve"><tspan fill="#D8D2E4">ORACLE    0 / 100          THE WEB TORE</tspan></text>
+<text x="28" y="577" xml:space="preserve"></text>
+<text x="28" y="596" xml:space="preserve"><tspan fill="#D8D2E4">holder           share  flags</tspan></text>
+<text x="28" y="615" xml:space="preserve"><tspan fill="#D8D2E4">0xcae4…2db2         3%  short history</tspan></text>
+<text x="28" y="634" xml:space="preserve"><tspan fill="#D8D2E4">0x528b…99af         3%  clean</tspan></text>
+<text x="28" y="653" xml:space="preserve"><tspan fill="#D8D2E4">0x1c66…b4ea         2%  clean</tspan></text>
+<text x="28" y="672" xml:space="preserve"><tspan fill="#D8D2E4">0xe015…b8cb         2%  clean</tspan></text>
+<text x="28" y="691" xml:space="preserve"><tspan fill="#D8D2E4">0xcc66…675c         2%  clean</tspan></text>
+<text x="28" y="710" xml:space="preserve"><tspan fill="#D8D2E4">0x7496…8318         2%  clean</tspan></text>
+<text x="28" y="729" xml:space="preserve"><tspan fill="#D8D2E4">0x6341…eaf0         2%  smart</tspan></text>
+<text x="28" y="748" xml:space="preserve"><tspan fill="#D8D2E4">0x3037…b80c         1%  clean</tspan></text>
+<text x="28" y="767" xml:space="preserve"><tspan fill="#D8D2E4">0x234a…c3e3         1%  clean</tspan></text>
+<text x="28" y="786" xml:space="preserve"><tspan fill="#D8D2E4">0xa225…4641         1%  clean</tspan></text>
+<text x="28" y="805" xml:space="preserve"><tspan fill="#D8D2E4">0x4678…0721         1%  clean</tspan></text>
+<text x="28" y="824" xml:space="preserve"><tspan fill="#D8D2E4">0xdae1…d2ed         1%  smart</tspan></text>
+<text x="28" y="843" xml:space="preserve"><tspan fill="#D8D2E4">0x11b6…7dc3         1%  clean</tspan></text>
+<text x="28" y="862" xml:space="preserve"><tspan fill="#D8D2E4">0x1354…40a1       0.9%  short history</tspan></text>
+<text x="28" y="881" xml:space="preserve"><tspan fill="#D8D2E4">0x0be8…3d2f       0.9%  clean</tspan></text>
+</g>
+</svg>

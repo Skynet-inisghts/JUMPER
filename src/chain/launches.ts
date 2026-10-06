@@ -1,4 +1,4 @@
-import { decodeFunctionData, getAddress, parseEventLogs, type Address, type Hex } from "viem";
+import { decodeFunctionData, encodeAbiParameters, getAddress, keccak256, parseAbiParameters, parseEventLogs, type Address, type Hex } from "viem";
 import { curveAbi, erc20Abi, factoryAbi, PHASE_NAME, routerAbi, SELECTOR } from "./abi.js";
 import { ADDR, publicClient, ZERO } from "./chain.js";
 import { blockAtTime } from "./blocks.js";
@@ -38,6 +38,20 @@ export interface LaunchInfo {
   devTokens: bigint;
   /** Wallets declared exempt from the opening tax at launch: the declared bundle. */
   exemptions: Address[];
+  /** The Uniswap v4 pool id once graduated, null on the curve. */
+  poolId: Hex | null;
+}
+
+/**
+ * A v4 pool id is the keccak of its sorted PoolKey: both currencies
+ * ascending (native ETH is address zero), fee, tick spacing, hook.
+ * Pattern from Xray's pool reader, MIT.
+ */
+export function poolIdFor(token: string, pairToken: string, fee: number, tickSpacing: number, hook: string): Hex {
+  const a = token.toLowerCase();
+  const b = pairToken.toLowerCase();
+  const [c0, c1] = a < b ? [a, b] : [b, a];
+  return keccak256(encodeAbiParameters(parseAbiParameters("address, address, uint24, int24, address"), [c0 as Hex, c1 as Hex, fee, tickSpacing, hook as Hex]));
 }
 
 export interface LaunchHint {
@@ -164,5 +178,6 @@ export async function readLaunch(token: Address, hint?: LaunchHint): Promise<Lau
     devBuyWei,
     devTokens,
     exemptions,
+    poolId: Number(record.phase) >= 2 ? poolIdFor(token, record.pairToken, Number(record.poolFee), Number(record.tickSpacing), ADDR.ponsHook) : null,
   };
 }

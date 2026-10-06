@@ -1,7 +1,8 @@
 import type { Address } from "viem";
 import { readLaunch } from "./chain/launches.js";
 import { makeClock } from "./chain/blocks.js";
-import { readCurveTrades, readTransfers } from "./chain/logs.js";
+import { DeadlineError, readCurveTrades, readPoolSwaps, readTransfers } from "./chain/logs.js";
+import { ADDR } from "./chain/chain.js";
 import { indexConfigured, readBooks, readHistory } from "./chain/history.js";
 import { readFundingFor } from "./chain/funding.js";
 import { dexPriceUsd, ethUsd, tokenUsd } from "./chain/prices.js";
@@ -34,8 +35,14 @@ export interface CrawlResult {
   tape: Tape;
 }
 
-export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = () => {}): Promise<CrawlResult> {
+export interface CrawlOptions {
+  /** Give up reading logs after this many ms; the site sets it under its function limit. */
+  budgetMs?: number;
+}
+
+export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = () => {}, options: CrawlOptions = {}): Promise<CrawlResult> {
   const started = Date.now();
+  const deadline = options.budgetMs ? started + options.budgetMs : Infinity;
   const callsBefore = rpcCallCount();
   const sources = ["robinhood rpc"];
 
@@ -61,11 +68,30 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
   })();
   const booksP = indexConfigured() ? readBooks(launch.token, launch.curve).catch(() => null) : Promise.resolve(null);
 
-  const [transfers, trades] = await Promise.all([
+  const tokenIsCurrency0 = launch.token.toLowerCase() < launch.pairToken.toLowerCase();
+  const reads = Promise.all<[ReturnType<typeof readTransfers>, ReturnType<typeof readCurveTrades>, ReturnType<typeof readPoolSwaps>]>([
     readTransfers(launch.token, launch.launchBlock, toBlock, (done, total, logs) =>
-      onEvent({ type: "progress", crawler: "WEAVER", done, total, detail: `${logs} transfers` })),
-    readCurveTrades(launch.curve, launch.launchBlock, toBlock),
+      onEvent({ type: "progress", crawler: "WEAVER", done, total, detail: `${logs} transfers` }), deadline),
+    readCurveTrades(launch.curve, launch.launchBlock, toBlock, deadline),
+    launch.poolId
+      ? readPoolSwaps(ADDR.v4PoolManager, launch.poolId, tokenIsCurrency0, launch.launchBlock, toBlock, deadline)
+      : Promise.resolve({ events: [], complete: true }),
   ]);
+  let transfers: Awaited<typeof reads>[0];
+  let trades: Awaited<typeof reads>[1];
+  let swaps: Awaited<typeof reads>[2];
+  try {
+    [transfers, trades, swaps] = await reads;
+  } catch (error) {
+    if (error instanceof DeadlineError) {
+      const age = Math.round((clock.headTs - launch.launchedAt) / 86400);
+      throw new CrawlError(
+        `$${launch.symbol} has ${age >= 1 ? `${age} days` : "hours"} of history too busy to read inside one web crawl. ` +
+          `Run it locally, it has no time limit: pnpm jumper ${launch.token}`,
+      );
+    }
+    throw error;
+  }
 
   const tape: Tape = {
     version: 1,
@@ -95,7 +121,8 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
     secPerBlock: clock.secPerBlock,
     transfers: transfers.events.map((t) => ({ from: t.from, to: t.to, value: t.value, block: t.block, logIndex: t.logIndex })),
     trades: trades.events.map((t) => ({ kind: t.kind, wallet: t.wallet, quoteWei: t.quoteWei, tokens: t.tokens, taxWei: t.taxWei, block: t.block, logIndex: t.logIndex })),
-    logsComplete: transfers.complete && trades.complete,
+    swaps: swaps.events.map((s) => ({ buy: s.buy, tokens: s.tokens, quote: s.quote, price: s.price, block: s.block, logIndex: s.logIndex })),
+    logsComplete: transfers.complete && trades.complete && swaps.complete,
     history: null,
     historyTip: 0,
     books: null,
@@ -138,6 +165,9 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
     tape.books = books.wallets;
     if (books.price) tape.quotePerToken = books.price.quotePerToken;
   }
+  // the pool's newest swap is the freshest price once graduated
+  const lastSwap = tape.swaps?.at(-1);
+  if (lastSwap && lastSwap.price > 0) tape.quotePerToken = lastSwap.price;
   if (tape.quotePerToken === null) {
     // the newest curve trade prices the token when the index has nothing newer
     const last = [...tape.trades].reverse().find((t) => t.tokens > 0n);

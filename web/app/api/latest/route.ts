@@ -23,7 +23,8 @@ export async function GET() {
   if (indexConfigured()) {
     try {
       const { report } = await coalesce("latest", () => readLatest<Report>());
-      if (report && report.version === 1 && Array.isArray(report.crawlers)) {
+      // reports recorded before the room had panels and candles cannot fill it
+      if (report && report.version === 1 && Array.isArray(report.crawlers) && report.panels && Array.isArray(report.chart)) {
         cache.set("latest", report, 60_000);
         return NextResponse.json({ report, sample: false }, { headers });
       }

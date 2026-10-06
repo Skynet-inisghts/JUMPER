@@ -40,7 +40,7 @@ export function renderText(r: Report, color = false): string {
   const s = r.quadrants.silk;
   out.push(`SILK   ${s.online ? `${s.smart} smart on ${pctText(s.smartSupply)}${s.winrate === null ? "" : ` · winrate ${Math.round(s.winrate)}%`} · ${s.scanned} scanned` : "index offline, wallet histories not read"}`);
   const n = r.quadrants.snare;
-  out.push(`SNARE  ${n.sniperWallets} snipers on ${pctText(n.sniperSupply)} · ${n.sniperExited} out · ${n.bundles} bundles on ${pctText(n.bundleSupply)}`);
+  out.push(`SNARE  ${n.sniperWallets} sniper${n.sniperWallets === 1 ? "" : "s"} on ${pctText(n.sniperSupply)} · ${n.sniperExited} out · ${n.bundles} bundle${n.bundles === 1 ? "" : "s"} on ${pctText(n.bundleSupply)}`);
   const e = r.quadrants.exit;
   out.push(`EXIT   ${pctText(e.exitPressure)} to the exit in the last hour · dev ${e.devState}${e.devSoldPct ? ` (${e.devSoldPct}% of peak)` : ""}`);
   out.push("");

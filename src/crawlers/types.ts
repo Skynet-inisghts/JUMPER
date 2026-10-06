@@ -52,6 +52,15 @@ export interface TapeTrade {
   logIndex: number;
 }
 
+export interface TapeSwap {
+  buy: boolean;
+  tokens: bigint;
+  quote: bigint;
+  price: number;
+  block: number;
+  logIndex: number;
+}
+
 export interface Tape {
   version: 1;
   launch: TapeLaunch;
@@ -61,6 +70,8 @@ export interface Tape {
   secPerBlock: number;
   transfers: TapeTransfer[];
   trades: TapeTrade[];
+  /** Swaps on the v4 pool after graduation (absent on older tapes). */
+  swaps?: TapeSwap[];
   /** False when some log chunk was refused and never read: the crawl says so. */
   logsComplete: boolean;
   /** SCOUT: per-wallet records across every other Pons market; null when the index is offline. */
@@ -267,6 +278,17 @@ export interface Fill {
   estimated: boolean;
 }
 
+export interface Panels {
+  weaver: { nodes: number; edges: number; walletEdges: number; routers: number; firstBuyer: string | null; lastBuyer: string | null; fanout: number[] };
+  tracker: { exitsByBucket: number[]; recent: { wallet: string; pct: number }[] };
+  snare: { rows: { wallet: string; pct: number; block: number; exited: boolean }[] };
+  scout: { rows: { wallet: string; winrate: number | null; markets: number; smart: boolean }[]; scanned: number };
+  knot: { rows: { funder: string; wallets: number; pct: number; declared: boolean }[]; read: number; looked: number };
+  ledger: { pnlBuckets: number[]; avgPnlPct: number | null; priceQuote: number | null; priceUsd: number | null };
+  sieve: { dust: number; transferOnly: number; virgins: number; clean: number };
+  oracle: { retention: number; kept: number; smart: number; sniper: number; exit: number; bundle: number; dev: number; base: number };
+}
+
 export interface Report {
   version: 1;
   token: {
@@ -300,6 +322,10 @@ export interface Report {
   crawlers: CrawlerReport[];
   holders: HolderRow[];
   fills: Fill[];
+  /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
+  chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];
+  /** What each crawler's desk monitor shows: real rows from this crawl. */
+  panels: Panels;
   graph: { nodes: { id: string; layer: number; kind: "contract" | "tx" | "holder" | "history"; state: "held" | "smart" | "sniper" | "gone" | "neutral" }[]; links: [number, number][] };
   provenance: {
     block: number;
