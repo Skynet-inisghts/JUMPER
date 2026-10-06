@@ -147,7 +147,9 @@ export interface TrackerOut {
   partial: number; // wallets below 50% of peak but not at zero
   devState: "clean" | "sold half" | "dumped";
   devSoldPct: number;
-  exitPressureTokens: bigint; // sold in the last hour
+  exitPressureTokens: bigint; // net sold in the last hour, floored at zero
+  soldHour: bigint;
+  boughtHour: bigint;
 }
 
 export interface SnareOut {
@@ -255,6 +257,12 @@ export interface HolderRow {
   valueUsd: number | null;
   pnlPct: number | null;
   winrate: number | null;
+  /** Who this wallet is, in a few words: dev, sniper, bot, smart money, trader, first-timer. */
+  who: string;
+  /** Other Pons tokens it ever traded; null when the index did not read it. */
+  markets: number | null;
+  /** Seconds since it first got this token. */
+  heldSec: number;
 }
 
 export interface CrawlerReport {
@@ -327,7 +335,7 @@ export interface Report {
     web: { retention: Partial<Record<CheckpointLabel, number>>; hold: number; gone: number; firstMinuteKept: number | null; realRetention: number; stillIn: number; settled: number; flips: number; firstMinuteBots: number };
     silk: { smart: number; smartSupply: number; winrate: number | null; scanned: number; online: boolean };
     snare: { sniperSupply: number; sniperHeld: number; sniperWallets: number; sniperExited: number; bundles: number; bundleSupply: number };
-    exit: { exitPressure: number; devState: string; devSoldPct: number; takenOut: number; pairSymbol: string };
+    exit: { exitPressure: number; soldHour: number; boughtHour: number; devState: string; devSoldPct: number; takenOut: number; takenOutUsd: number | null; pairSymbol: string };
   };
   /** the three fact lines the card and the report print */
   facts: [string, string, string];

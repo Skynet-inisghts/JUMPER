@@ -2,6 +2,7 @@ import { bandOf, CRAWLERS, labelOf } from "../score/scale.js";
 import { scoreParts, type ScoreParts } from "../score/score.js";
 import { SCORE, THRESHOLDS } from "../score/config.js";
 import { isFlip } from "./snare.js";
+import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
   CrawlerName, CrawlerReport, Fill, Panels, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
@@ -132,7 +133,11 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
       web: { retention: snared.retention, hold, gone, firstMinuteKept, realRetention: Math.round(realRetention * 1000) / 10, stillIn: Math.round(stillIn * 1000) / 10, settled: Math.round(settledShare * 1000) / 10, flips, firstMinuteBots: snared.firstMinuteBots },
       silk: { smart: scouted.smart.length, smartSupply, winrate: metrics.winrate, scanned: scouted.scanned, online: scouted.online },
       snare: { sniperSupply, sniperHeld, sniperWallets: snared.snipers.length, sniperExited: snared.sniperExited, bundles: knotted.clusters.length, bundleSupply },
-      exit: { exitPressure, devState: tracked.devState, devSoldPct: Math.round(tracked.devSoldPct * 1000) / 10, takenOut, pairSymbol: tape.launch.pairSymbol },
+      exit: {
+        exitPressure, soldHour: pctOf(tracked.soldHour, supply), boughtHour: pctOf(tracked.boughtHour, supply),
+        devState: tracked.devState, devSoldPct: Math.round(tracked.devSoldPct * 1000) / 10,
+        takenOut, takenOutUsd: tape.quoteUsd !== null ? takenOut * tape.quoteUsd : null, pairSymbol: tape.launch.pairSymbol,
+      },
     },
     facts,
     crawlers: crawlerReports(tape, c, metrics),
@@ -144,14 +149,17 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
   };
 }
 
+/** The top fifty holders, each with a few words on who it is. */
 function holderRows(tape: Tape, c: Crawled): HolderRow[] {
   const dev = devSet(tape);
-  const snipers = new Set(c.snared.snipers.map((s) => s.wallet));
-  const smart = new Map(c.scouted.smart.map((s) => [s.wallet, s.winrate]));
+  const snipers = new Map(c.snared.snipers.map((s) => [s.wallet, s]));
+  const smart = new Map(c.scouted.smart.map((s) => [s.wallet, s]));
   const virgins = new Set(c.scouted.virgins);
   const shortHist = new Set(c.scouted.shortHistory);
   const clean = new Set(c.sieved.clean);
-  return c.web.holders.slice(0, 40).map((h) => {
+  const clusters = new Map<string, number>();
+  c.knotted.clusters.forEach((k) => k.wallets.forEach((w) => clusters.set(w, k.wallets.length)));
+  return c.web.holders.slice(0, 50).map((h) => {
     const flags: Flag[] = [];
     if (dev.has(h.address)) flags.push("deployer");
     if (snipers.has(h.address)) flags.push("sniper");
@@ -162,6 +170,24 @@ function holderRows(tape: Tape, c: Crawled): HolderRow[] {
     if (!flags.length && clean.has(h.address)) flags.push("clean");
     const book = c.books.books.get(h.address);
     const hist = tape.history?.[h.address];
+
+    // who it is, most telling first
+    let who: string;
+    const sn = snipers.get(h.address);
+    const sm = smart.get(h.address);
+    if (dev.has(h.address)) who = "the launcher's own wallet";
+    else if (sn) who = `sniper, bought in block +${sn.block - tape.launch.launchBlock}`;
+    else if (hist && hist.markets >= THRESHOLDS.botMarkets) who = `trading bot, ${grouped(hist.markets)} tokens traded`;
+    else if (hist && isBotRecord(hist)) who = `bot, won ${Math.round(hist.winrate ?? 0)}% of ${grouped(hist.positions)} trades`;
+    else if (sm) who = `smart money, ${Math.round(sm.winrate)}% winrate over ${sm.positions} closed`;
+    else if (clusters.has(h.address)) who = `bundle, funded with ${clusters.get(h.address)! - 1} other wallet${clusters.get(h.address) === 2 ? "" : "s"}`;
+    else if (h.bought === 0n && h.received > 0n) who = `got it by transfer from ${short(h.parent)}`;
+    else if (virgins.has(h.address)) who = "first trade of its life";
+    else if (hist && hist.markets > 0) who = `trader, ${grouped(hist.markets)} other token${hist.markets === 1 ? "" : "s"}${hist.winrate === null ? ", no closed trades" : `, ${Math.round(hist.winrate)}% winrate`}`;
+    else if (h.routed) who = "buys through a router, history not visible";
+    else if (!tape.history) who = "holder, history not read";
+    else who = "holder";
+
     return {
       wallet: h.address,
       share: pctOf(h.balance, tape.launch.totalSupply),
@@ -169,6 +195,9 @@ function holderRows(tape: Tape, c: Crawled): HolderRow[] {
       valueUsd: book?.valueUsd ?? null,
       pnlPct: book?.pnlPct ?? null,
       winrate: hist?.winrate ?? null,
+      who,
+      markets: hist ? hist.markets : null,
+      heldSec: Math.max(0, Math.round((tape.headBlock - h.firstBlock) * tape.secPerBlock)),
     };
   });
 }
@@ -383,7 +412,7 @@ function panels(tape: Tape, c: Crawled, parts: ScoreParts): Panels {
   const smartSet = new Set(scouted.smart.map((s) => s.wallet));
   const scoutRows = web.holders
     .map((h) => ({ h, rec: tape.history?.[h.address] }))
-    .filter((x) => x.rec && x.rec.markets > 0 && x.rec.markets < 5_000)
+    .filter((x) => x.rec && x.rec.markets > 0 && !isBotRecord(x.rec))
     .sort((a, b) => (b.rec!.winrate ?? -1) - (a.rec!.winrate ?? -1))
     .slice(0, 6)
     .map((x) => ({ wallet: x.h.address, winrate: x.rec!.winrate, markets: x.rec!.markets, smart: smartSet.has(x.h.address) }));

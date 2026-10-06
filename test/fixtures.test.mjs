@@ -42,12 +42,13 @@ test("$SODS: a quiet launch, no snipers, smart money present", () => {
   const r = crawlTape(fixture("sods"));
   assert.equal(r.metrics.sniperWallets, 0);
   assert.equal(r.metrics.holders, 80);
-  assert.equal(r.metrics.smart, 6);
+  // three of the six "smart" wallets won 98-99% of 150-600 trades: bots, not judgement
+  assert.equal(r.metrics.smart, 3);
   assert.equal(r.metrics.devState, "clean");
-  // 40% of real holders still in, all held supply settled, 8% in smart
-  // wallets; pulled down by 10% net selling in the last hour
-  assert.equal(r.score, 43);
-  assert.equal(r.band, "PATCHED");
+  // 40% of real holders still in, all held supply settled; smart money thin
+  // once the bots are out; pulled down by 10% net selling in the last hour
+  assert.equal(r.score, 32);
+  assert.equal(r.band, "TORN");
 });
 
 test("replays are deterministic", () => {

@@ -50,15 +50,17 @@ export function track(tape: Tape, web: WeaverOut): TrackerOut {
   const venueSet = new Set([...venues(tape), ...web.routers]);
   const since = tape.headBlock - Math.round(THRESHOLDS.exitWindowSec / tape.secPerBlock);
   let net = 0n;
+  let soldHour = 0n;
+  let boughtHour = 0n;
   for (let i = tape.transfers.length - 1; i >= 0; i--) {
     const t = tape.transfers[i];
     if (t.block < since) break;
     const from = lc(t.from);
     const to = lc(t.to);
-    if (venueSet.has(to) && web.wallets.has(from)) net += t.value;
-    else if (venueSet.has(from) && web.wallets.has(to)) net -= t.value;
+    if (venueSet.has(to) && web.wallets.has(from)) { net += t.value; soldHour += t.value; }
+    else if (venueSet.has(from) && web.wallets.has(to)) { net -= t.value; boughtHour += t.value; }
   }
   const exitPressureTokens = net > 0n ? net : 0n;
 
-  return { exited, goneSupply, takenOutQuote, partial, devState, devSoldPct, exitPressureTokens };
+  return { exited, goneSupply, takenOutQuote, partial, devState, devSoldPct, exitPressureTokens, soldHour, boughtHour };
 }

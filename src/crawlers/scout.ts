@@ -38,7 +38,7 @@ export function scout(tape: Tape, web: WeaverOut): ScoutOut {
       continue;
     }
     if (h.markets < THRESHOLDS.shortHistoryMarkets) shortHistory.push(holder.address);
-    if (h.markets >= THRESHOLDS.botMarkets) continue;
+    if (isBotRecord(h)) continue;
     if (h.winrate !== null && h.winrate >= THRESHOLDS.smartWinrate && h.positions >= THRESHOLDS.smartMinPositions) {
       smart.push({ wallet: holder.address, winrate: h.winrate, positions: h.positions, balance: holder.balance });
     }
@@ -46,4 +46,9 @@ export function scout(tape: Tape, web: WeaverOut): ScoutOut {
   const smartSupply = smart.reduce((s, w) => s + w.balance, 0n);
   const avgWinrate = smart.length ? smart.reduce((s, w) => s + w.winrate, 0) / smart.length : null;
   return { online: true, scanned, smart, smartSupply, avgWinrate, virgins, shortHistory };
+}
+
+/** A record no person makes: thousands of markets, or a near-perfect winrate over many trades. */
+export function isBotRecord(h: { markets: number; positions: number; winrate: number | null }): boolean {
+  return h.markets >= THRESHOLDS.botMarkets || (h.winrate !== null && h.winrate >= THRESHOLDS.botWinrate && h.positions >= THRESHOLDS.botPositions);
 }

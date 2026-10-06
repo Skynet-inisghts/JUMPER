@@ -57,6 +57,9 @@ export const THRESHOLDS = {
   scoutHolders: 300,
   /** Wallets that traded this many markets are bots; their winrate is not a signal. */
   botMarkets: 5_000,
+  /** Nobody wins 90% of fifty trades by judgement: a record like that is a bot's. */
+  botWinrate: 90,
+  botPositions: 50,
   /** KNOT: same funder within this many seconds is one cluster. */
   knotWindowSec: 600,
   /** KNOT looks up the funding of this many top holders and snipers, inside the budget. */

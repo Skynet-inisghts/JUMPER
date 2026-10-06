@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 · 2026-10-07
+
+- The report lists the top 50 holders by share of supply and says who each one is: the launcher, a sniper, a trading bot, smart money, a bundle, a trader with its record, a first-timer.
+- A near-perfect winrate over fifty or more trades marks a bot, not smart money.
+- SNARE reads "none" in green when nobody sniped; EXIT shows both sides of the last hour and what leavers took out in dollars.
+- Spiders walk over the crawl screen too; the holder table and the log stand at one height.
+
 ## 0.3.0 · 2026-10-06
 
 - The score judges people, not bots. Snipers and wallets that sold out within ten minutes of buying are left out of retention and of the first-minute cohort.

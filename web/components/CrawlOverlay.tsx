@@ -403,6 +403,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
               </div>
+              <TopHolders r={r} />
             </div>
           </div>
         </div>
@@ -427,16 +428,21 @@ function Quads({ r }: { r: Report }) {
         ? [`${q.silk.smart} wallet${q.silk.smart === 1 ? "" : "s"} above the winrate gate, ${fmt(q.silk.scanned)} scanned`,
           `they hold ${pct0(q.silk.smartSupply)} of supply${q.silk.winrate != null ? `, avg winrate ${pct0(q.silk.winrate)}` : ""}`]
         : ["the wallet index was offline: smart money was not read", "the score leaves this lane out"]],
-    ["SNARE", "snipers", pct0(q.snare.sniperSupply), q.snare.sniperSupply * 2, "#FFD166", "How much went before a human could read it?",
-      null,
-      [`${q.snare.sniperWallets} wallet${q.snare.sniperWallets === 1 ? "" : "s"} bought in the first three blocks, ${pct0(q.snare.sniperHeld ?? 0)} of supply still in their hands`,
-        `${q.snare.sniperWallets === 1 ? (q.snare.sniperExited ? "it has already sold" : "it still holds") : `${q.snare.sniperExited} of them have already sold`}`,
-        `${q.snare.bundles} bundled cluster${q.snare.bundles === 1 ? "" : "s"} funded from one source, ${pct0(q.snare.bundleSupply)} of supply`]],
-    ["EXIT", "pressure", pct0(q.exit.exitPressure), q.exit.exitPressure, "#FF5D7A", "Is anyone leaving right now?",
-      null,
-      [`${pct0(q.exit.exitPressure)} of supply moved toward an exit in the last hour`,
-        `dev wallet: ${q.exit.devState}${q.exit.devSoldPct > 0 ? `, sold ${pct0(q.exit.devSoldPct)}` : ""}`,
-        `${q.exit.takenOut.toFixed(2)} ${q.exit.pairSymbol} taken out by wallets that left`]],
+    q.snare.sniperWallets === 0
+      ? ["SNARE", "snipers", "none", 0, "#7DF0C8", "How much went before a human could read it?",
+        null,
+        ["nobody bought in the first three blocks: no sniper got in ahead of people",
+          q.snare.bundles
+            ? `${q.snare.bundles} bundled cluster${q.snare.bundles === 1 ? "" : "s"} funded from one source, ${pct0(q.snare.bundleSupply)} of supply`
+            : "no bundle of wallets funded from one source"]]
+      : ["SNARE", "snipers", pct0(q.snare.sniperHeld ?? q.snare.sniperSupply), (q.snare.sniperHeld ?? q.snare.sniperSupply) * 2, "#FFD166", "How much went before a human could read it?",
+        null,
+        [`${q.snare.sniperWallets} wallet${q.snare.sniperWallets === 1 ? "" : "s"} took ${pct0(q.snare.sniperSupply)} of supply in the first three blocks`,
+          q.snare.sniperExited === q.snare.sniperWallets
+            ? `all of them have sold: ${pct0(q.snare.sniperHeld ?? 0)} still in sniper hands`
+            : `${pct0(q.snare.sniperHeld ?? 0)} of supply still in sniper hands, ${q.snare.sniperExited} of ${q.snare.sniperWallets} have sold`,
+          `${q.snare.bundles} bundled cluster${q.snare.bundles === 1 ? "" : "s"} funded from one source, ${pct0(q.snare.bundleSupply)} of supply`]],
+    exitQuad(q.exit),
   ];
   return (
     <div className="quads">
@@ -483,6 +489,53 @@ function ScoreBuild({ r }: { r: Report }) {
         <span key={k}><b style={{ color: c }}>-{f(v)}</b> {k}</span>
       ))}
       <span className="eq">= <b>{r.score}</b></span>
+    </div>
+  );
+}
+
+/** EXIT: what the last hour actually did, both sides, and what leavers took in dollars. */
+function exitQuad(e: Report["quadrants"]["exit"]): [string, string, string, number, string, string, null, string[]] {
+  const sold = e.soldHour ?? e.exitPressure;
+  const bought = e.boughtHour ?? 0;
+  const net = bought - sold;
+  const p1 = (x: number) => (x > 0 && x < 1 ? x.toFixed(1) : String(Math.round(x))) + "%";
+  const head = sold === 0 && bought === 0 ? "quiet" : net >= 0 ? `+${p1(net)}` : `-${p1(-net)}`;
+  const col = sold === 0 && bought === 0 ? "#7E7490" : net >= 0 ? "#7DF0C8" : "#FF5D7A";
+  const taken = e.takenOutUsd != null
+    ? `$${fmt(e.takenOutUsd)} taken out by wallets that already left`
+    : `${compact(e.takenOut)} ${e.pairSymbol} taken out by wallets that already left`;
+  return ["EXIT", "last hour", head, Math.min(100, Math.abs(net) * 4), col, "Is anyone leaving right now?", null, [
+    sold === 0 && bought === 0
+      ? "no buys and no sales in the last hour"
+      : `last hour: ${p1(bought)} of supply bought, ${p1(sold)} sold, ${net >= 0 ? `net ${p1(net)} came in` : `net ${p1(-net)} went out`}`,
+    `dev wallet: ${e.devState}${e.devSoldPct > 0 ? `, sold ${pct0(e.devSoldPct)} of its peak` : ""}`,
+    taken,
+  ]];
+}
+
+const compact = (n: number) => (n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "K" : n.toFixed(2));
+
+/** The top fifty holders by share of supply, and who each one is. */
+function TopHolders({ r }: { r: Report }) {
+  const rows = r.holders;
+  const bad = (f: string[]) => f.includes("deployer") || f.includes("sniper");
+  const age = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`);
+  return (
+    <div className="tophold">
+      <div className="th"><span>top {rows.length} holders</span><span>share · held · pnl</span></div>
+      <div className="tb">
+        {rows.map((h, i) => (
+          <a key={h.wallet} className={"tr" + (bad(h.flags) ? " bad" : h.flags.includes("smart") ? " smart" : "")}
+            href={`https://robinhoodchain.blockscout.com/address/${h.wallet}`} target="_blank" rel="noreferrer">
+            <span className="n">{i + 1}</span>
+            <span className="w"><b>{short(h.wallet)}</b><i>{h.who ?? h.flags.join(", ")}</i></span>
+            <span className="v">
+              <b>{h.share < 1 ? h.share.toFixed(2) : h.share.toFixed(1)}%</b>
+              <i>{h.heldSec != null ? age(h.heldSec) : ""}{h.pnlPct != null ? ` · ${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</i>
+            </span>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
