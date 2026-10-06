@@ -40,16 +40,30 @@ export function snare(tape: Tape, web: WeaverOut): SnareOut {
       ordered.push({ wallet: w, block: t.block });
     }
   }
-  const inMinute = ordered.filter((o) => o.block <= minuteEnd);
-  const cohort = inMinute.length >= THRESHOLDS.cohortMin ? inMinute : ordered.slice(0, Math.max(inMinute.length, THRESHOLDS.cohortMin));
-  firstMinute.push(...cohort.map((o) => o.wallet));
-
   const snipers = [...byWallet.entries()].map(([wallet, s]) => {
     const w = web.wallets.get(wallet);
     const balance = w?.balance ?? 0n;
     return { wallet, tokens: s.tokens, block: s.block, balance, exited: w ? hasExited(w.balance, w.peak) : true };
   }).sort((a, b) => (b.tokens > a.tokens ? 1 : b.tokens < a.tokens ? -1 : 0));
   const sniperTokens = snipers.reduce((s, x) => s + x.tokens, 0n);
+  const sniperHeld = snipers.reduce((s, x) => s + x.balance, 0n);
+
+  // The cohort is the people in the first minute, not the machines: snipers
+  // (first three blocks) and wallets that sold out within ten minutes of
+  // buying are left out. A thin first minute widens to the first twenty
+  // real buyers inside ten minutes; under five, the term has nothing to say.
+  const sniperSet = new Set(byWallet.keys());
+  const flipBlocks = Math.round(THRESHOLDS.flipSec / tape.secPerBlock);
+  let bots = 0;
+  const real = ordered.filter((o) => {
+    const w = web.wallets.get(o.wallet)!;
+    const bot = sniperSet.has(o.wallet) || isFlip(w, flipBlocks);
+    if (bot && o.block <= minuteEnd) bots++;
+    return !bot;
+  });
+  const inMinute = real.filter((o) => o.block <= minuteEnd);
+  const cohort = inMinute.length >= THRESHOLDS.cohortMin ? inMinute : real.slice(0, Math.max(inMinute.length, THRESHOLDS.cohortMin));
+  firstMinute.push(...cohort.map((o) => o.wallet));
 
   const keep = (balance: bigint, peak: bigint) => peak > 0n && balance * 10n >= peak * BigInt(Math.round(THRESHOLDS.keepRatio * 10));
   const kept = firstMinute.filter((w) => {
@@ -60,9 +74,11 @@ export function snare(tape: Tape, web: WeaverOut): SnareOut {
   return {
     snipers,
     sniperTokens,
+    sniperHeld,
     sniperExited: snipers.filter((s) => s.exited).length,
     firstMinute,
-    firstMinuteKept: firstMinute.length ? kept / firstMinute.length : 0,
+    firstMinuteBots: bots,
+    firstMinuteKept: firstMinute.length >= THRESHOLDS.cohortFloor ? kept / firstMinute.length : null,
     retention: retention(tape, firstMinute, keep),
   };
 }
@@ -98,4 +114,9 @@ function retention(tape: Tape, cohort: string[], keep: (b: bigint, p: bigint) =>
     out[c.label] = holding / cohort.length;
   }
   return out;
+}
+
+/** Sold out within the flip window of its first buy: a wallet that traded the launch. */
+export function isFlip(w: { balance: bigint; peak: bigint; firstBlock: number; lastBlock: number }, flipBlocks: number): boolean {
+  return hasExited(w.balance, w.peak) && w.lastBlock - w.firstBlock < flipBlocks;
 }

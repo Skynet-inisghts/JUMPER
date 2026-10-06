@@ -64,9 +64,9 @@ The same report in a terminal. A real crawl of $TWAIN, an hour after launch: six
 
 ### Share cards
 
-<p align="center"><img src="assets/readme/cards-row.png" width="100%" alt="Two JUMPER cards: $TWAIN 0 TORN and $UBIK 41 PATCHED" /></p>
+<p align="center"><img src="assets/readme/cards-row.png" width="100%" alt="Three JUMPER cards: $TWAIN 3 TORN, $UBIK 46 PATCHED, $RBD 72 TAUT" /></p>
 
-1080x1080, one per crawl, coloured by the band: red for TORN, yellow for PATCHED, green for TAUT. Both cards above are real crawls; the block and time they describe are printed on them and in [twain](assets/readme/card-twain.json) and [ubik](assets/readme/card-ubik.json). They describe that moment, not today.
+1080x1080, one per crawl, coloured by the band: red for TORN, yellow for PATCHED, green for TAUT. All three are real crawls; the block and time they describe are printed on them and in [twain](assets/readme/card-twain.json), [ubik](assets/readme/card-ubik.json) and [rbd](assets/readme/card-rbd.json). They describe that moment, not today.
 
 ## The eight crawlers
 
@@ -112,7 +112,16 @@ On the site the swarm works in one room. The back wall replays the token's own p
 
 **Crawlers at work** replays the newest crawl: the tracked wallets' fills, the holder table with its flags, and `crawler.log` line by line, each line outlining the wallet it names.
 
-The score rises with what is still held, with first-minute buyers who stayed and with supply in smart wallets; it falls with sniped supply, exit pressure, bundled supply and a dev who sold. Every weight lives in [`src/score/config.ts`](src/score/config.ts), and the tests pin the three promises the formula keeps: monotone in holding, snipers and exits only subtract, smart money only adds.
+The score is about people, so the machines come out first. Snipers (the first three blocks) and every wallet that sold out within ten minutes of buying were trading the launch, not holding it: they are left out of the cohort and of retention. What is left adds up to 100:
+
+| points | what |
+|---|---|
+| up to 60 | **real holders still in**: the share of them still holding, averaged with the share of held supply that has sat still for an hour or a quarter of the token's life |
+| up to 25 | **first minute kept**: the first minute's real buyers keeping 80% of their peak; with fewer than five of them the term is neutral, not zero |
+| up to 15 | **smart money**: supply in wallets with a 55% winrate over five or more closed trades, full at 3% |
+| minus | 0.8 per % of supply **snipers still hold** (what they sold is already counted once), 1.5 per % of net selling in the last hour, 0.4 per % in bundles, 7 if the dev sold half, 15 if the dev dumped |
+
+The report prints the points that built every score. Weights live in [`src/score/config.ts`](src/score/config.ts); the tests pin the promises the formula keeps: monotone in holding, snipers and exits only subtract, smart money only adds, a thin first minute never reads as zero.
 
 ## Relayers and routers
 

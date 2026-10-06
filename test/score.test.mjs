@@ -3,25 +3,31 @@ import assert from "node:assert/strict";
 import { scoreOf } from "../.jumper-build/score/score.js";
 import { bandOf, labelOf } from "../.jumper-build/score/scale.js";
 
-const base = { hold: 40, gone: 30, firstMinuteKept: 50, smartSupply: 3, sniperSupply: 10, exitPressure: 2, bundleSupply: 0, devState: "clean" };
+const base = { holding: 0.5, firstMinuteKept: 50, smartSupply: 1, sniperSupply: 10, exitPressure: 2, bundleSupply: 0, devState: "clean" };
 const range = (n) => Array.from({ length: n }, (_, i) => i);
 
-test("monotone in holding: more supply held never lowers the score", () => {
-  for (const gone of [0, 10, 40, 80]) {
+test("monotone in holding: firmer real holders never lower the score", () => {
+  for (const kept of [null, 0, 40, 100]) {
     let last = -1;
-    for (const hold of range(101 - gone)) {
-      const s = scoreOf({ ...base, gone, hold });
-      assert.ok(s >= last, `hold ${hold} gone ${gone}: ${s} < ${last}`);
+    for (const h of range(101)) {
+      const s = scoreOf({ ...base, firstMinuteKept: kept, holding: h / 100 });
+      assert.ok(s >= last, `holding ${h} kept ${kept}: ${s} < ${last}`);
       last = s;
     }
   }
+});
+
+test("a first minute with too few real buyers is neutral, never a zero", () => {
+  const neutral = scoreOf({ ...base, firstMinuteKept: null, holding: 0.8 });
+  const zero = scoreOf({ ...base, firstMinuteKept: 0, holding: 0.8 });
+  assert.ok(neutral > zero);
 });
 
 test("sniped supply and exit pressure only subtract", () => {
   for (const key of ["sniperSupply", "exitPressure"]) {
     let last = 101;
     for (const v of range(60)) {
-      const s = scoreOf({ ...base, hold: 70, gone: 5, [key]: v });
+      const s = scoreOf({ ...base, holding: 0.9, [key]: v });
       assert.ok(s <= last, `${key} ${v}: ${s} > ${last}`);
       last = s;
     }
@@ -38,8 +44,8 @@ test("smart supply only adds", () => {
 });
 
 test("score stays inside 0..100", () => {
-  assert.equal(scoreOf({ ...base, hold: 0, gone: 100, firstMinuteKept: 0, smartSupply: 0, sniperSupply: 90, exitPressure: 50, devState: "dumped" }), 0);
-  assert.equal(scoreOf({ ...base, hold: 100, gone: 0, firstMinuteKept: 100, smartSupply: 50, sniperSupply: 0, exitPressure: 0 }), 100);
+  assert.equal(scoreOf({ ...base, holding: 0, firstMinuteKept: 0, smartSupply: 0, sniperSupply: 90, exitPressure: 50, devState: "dumped" }), 0);
+  assert.equal(scoreOf({ ...base, holding: 1, firstMinuteKept: 100, smartSupply: 50, sniperSupply: 0, exitPressure: 0 }), 100);
 });
 
 test("the web scale: 0-34 TORN, 35-69 PATCHED, 70-100 TAUT", () => {

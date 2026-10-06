@@ -1,6 +1,9 @@
 [
-  { "token": "0xb41c7ac9d46a980f8bdf1894b392a2a07ec9992a", "symbol": "RBD", "holders": 7951, "score": 58, "band": "PATCHED" },
-  { "token": "0x144cbe84027292d33a954012f73250535011f76a", "symbol": "SODS", "holders": 80, "score": 11, "band": "TORN" },
-  { "token": "0xb163228b3c371a752f297605a1dce34e12c85983", "symbol": "TWAIN", "holders": 311, "score": 0, "band": "TORN" },
-  { "token": "0xac79255f6f404eba14f316e8669d76573a2d7b1e", "symbol": "COPY", "holders": 440, "score": 3, "band": "TORN" }
+  { "token": "0xb41c7ac9d46a980f8bdf1894b392a2a07ec9992a", "symbol": "RBD", "holders": 7951, "score": 72, "band": "TAUT" },
+  { "token": "0x73c071f1daa690219f69bc9d4296052a151e786c", "symbol": "WINNER", "holders": 274, "score": 61, "band": "PATCHED" },
+  { "token": "0x812486eaea648819853f8e372dc9f1516c7868bd", "symbol": "UBIK", "holders": 8737, "score": 46, "band": "PATCHED" },
+  { "token": "0x144cbe84027292d33a954012f73250535011f76a", "symbol": "SODS", "holders": 80, "score": 43, "band": "PATCHED" },
+  { "token": "0xa5c8cc9fbe4b41b383edb70348d28dd287c63e18", "symbol": "LM", "holders": 2183, "score": 40, "band": "PATCHED" },
+  { "token": "0x19dCb63C4d2F29A6f077F094a4f858fC790145e1", "symbol": "CrawlScan", "holders": 708, "score": 33, "band": "TORN" },
+  { "token": "0xb163228b3c371a752f297605a1dce34e12c85983", "symbol": "TWAIN", "holders": 311, "score": 3, "band": "TORN" }
 ]

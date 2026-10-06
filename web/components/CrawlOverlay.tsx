@@ -416,9 +416,10 @@ function Quads({ r }: { r: Report }) {
   const q = r.quadrants;
   const ret = q.web.retention;
   const quads: [string, string, string, number, string, string, [string, string][] | null, string[]][] = [
-    ["WEB", "retention", pct0(q.web.hold), q.web.hold, b.color, "Do the early holders still hold?",
+    ["WEB", "real holders", pct0(q.web.realRetention ?? q.web.hold), q.web.realRetention ?? q.web.hold, b.color, "Do the people who bought still hold?",
       CHECKS.map((k) => [k, ret[k] != null ? pct0((ret[k] as number) * 100) : "n/a"]),
-      [`${pct0(q.web.firstMinuteKept)} of the first minute is still in`,
+      [q.web.firstMinuteKept == null ? "too few real buyers in the first minute to judge them" : `${pct0(q.web.firstMinuteKept)} of the first minute's real buyers are still in`,
+        `${fmt(q.web.flips ?? 0)} bots and ten-minute flips left out of the score`,
         `${fmt(r.metrics.holders)} holders right now, ${fmt(r.metrics.transfers)} transfers walked`]],
     ["SILK", "smart money", String(q.silk.smart), Math.min(100, q.silk.smartSupply * 2), "#6ED0FF", "Does anyone here know what they are doing?",
       null,
@@ -428,14 +429,14 @@ function Quads({ r }: { r: Report }) {
         : ["the wallet index was offline: smart money was not read", "the score leaves this lane out"]],
     ["SNARE", "snipers", pct0(q.snare.sniperSupply), q.snare.sniperSupply * 2, "#FFD166", "How much went before a human could read it?",
       null,
-      [`${q.snare.sniperWallets} wallet${q.snare.sniperWallets === 1 ? "" : "s"} bought in the first three blocks`,
+      [`${q.snare.sniperWallets} wallet${q.snare.sniperWallets === 1 ? "" : "s"} bought in the first three blocks, ${pct0(q.snare.sniperHeld ?? 0)} of supply still in their hands`,
         `${q.snare.sniperWallets === 1 ? (q.snare.sniperExited ? "it has already sold" : "it still holds") : `${q.snare.sniperExited} of them have already sold`}`,
         `${q.snare.bundles} bundled cluster${q.snare.bundles === 1 ? "" : "s"} funded from one source, ${pct0(q.snare.bundleSupply)} of supply`]],
     ["EXIT", "pressure", pct0(q.exit.exitPressure), q.exit.exitPressure, "#FF5D7A", "Is anyone leaving right now?",
       null,
       [`${pct0(q.exit.exitPressure)} of supply moved toward an exit in the last hour`,
         `dev wallet: ${q.exit.devState}${q.exit.devSoldPct > 0 ? `, sold ${pct0(q.exit.devSoldPct)}` : ""}`,
-        `${pct0(q.web.gone)} of supply is already gone, ${q.exit.takenOut.toFixed(2)} ${q.exit.pairSymbol} taken out`]],
+        `${q.exit.takenOut.toFixed(2)} ${q.exit.pairSymbol} taken out by wallets that left`]],
   ];
   return (
     <div className="quads">
@@ -462,12 +463,12 @@ function ScoreBuild({ r }: { r: Report }) {
   if (!o) return null;
   if (!o.points) return null;
   const pos: [string, number, string][] = [
-    ["still holding", o.points.holding, "var(--ac2)"],
+    ["real holders still in", o.points.holding, "var(--ac2)"],
     ["first minute kept", o.points.kept, "var(--ac2)"],
     ["smart money", o.points.smart, "var(--cy)"],
   ];
   const neg: [string, number, string][] = [
-    ["sniped", o.sniper, "var(--ye)"],
+    ["still held by snipers", o.sniper, "var(--ye)"],
     ["exit pressure", o.exit, "var(--rd)"],
     ["bundles", o.bundle, "var(--rd)"],
     ["dev sold", o.dev, "var(--rd)"],

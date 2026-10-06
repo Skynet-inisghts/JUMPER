@@ -153,9 +153,14 @@ export interface TrackerOut {
 export interface SnareOut {
   snipers: { wallet: string; tokens: bigint; block: number; exited: boolean; balance: bigint }[];
   sniperTokens: bigint;
+  /** What the snipers hold right now. */
+  sniperHeld: bigint;
   sniperExited: number;
+  /** Real first-minute buyers: no snipers, no ten-minute flips. */
   firstMinute: string[];
-  firstMinuteKept: number; // 0..1
+  /** Bots and flippers left out of the cohort. */
+  firstMinuteBots: number;
+  firstMinuteKept: number | null; // 0..1, null when too few real buyers
   retention: Partial<Record<CheckpointLabel, number>>;
 }
 
@@ -226,12 +231,15 @@ export interface Metrics {
   gone: number; // % supply
   smart: number;
   smartSupply: number; // %
-  sniperSupply: number; // %
+  sniperSupply: number; // % taken in the first three blocks
+  sniperHeld: number; // % the snipers still hold
   sniperWallets: number;
   sniperExited: number;
   bundles: number;
   bundleSupply: number; // %
-  firstMinuteKept: number; // %
+  firstMinuteKept: number | null; // %, null when too few real first-minute buyers
+  /** Wallets left out of retention as bots or ten-minute flips. */
+  flips: number;
   devState: "clean" | "sold half" | "dumped";
   exitPressure: number; // %
   winrate: number | null; // %
@@ -316,9 +324,9 @@ export interface Report {
   subline: string;
   metrics: Metrics;
   quadrants: {
-    web: { retention: Partial<Record<CheckpointLabel, number>>; hold: number; gone: number; firstMinuteKept: number };
+    web: { retention: Partial<Record<CheckpointLabel, number>>; hold: number; gone: number; firstMinuteKept: number | null; realRetention: number; stillIn: number; settled: number; flips: number; firstMinuteBots: number };
     silk: { smart: number; smartSupply: number; winrate: number | null; scanned: number; online: boolean };
-    snare: { sniperSupply: number; sniperWallets: number; sniperExited: number; bundles: number; bundleSupply: number };
+    snare: { sniperSupply: number; sniperHeld: number; sniperWallets: number; sniperExited: number; bundles: number; bundleSupply: number };
     exit: { exitPressure: number; devState: string; devSoldPct: number; takenOut: number; pairSymbol: string };
   };
   /** the three fact lines the card and the report print */

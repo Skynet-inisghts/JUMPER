@@ -6,18 +6,22 @@
 export const SCORE = {
   /** Positive terms, summing to 1: how much of the web is still standing. */
   weights: {
-    /** hold / (hold + gone): of everything wallets ever held, the share still held. */
-    retention: 0.45,
-    /** share of first-minute buyers still keeping 80% of their peak. */
-    firstMinuteKept: 0.3,
-    /** smart-wallet supply, saturating at `smartSupplyFull` percent. */
-    smartSupply: 0.25,
+    /** How firmly real holders sit (snipers and ten-minute flips left out): see ORACLE. */
+    retention: 0.6,
+    /** Share of the first minute's real buyers still keeping 80% of their peak. */
+    firstMinuteKept: 0.25,
+    /** Smart-wallet supply, saturating at `smartSupplyFull` percent. */
+    smartSupply: 0.15,
   },
-  smartSupplyFull: 10,
-  /** Penalties, in score points per percent of supply (or flat for the dev). */
+  smartSupplyFull: 3,
+  /**
+   * Penalties, in score points per percent of supply (or flat for the dev).
+   * Snipers are charged for what they still hold: what they already sold
+   * is gone from the web and counted once, in retention.
+   */
   penalties: {
     sniperSupplyPerPct: 0.8,
-    exitPressurePerPct: 2.0,
+    exitPressurePerPct: 1.5,
     bundleSupplyPerPct: 0.4,
     devSoldHalf: 7,
     devDumped: 15,
@@ -33,6 +37,17 @@ export const THRESHOLDS = {
   cohortMin: 20,
   cohortMaxSec: 600,
   keepRatio: 0.8,
+  /**
+   * A wallet that sold out within this long of its first buy was trading the
+   * launch, not holding it: a bot or a flipper. It is left out of retention
+   * and of the first-minute cohort; it still counts in "gone" for display.
+   */
+  flipSec: 600,
+  /** Held supply counts as settled once in place this long, or a quarter of the token's life if longer. */
+  settledSec: 3_600,
+  settledLifeShare: 0.25,
+  /** Fewer real first-minute buyers than this and the term is neutral (it takes retention's value). */
+  cohortFloor: 5,
   /** SCOUT: a wallet is smart at this winrate over at least this many realized positions. */
   smartWinrate: 55,
   smartMinPositions: 5,

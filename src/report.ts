@@ -35,12 +35,14 @@ export function renderText(r: Report, color = false): string {
 
   const w = r.quadrants.web;
   const ret = CHECKPOINTS.map((c) => `${c.label} ${w.retention[c.label] === undefined ? "--" : `${Math.round(w.retention[c.label]! * 100)}%`}`).join("  ");
-  out.push(`WEB    hold ${pctText(w.hold)} · gone ${pctText(w.gone)} · first minute kept ${pctText(w.firstMinuteKept)}`);
+  const kept = w.firstMinuteKept === null ? "too few real buyers to judge" : pctText(w.firstMinuteKept);
+  out.push(`WEB    hold ${pctText(w.hold)} · real holders kept ${pctText(w.realRetention)} · first minute kept ${kept}`);
+  out.push(`       ${w.flips} flips under ten minutes and the snipers left out of the score`);
   out.push(`       ${ret}`);
   const s = r.quadrants.silk;
   out.push(`SILK   ${s.online ? `${s.smart} smart on ${pctText(s.smartSupply)}${s.winrate === null ? "" : ` · winrate ${Math.round(s.winrate)}%`} · ${s.scanned} scanned` : "index offline, wallet histories not read"}`);
   const n = r.quadrants.snare;
-  out.push(`SNARE  ${n.sniperWallets} sniper${n.sniperWallets === 1 ? "" : "s"} on ${pctText(n.sniperSupply)} · ${n.sniperExited} out · ${n.bundles} bundle${n.bundles === 1 ? "" : "s"} on ${pctText(n.bundleSupply)}`);
+  out.push(`SNARE  ${n.sniperWallets} sniper${n.sniperWallets === 1 ? "" : "s"} took ${pctText(n.sniperSupply)}, still hold ${pctText(n.sniperHeld)} · ${n.sniperExited} out · ${n.bundles} bundle${n.bundles === 1 ? "" : "s"} on ${pctText(n.bundleSupply)}`);
   const e = r.quadrants.exit;
   out.push(`EXIT   ${pctText(e.exitPressure)} to the exit in the last hour · dev ${e.devState}${e.devSoldPct ? ` (${e.devSoldPct}% of peak)` : ""}`);
   out.push("");
@@ -78,7 +80,8 @@ export function renderMarkdown(r: Report): string {
     `| smart | ${m.smart} on ${pctText(m.smartSupply)} |`,
     `| snipers | ${m.sniperWallets} on ${pctText(m.sniperSupply)}, ${m.sniperExited} out |`,
     `| bundles | ${m.bundles} on ${pctText(m.bundleSupply)} |`,
-    `| first minute kept | ${pctText(m.firstMinuteKept)} |`,
+    `| first minute kept | ${m.firstMinuteKept === null ? "n/a (too few real buyers)" : pctText(m.firstMinuteKept)} |`,
+    `| bots and flips left out | ${m.flips} |`,
     `| dev | ${m.devState} |`,
     `| exit pressure (1h) | ${pctText(m.exitPressure)} |`,
     "",

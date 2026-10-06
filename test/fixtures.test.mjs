@@ -8,6 +8,10 @@ import { fixture } from "./helpers.mjs";
 // formula change that moves them has to say why in its commit.
 
 test("$TWAIN: six snipers took half the supply in block +1 and all left", () => {
+  // Bot-aware score (0.3.0): the snipers already sold, so they are charged
+  // nothing for holding; the score is low because the dev dumped (-15), net
+  // selling in the last hour was 16% of supply (-24) and the real holders
+  // are thin (37% firm).
   const tape = fixture("twain");
   const r = crawlTape(tape);
   assert.equal(r.metrics.sniperWallets, 6);
@@ -17,7 +21,8 @@ test("$TWAIN: six snipers took half the supply in block +1 and all left", () => 
   assert.equal(r.metrics.devState, "dumped");
   assert.equal(r.metrics.holders, 311);
   assert.equal(r.metrics.transfers, 7395);
-  assert.equal(r.score, 0);
+  assert.equal(r.metrics.sniperHeld, 0);
+  assert.equal(r.score, 3);
   assert.equal(r.band, "TORN");
   assert.equal(r.verdict, "DO NOT TOUCH");
 });
@@ -39,8 +44,10 @@ test("$SODS: a quiet launch, no snipers, smart money present", () => {
   assert.equal(r.metrics.holders, 80);
   assert.equal(r.metrics.smart, 6);
   assert.equal(r.metrics.devState, "clean");
-  assert.equal(r.score, 11);
-  assert.equal(r.band, "TORN");
+  // 40% of real holders still in, all held supply settled, 8% in smart
+  // wallets; pulled down by 10% net selling in the last hour
+  assert.equal(r.score, 43);
+  assert.equal(r.band, "PATCHED");
 });
 
 test("replays are deterministic", () => {

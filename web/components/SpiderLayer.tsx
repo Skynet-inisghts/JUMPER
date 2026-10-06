@@ -20,7 +20,8 @@ interface Spider {
 type Tag = { sp: Spider; txt: string; col: string; born: number };
 type Box = { x: number; y: number; w: number; h: number; col: string; sx: number; sy: number };
 
-const PER_SCREEN = 11;
+// owner's call: a third of the spec's eleven, the page reads before the swarm does
+const PER_SCREEN = 3.7;
 
 export default function SpiderLayer({ report }: { report: Report | null }) {
   const cvRef = useRef<HTMLCanvasElement | null>(null);
@@ -79,7 +80,7 @@ export default function SpiderLayer({ report }: { report: Report | null }) {
     let MAXSW = 16;
     /* about eleven per desktop screen; a phone screen holds fewer, the legs do not shrink */
     const perScreen = () => PER_SCREEN * Math.max(0.35, Math.min(1, (innerWidth * innerHeight) / (1440 * 900)));
-    const wantSwarm = () => Math.max(4, Math.min(140, Math.round((DH / H) * perScreen())));
+    const wantSwarm = () => Math.max(3, Math.min(50, Math.round((DH / H) * perScreen())));
     const roomRange = () => {
       const rb = document.querySelector(".roomband");
       if (!rb) return [-1, -1];

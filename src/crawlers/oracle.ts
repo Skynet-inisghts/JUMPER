@@ -1,7 +1,8 @@
 import { bandOf, CRAWLERS, labelOf } from "../score/scale.js";
 import { scoreParts, type ScoreParts } from "../score/score.js";
-import { SCORE } from "../score/config.js";
-import { blockTs, devSet, grouped, lc, pctOf, pctText, short } from "./common.js";
+import { SCORE, THRESHOLDS } from "../score/config.js";
+import { isFlip } from "./snare.js";
+import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
   CrawlerName, CrawlerReport, Fill, Panels, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, WeaverOut,
@@ -39,11 +40,37 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
   const gone = Math.min(100 - hold, pctOf(tracked.goneSupply, supply));
   const smartSupply = pctOf(scouted.smartSupply, supply);
   const sniperSupply = pctOf(snared.sniperTokens, supply);
+  const sniperHeld = pctOf(snared.sniperHeld, supply);
   const bundleSupply = pctOf(knotted.bundleSupply, supply);
   const exitPressure = pctOf(tracked.exitPressureTokens, supply);
-  const firstMinuteKept = Math.round(snared.firstMinuteKept * 1000) / 10;
+  const firstMinuteKept = snared.firstMinuteKept === null ? null : Math.round(snared.firstMinuteKept * 1000) / 10;
 
-  const parts = scoreParts({ hold, gone, firstMinuteKept, smartSupply, sniperSupply, exitPressure, bundleSupply, devState: tracked.devState });
+  // The score judges people. Snipers and wallets that sold out within ten
+  // minutes of buying were trading the launch, not holding it: they are left
+  // out. What is left is measured two ways and averaged, because each alone
+  // lies: a count of real holders still in punishes age (an old token has
+  // seen thousands come and go), and the share of held supply that has sat
+  // still a while flatters a dead token whose last holders are simply stuck.
+  const snipers = new Set(snared.snipers.map((s) => s.wallet));
+  const flipBlocks = Math.round(THRESHOLDS.flipSec / tape.secPerBlock);
+  let realIn = 0;
+  let realOut = 0;
+  let flips = 0;
+  for (const w of web.wallets.values()) {
+    if (w.bought === 0n || snipers.has(w.address)) continue;
+    if (isFlip(w, flipBlocks)) { flips++; continue; }
+    if (hasExited(w.balance, w.peak)) realOut++;
+    else realIn++;
+  }
+  const stillIn = realIn + realOut > 0 ? realIn / (realIn + realOut) : 0;
+  const age = Math.max(1, tape.now - tape.launch.launchedAt);
+  const settledBlocks = Math.max(THRESHOLDS.settledSec, age * THRESHOLDS.settledLifeShare) / tape.secPerBlock;
+  let settled = 0n;
+  for (const h of web.holders) if (tape.headBlock - h.firstBlock >= settledBlocks) settled += h.balance;
+  const settledShare = web.holdSupply > 0n ? Number((settled * 10_000n) / web.holdSupply) / 10_000 : 0;
+  const realRetention = (stillIn + settledShare) / 2;
+
+  const parts = scoreParts({ holding: realRetention, firstMinuteKept, smartSupply, sniperSupply: sniperHeld, exitPressure, bundleSupply, devState: tracked.devState });
   const score = parts.score;
   const band = bandOf(score);
 
@@ -55,11 +82,13 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     smart: scouted.smart.length,
     smartSupply,
     sniperSupply,
+    sniperHeld,
     sniperWallets: snared.snipers.length,
     sniperExited: snared.sniperExited,
     bundles: knotted.clusters.length,
     bundleSupply,
     firstMinuteKept,
+    flips,
     devState: tracked.devState,
     exitPressure,
     winrate: scouted.avgWinrate === null ? null : Math.round(scouted.avgWinrate * 10) / 10,
@@ -100,9 +129,9 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     subline: SUBLINES[band.band],
     metrics,
     quadrants: {
-      web: { retention: snared.retention, hold, gone, firstMinuteKept },
+      web: { retention: snared.retention, hold, gone, firstMinuteKept, realRetention: Math.round(realRetention * 1000) / 10, stillIn: Math.round(stillIn * 1000) / 10, settled: Math.round(settledShare * 1000) / 10, flips, firstMinuteBots: snared.firstMinuteBots },
       silk: { smart: scouted.smart.length, smartSupply, winrate: metrics.winrate, scanned: scouted.scanned, online: scouted.online },
-      snare: { sniperSupply, sniperWallets: snared.snipers.length, sniperExited: snared.sniperExited, bundles: knotted.clusters.length, bundleSupply },
+      snare: { sniperSupply, sniperHeld, sniperWallets: snared.snipers.length, sniperExited: snared.sniperExited, bundles: knotted.clusters.length, bundleSupply },
       exit: { exitPressure, devState: tracked.devState, devSoldPct: Math.round(tracked.devSoldPct * 1000) / 10, takenOut, pairSymbol: tape.launch.pairSymbol },
     },
     facts,
