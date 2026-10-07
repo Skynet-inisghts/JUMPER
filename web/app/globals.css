@@ -425,7 +425,9 @@ button.inputchip{all:unset}
 .tophold .tr.smart .w{color:var(--cy)}
 .tophold .tr .who{display:flex;gap:6px;align-items:center;min-width:0}
 .tophold .tr .who i{font-style:normal;color:var(--dm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tophold .tr .v{text-align:right;color:var(--tx)}
+.tophold .tr .v{text-align:center;color:var(--tx)}
+/* numeric columns: header and values share one centre line */
+.tophold .thead span:nth-child(n+4){text-align:center}
 .tophold .tr .v.d{color:var(--dm)}.tophold .tr .v.g{color:var(--ac2)}.tophold .tr .v.rd{color:var(--rd)}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
