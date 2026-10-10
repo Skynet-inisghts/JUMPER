@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { custom, type Transport } from "viem";
 
 /**
@@ -66,6 +67,22 @@ async function acquire(method: string): Promise<void> {
   if (method === "eth_getLogs") lastLogsStart = lastStart;
 }
 function release(): void { active--; queue.shift()?.(); }
+
+/*
+ * Two lanes. A crawl someone is waiting on runs in the foreground; reading
+ * a long history into the cache after an answer runs in the background and
+ * takes the gate only while no foreground request is waiting or in flight,
+ * so it never slows a crawl a visitor just started on the same instance.
+ */
+const lanes = new AsyncLocalStorage<"background">();
+let foreground = 0;
+
+/** Run `work` with every RPC request it makes yielding to foreground crawls. */
+export const inBackground = <T>(work: () => Promise<T>): Promise<T> => lanes.run("background", work);
+
+async function yieldToForeground(): Promise<void> {
+  while (foreground > 0) await new Promise((r) => setTimeout(r, 100));
+}
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /** Healthy endpoints that can serve the method, in configured order; if none is healthy, the least-recently-benched one. */
@@ -83,13 +100,30 @@ export function gatedHttp(opts: { timeoutMs?: number; headers?: Record<string, s
   const timeoutMs = opts.timeoutMs ?? 20_000;
   const retries = opts.retries ?? 6;
   const headers = { "content-type": "application/json", ...(opts.headers ?? {}) };
-  const request = async ({ method, params }: { method: string; params?: unknown }): Promise<unknown> => {
+  const request = async (args: { method: string; params?: unknown }): Promise<unknown> => {
+    if (lanes.getStore() === "background") {
+      await yieldToForeground();
+      return send(args);
+    }
+    foreground++;
+    try {
+      return await send(args);
+    } finally {
+      foreground--;
+    }
+  };
+  const send = async ({ method, params }: { method: string; params?: unknown }): Promise<unknown> => {
     const body = JSON.stringify({ jsonrpc: "2.0", id: nextId++, method, params: params ?? [] });
     let lastErr = "";
     for (let attempt = 0; attempt <= retries; attempt++) {
       const list = candidates(method);
       if (!list.length) throw new Error(`rpc ${method}: no configured endpoint serves this method (eth_getLogs needs one that allows it; set RPC_URL)`);
       const ep = list[Math.min(attempt, list.length - 1)];
+      if (lanes.getStore() === "background") {
+        // gentle: a warming read must not run the shared RPC into its rate limit
+        await sleep(250);
+        await yieldToForeground();
+      }
       await acquire(method);
       calls++;
       let res: Response;

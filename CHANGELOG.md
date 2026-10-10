@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0 · 2026-10-11
+
+- A crawl on the site answers inside 20 seconds. Logs are read in pages sized to their density, each page parsed as it lands.
+- A token's logs are kept after a complete read (on disk with `JUMPER_CACHE_DIR`, or in the wallet index) and the next crawl reads only the new blocks.
+- A history too long for the first crawl says so; the site reads it on after the answer, in resumable windows, yielding the RPC to live crawls.
+- KNOT: six-second budget on the site, fundings kept for good, and the explorer left alone for five minutes once its limit is spent.
+- Late sources (index, prices) past the finish line are left out instead of waited on.
+- The holders table centres its numbers between WHO and the right edge; the logo in the crawl screen closes it.
+
 ## 0.4.1 · 2026-10-10
 
 - The site lives at jumper-terminal.xyz. www and the old jumper-crawler.vercel.app address redirect there, path and token kept.

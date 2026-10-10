@@ -18,6 +18,7 @@
  *   POST /crawls     { summary, report }    the site records a finished crawl
  *   GET  /pulse                             counters and recently crawled tokens
  *   GET  /latest                            the newest full report
+ *   GET  /logs?token=  PUT /logs?token=     a token's cached logs (see src/cache.ts)
  */
 
 export interface WalletHistory {

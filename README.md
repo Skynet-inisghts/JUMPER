@@ -58,7 +58,9 @@ pnpm jumper replay t.json           # run the crawlers over a saved tape, offlin
 pnpm jumper doctor                  # check every source the crawl reads
 ```
 
-A crawl takes 5 to 90 seconds, most of it reading the token's transfer log from the public RPC.
+The first crawl of a token reads its whole transfer log from the public RPC: seconds for a young token, minutes for a month-old one with a million transfers. The logs are then kept, in `JUMPER_CACHE_DIR` or in the wallet index, and every crawl after that reads only the blocks since the last one.
+
+On the site a crawl answers inside 20 seconds. A token whose history is too long to read in that time for the first time says so, and the site reads it on after the answer; its next crawl takes seconds.
 
 <p align="center"><img src="assets/readme/terminal.svg" width="100%" alt="jumper in a terminal: the text report for $TWAIN" /></p>
 
@@ -166,7 +168,7 @@ Copy `.env.example` to `.env` to set any of these. `pnpm jumper doctor` shows wh
 - **This is not financial advice.**
 - Routed trades are credited to the router by the history index, so a wallet that always trades through an aggregator can look newer there than it is; such wallets are never called first-timers, but their winrate may be missing.
 - Pool trades after graduation carry no quote amount in the transfer log; their prices in the fills view are the wallet's average and are marked estimated.
-- KNOT reads the first funding of up to 40 wallets per crawl inside a time budget; a shared funder can be an exchange or a bridge.
+- KNOT reads the first funding of up to 40 wallets per crawl inside a time budget (six seconds on the site, 25 in a terminal); fundings found are kept, so a wallet is looked up once. A shared funder can be an exchange or a bridge.
 
 ## Repository
 
@@ -177,6 +179,7 @@ src/
   score/       weights, thresholds, the web scale
   card/        the 1080x1080 PNG
   cli/         jumper <ca>
+  cache.ts     logs and fundings kept between crawls
 web/           the site (Next.js)
 assets/        brand, fonts, README images
 test/          recorded tapes of real tokens and the tests over them

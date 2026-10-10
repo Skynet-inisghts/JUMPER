@@ -322,6 +322,8 @@ footer{border-top:1px solid var(--ln);padding:34px 0 46px;color:var(--dm2);font-
 #ov{grid-template-columns:minmax(0,1fr)}
 .ovtop .cmd{min-width:0;text-overflow:ellipsis}
 .ovtop .closeb{flex:none}
+.ovhome{flex:none;cursor:pointer;display:flex;align-items:center}
+.ovhome:hover{opacity:.8}
 @media(max-width:1000px){.repwrap{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:1000px){.hero{padding:52px 28px}}
 #shareCard{display:block;object-fit:contain;background:var(--bg)}
@@ -414,7 +416,7 @@ button.inputchip{all:unset}
 .tophold .th .sum{display:inline-flex;gap:6px;flex-wrap:wrap;vertical-align:middle}
 .tophold .th .btns{display:flex;gap:10px}
 .tophold .th .btns .btn{padding:8px 18px}
-.tophold .thead,.tophold .tr{display:grid;grid-template-columns:34px 130px minmax(0,1fr) 70px 56px 92px 70px;gap:12px;align-items:center;padding:7px 16px}
+.tophold .thead,.tophold .tr{display:grid;grid-template-columns:34px 130px minmax(0,500px) repeat(4,minmax(56px,1fr));gap:12px;align-items:center;padding:7px 16px}
 .tophold .thead{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dm2);border-bottom:1px solid var(--ln)}
 .tophold .tr{border-bottom:1px solid rgba(36,27,51,.6);color:inherit;text-decoration:none;font-size:12px;font-variant-numeric:tabular-nums}
 .tophold .tr:last-child{border-bottom:0}

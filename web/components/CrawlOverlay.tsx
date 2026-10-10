@@ -334,7 +334,9 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
   return (
     <div id="ov" className="on" role="dialog" aria-modal="true" aria-label="Run a crawl">
       <div className="ovtop">
-        <Logo small />
+        <div className="ovhome" onClick={close} role="button" aria-label="Back to the site" tabIndex={0} onKeyDown={(e) => { if (e.key === "Enter") close(); }}>
+          <Logo small />
+        </div>
         <div className="cmd">{cmd}{step === "input" && <span className="car" />}</div>
         <div className="ovkv"><div className="k">nodes</div><div className="v">{step === "input" ? "0" : kv.n}</div></div>
         <div className="ovkv"><div className="k">edges</div><div className="v">{step === "input" ? "0" : kv.e}</div></div>

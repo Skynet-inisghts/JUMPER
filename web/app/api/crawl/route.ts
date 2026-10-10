@@ -1,8 +1,9 @@
 import { NextResponse, after } from "next/server";
 import type { Address } from "viem";
-import { CrawlError } from "@engine/crawl.js";
+import { cacheWritten, CrawlError, CrawlTooLong, warmLogs } from "@engine/crawl.js";
 import { resolveInput } from "@engine/chain/resolve.js";
 import { recordCrawl, indexConfigured } from "@engine/chain/history.js";
+import { inBackground } from "@engine/chain/rpc.js";
 import { clientIp, RateLimiter } from "@engine/web.js";
 import { cachedReport, crawlShared } from "@/lib/server";
 
@@ -24,6 +25,9 @@ export const maxDuration = 300;
  */
 
 const limiter = new RateLimiter(6, 60_000);
+
+/** Reading a long history after the answer stops short of the function's own limit. */
+const WARM_BUDGET_MS = 280_000;
 
 const encoder = new TextEncoder();
 const frame = (event: string, data: unknown) => encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
@@ -109,6 +113,17 @@ export async function POST(request: Request) {
         run.leave();
       };
 
+      if (run.started) {
+        // a history too long for one crawl is read on after the answer, into
+        // the log cache; the function lives on until maxDuration for it
+        after(async () => {
+          const error = await run.promise.then(() => null, (e: unknown) => e);
+          if (error instanceof CrawlTooLong) await inBackground(() => warmLogs(error.token, undefined, WARM_BUDGET_MS)).catch(() => {});
+          // a crawl's own cache write must land before the function sleeps
+          await cacheWritten();
+        });
+      }
+
       if (run.started && indexConfigured()) {
         // record the finished crawl for the pulse; never delays the stream
         after(async () => {
@@ -132,7 +147,9 @@ export async function POST(request: Request) {
       run.promise
         .then((report) => send("report", report))
         .catch((error: unknown) => {
-          const message = error instanceof CrawlError
+          const message = error instanceof CrawlTooLong
+            ? `$${error.symbol} has a long history and this is its first crawl: JUMPER is reading all of it now, once. Crawl it again in a few minutes and it answers in seconds.`
+            : error instanceof CrawlError
             ? error.message
             : "the chain read failed part way; try again in a moment";
           send("error", { message });

@@ -64,7 +64,7 @@ export const THRESHOLDS = {
   knotWindowSec: 600,
   /** KNOT looks up the funding of this many top holders and snipers, inside the budget. */
   knotWallets: 40,
-  knotBudgetMs: 25_000,
+  knotBudgetMs: 6_000,
   /** A whale holds at least this share of supply, or a position worth at least this much. */
   whalePct: 3,
   whaleUsd: 25_000,

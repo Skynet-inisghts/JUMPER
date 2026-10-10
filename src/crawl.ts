@@ -8,6 +8,7 @@ import { readFundingFor } from "./chain/funding.js";
 import { dexPriceUsd, ethUsd, tokenUsd } from "./chain/prices.js";
 import { rpcCallCount } from "./chain/rpc.js";
 import { blockscoutKey } from "./chain/blockscout.js";
+import { CACHE_MARGIN_BLOCKS, loadLogs, saveLogs, worthSaving } from "./cache.js";
 import { THRESHOLDS } from "./score/config.js";
 import { weave } from "./crawlers/weaver.js";
 import { snare } from "./crawlers/snare.js";
@@ -26,6 +27,13 @@ import type { CrawlerName, Report, Tape } from "./crawlers/types.js";
 
 export class CrawlError extends Error {}
 
+/** The token's logs did not fit the time a web crawl has; warmLogs reads them into the cache for the next one. */
+export class CrawlTooLong extends CrawlError {
+  constructor(message: string, public readonly token: Address, public readonly symbol: string) {
+    super(message);
+  }
+}
+
 export type CrawlEvent =
   | { type: "stage"; crawler: CrawlerName; state: "running" | "done"; detail?: string }
   | { type: "progress"; crawler: CrawlerName; done: number; total: number; detail?: string };
@@ -38,6 +46,10 @@ export interface CrawlResult {
 export interface CrawlOptions {
   /** Give up reading logs after this many ms; the site sets it under its function limit. */
   budgetMs?: number;
+  /** KNOT's explorer lookups stop after this many ms (default THRESHOLDS.knotBudgetMs). */
+  knotBudgetMs?: number;
+  /** The whole crawl should end by this many ms after it started: KNOT gets what is left, a second or more. */
+  finishMs?: number;
 }
 
 export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = () => {}, options: CrawlOptions = {}): Promise<CrawlResult> {
@@ -68,30 +80,19 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
   })();
   const booksP = indexConfigured() ? readBooks(launch.token, launch.curve).catch(() => null) : Promise.resolve(null);
 
-  const tokenIsCurrency0 = launch.token.toLowerCase() < launch.pairToken.toLowerCase();
-  const reads = Promise.all<[ReturnType<typeof readTransfers>, ReturnType<typeof readCurveTrades>, ReturnType<typeof readPoolSwaps>]>([
-    readTransfers(launch.token, launch.launchBlock, toBlock, (done, total, logs) =>
-      onEvent({ type: "progress", crawler: "WEAVER", done, total, detail: `${logs} transfers` }), deadline),
-    readCurveTrades(launch.curve, launch.launchBlock, toBlock, deadline),
-    launch.poolId
-      ? readPoolSwaps(ADDR.v4PoolManager, launch.poolId, tokenIsCurrency0, launch.launchBlock, toBlock, deadline)
-      : Promise.resolve({ events: [], complete: true }),
-  ]);
-  let transfers: Awaited<typeof reads>[0];
-  let trades: Awaited<typeof reads>[1];
-  let swaps: Awaited<typeof reads>[2];
-  try {
-    [transfers, trades, swaps] = await reads;
-  } catch (error) {
-    if (error instanceof DeadlineError) {
-      const age = Math.round((clock.headTs - launch.launchedAt) / 86400);
-      throw new CrawlError(
-        `$${launch.symbol} has ${age >= 1 ? `${age} days` : "hours"} of history too busy to read inside one web crawl. ` +
-          `Run it locally, it has no time limit: pnpm jumper ${launch.token}`,
-      );
-    }
-    throw error;
+  const logs = await readLogs(launch, toBlock, deadline, (done, total, n) =>
+    onEvent({ type: "progress", crawler: "WEAVER", done, total, detail: `${n} transfers` }));
+  if (!logs) {
+    const age = Math.round((clock.headTs - launch.launchedAt) / 86400);
+    throw new CrawlTooLong(
+      `$${launch.symbol} has ${age >= 1 ? `${age} days` : "hours"} of history too busy to read inside one web crawl. ` +
+        `Run it locally, it has no time limit: pnpm jumper ${launch.token}`,
+      launch.token,
+      launch.symbol,
+    );
   }
+  if (logs.cachedTo) sources.push("log cache");
+  const { transfers, trades, swaps } = logs;
 
   const tape: Tape = {
     version: 1,
@@ -119,10 +120,10 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
     headBlock: clock.headBlock,
     now: clock.headTs,
     secPerBlock: clock.secPerBlock,
-    transfers: transfers.events.map((t) => ({ from: t.from, to: t.to, value: t.value, block: t.block, logIndex: t.logIndex })),
-    trades: trades.events.map((t) => ({ kind: t.kind, wallet: t.wallet, quoteWei: t.quoteWei, tokens: t.tokens, taxWei: t.taxWei, block: t.block, logIndex: t.logIndex })),
-    swaps: swaps.events.map((s) => ({ buy: s.buy, tokens: s.tokens, quote: s.quote, price: s.price, block: s.block, logIndex: s.logIndex })),
-    logsComplete: transfers.complete && trades.complete && swaps.complete,
+    transfers,
+    trades,
+    swaps,
+    logsComplete: logs.complete,
     history: null,
     historyTip: 0,
     books: null,
@@ -147,13 +148,17 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
   const historyP = indexConfigured()
     ? readHistory(scoutTargets(web, snared), launch.token).catch(() => null)
     : Promise.resolve(null);
-  const fundingP = readFundingFor(knotTargets(web, snared), THRESHOLDS.knotBudgetMs);
+  let knotMs = options.knotBudgetMs ?? THRESHOLDS.knotBudgetMs;
+  if (options.finishMs) knotMs = Math.max(1_000, Math.min(knotMs, started + options.finishMs - Date.now() - 1_000));
+  const fundingP = readFundingFor(knotTargets(web, snared), knotMs);
 
+  // past the finish line a late source is left out, as if it were offline
+  const finish = options.finishMs ? started + options.finishMs : Infinity;
   const [history, funding, books, prices] = await Promise.all([
-    historyP.then((h) => { onEvent({ type: "stage", crawler: "SCOUT", state: "done" }); return h; }),
+    within(historyP, finish, null).then((h) => { onEvent({ type: "stage", crawler: "SCOUT", state: "done" }); return h; }),
     fundingP.then((f) => { onEvent({ type: "stage", crawler: "KNOT", state: "done" }); return f; }),
-    booksP,
-    pricesP,
+    within(booksP, finish, null),
+    within(pricesP, finish, { quote: null, direct: null }),
   ]);
 
   if (history) {
@@ -199,4 +204,122 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
     },
   };
   return { report, tape };
+}
+
+/** `work`, or `fallback` if it has not settled by `deadline` (a timestamp). */
+function within<T, F>(work: Promise<T>, deadline: number, fallback: F): Promise<T | F> {
+  if (!Number.isFinite(deadline)) return work;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const late = new Promise<F>((r) => { timer = setTimeout(() => r(fallback), Math.max(0, deadline - Date.now())); });
+  return Promise.race([work, late]).finally(() => clearTimeout(timer));
+}
+
+/** One warming step: a few minutes of reading at most, for the busiest tokens. */
+const WARM_WINDOW_BLOCKS = 4_000_000;
+
+const pendingSaves = new Set<Promise<void>>();
+
+/** Wait for cache writes still in flight. */
+export async function cacheWritten(): Promise<void> {
+  await Promise.all([...pendingSaves]);
+}
+
+type Launch = NonNullable<Awaited<ReturnType<typeof readLaunch>>>;
+
+interface Logs {
+  transfers: Tape["transfers"];
+  trades: Tape["trades"];
+  swaps: NonNullable<Tape["swaps"]>;
+  complete: boolean;
+  /** The block the cache covered, 0 when everything was read live. */
+  cachedTo: number;
+}
+
+/**
+ * The token's three logs from launch to `toBlock`: whatever the cache holds,
+ * plus a live read of the rest. A complete read goes back into the cache.
+ * Null when the deadline passed first.
+ */
+async function readLogs(
+  launch: Launch,
+  toBlock: number,
+  deadline: number,
+  onProgress?: (done: number, total: number, transfers: number) => void,
+): Promise<Logs | null> {
+  const cached = await loadLogs(launch.token);
+  const cachedTo = cached && cached.upTo >= launch.launchBlock ? Math.min(cached.upTo, toBlock) : 0;
+  const from = cachedTo ? cachedTo + 1 : launch.launchBlock;
+  const base = cachedTo ? cached!.transfers.length : 0;
+  const tokenIsCurrency0 = launch.token.toLowerCase() < launch.pairToken.toLowerCase();
+  // The deadline is checked between pages, but one page can sit in the RPC
+  // gate's retries for a minute: the timer is the hard stop.
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const expired = Number.isFinite(deadline)
+    ? new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new DeadlineError(0)), Math.max(0, deadline - Date.now())); })
+    : null;
+  let live;
+  try {
+    const reading = Promise.all([
+      readTransfers(launch.token, from, toBlock, (done, total, n) => onProgress?.(done, total, base + n), deadline),
+      readCurveTrades(launch.curve, from, toBlock, deadline),
+      launch.poolId
+        ? readPoolSwaps(ADDR.v4PoolManager, launch.poolId, tokenIsCurrency0, from, toBlock, deadline)
+        : Promise.resolve({ events: [], complete: true }),
+    ]);
+    reading.catch(() => {}); // after the timer wins, a late failure is nobody's
+    live = await (expired ? Promise.race([reading, expired]) : reading);
+  } catch (error) {
+    if (error instanceof DeadlineError) return null;
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+  const [t, c, s] = live;
+  const keep = <T extends { block: number }>(xs: T[] | undefined) => (cachedTo ? (xs ?? []).filter((x) => x.block <= cachedTo) : []);
+  const logs: Logs = {
+    // concat, not spread: a busy token's log overflows the argument stack
+    transfers: keep(cached?.transfers).concat(t.events.map((e) => ({ from: e.from, to: e.to, value: e.value, block: e.block, logIndex: e.logIndex }))),
+    trades: keep(cached?.trades).concat(c.events.map((e) => ({ kind: e.kind, wallet: e.wallet, quoteWei: e.quoteWei, tokens: e.tokens, taxWei: e.taxWei, block: e.block, logIndex: e.logIndex }))),
+    swaps: keep(cached?.swaps).concat(s.events.map((e) => ({ buy: e.buy, tokens: e.tokens, quote: e.quote, price: e.price, block: e.block, logIndex: e.logIndex }))),
+    complete: t.complete && c.complete && s.complete,
+    cachedTo,
+  };
+  const upTo = toBlock - CACHE_MARGIN_BLOCKS;
+  if (logs.complete && upTo > cachedTo && worthSaving(cachedTo, upTo, t.events.length + c.events.length + s.events.length)) {
+    // written in the background: a full disk costs the next crawl time, never this one its report
+    const save: Promise<void> = saveLogs(launch.token, { upTo, transfers: logs.transfers, trades: logs.trades, swaps: logs.swaps })
+      .catch(() => {})
+      .finally(() => pendingSaves.delete(save));
+    pendingSaves.add(save);
+  }
+  return logs;
+}
+
+/**
+ * Read a token's logs into the cache: what the site does after a crawl ran
+ * out of time on a long history, so the next crawl is quick. Returns the
+ * number of transfers kept, 0 when the budget ran out first.
+ */
+export async function warmLogs(
+  token: Address,
+  onProgress?: (done: number, total: number, transfers: number) => void,
+  budgetMs?: number,
+): Promise<number> {
+  const deadline = budgetMs ? Date.now() + budgetMs : Infinity;
+  const launch = await readLaunch(token);
+  if (!launch) return 0;
+  const clock = await makeClock(launch.launchBlock, launch.launchedAt);
+  // In windows, each kept as soon as it is complete: a history longer than
+  // one budget is read over several runs, each picking up where the last stopped.
+  let transfers = 0;
+  for (;;) {
+    const kept = await loadLogs(launch.token);
+    const from = kept && kept.upTo >= launch.launchBlock ? kept.upTo + 1 : launch.launchBlock;
+    const to = Math.min(clock.headBlock, from + WARM_WINDOW_BLOCKS);
+    const logs = await readLogs(launch, to, deadline, onProgress);
+    await cacheWritten();
+    if (!logs) return 0;
+    transfers = logs.transfers.length;
+    if (to >= clock.headBlock || !logs.complete) return transfers;
+  }
 }

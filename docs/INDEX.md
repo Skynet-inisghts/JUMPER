@@ -62,3 +62,10 @@ base units, plus the price of the newest trade:
 `POST /crawls` records a finished crawl (summary and report), `GET /pulse`
 returns the counters the hero shows and the recently crawled tokens,
 `GET /latest` the newest full report for the replay panels.
+
+## GET /logs, PUT /logs
+
+`?token=0x…`. A token's logs as the engine's log cache writes them
+(`src/cache.ts`: gzip, columnar JSON). The site keeps no disk between
+crawls, so it reads a token's logs from here and puts them back after a
+complete read; 404 when none are kept.

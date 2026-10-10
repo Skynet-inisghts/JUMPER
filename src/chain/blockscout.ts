@@ -38,7 +38,13 @@ export const blockscoutKey = (): string | undefined => process.env.BLOCKSCOUT_AP
 export const blockscoutFetchLegacy = (query: string): Promise<unknown> => blockscoutFetch(`/api?${query}`);
 
 /** GET an /api/v2 path; JSON out or a typed BlockscoutError. */
+/** After the key's limit is spent the explorer is left alone for a while: every ask would only wait to be refused. */
+let restingUntil = 0;
+const REST_MS = 5 * 60_000;
+export const blockscoutResting = (): boolean => Date.now() < restingUntil;
+
 export async function blockscoutFetch(path: string): Promise<unknown> {
+  if (blockscoutResting()) throw new BlockscoutError("Blockscout rate limit reached; try again in a moment", "rate-limit");
   const key = blockscoutKey();
   for (let attempt = 0; attempt < 2; attempt++) {
     await acquire();
@@ -60,6 +66,7 @@ export async function blockscoutFetch(path: string): Promise<unknown> {
     if (res.status === 429) {
       // The free plan's limit; wait out the window once, then give up honestly.
       if (attempt === 0) { await sleep(1_200); continue; }
+      restingUntil = Date.now() + REST_MS;
       throw new BlockscoutError("Blockscout rate limit reached; try again in a moment", "rate-limit");
     }
     if (res.status >= 500) {

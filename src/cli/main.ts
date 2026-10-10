@@ -57,6 +57,9 @@ async function writeCard(report: import("../crawlers/types.js").Report, dir: str
 }
 
 const program = new Command();
+/** A terminal has no function limit: KNOT may wait on the explorer longer than on the site. */
+const CLI_KNOT_BUDGET_MS = 25_000;
+
 program
   .name("jumper")
   .description("Crawler terminal for Pons v2 tokens on Robinhood Chain. It can jump over any token. Read only: no keys, no signing, no transactions.")
@@ -86,7 +89,7 @@ program
         if (!interactive) return;
         if (e.type === "stage" && e.state === "done") process.stderr.write(`  ${e.crawler.padEnd(8)} done${e.detail ? ` · ${e.detail}` : ""}\n`);
         if (e.type === "progress") process.stderr.write(`  ${e.crawler.padEnd(8)} ${Math.round((e.done / e.total) * 100)}% · ${e.detail ?? ""}\r`);
-      });
+      }, { knotBudgetMs: CLI_KNOT_BUDGET_MS });
     } catch (error) {
       if (error instanceof CrawlError) {
         process.stderr.write(`jumper: ${error.message}\n`);
