@@ -11,7 +11,7 @@
 </p>
 
 <p align="center"><strong>It can jump over any token.</strong><br/>A crawler terminal that takes a Pons v2 token apart through its holders.</p>
-<p align="center"><a href="https://jumper-crawler.vercel.app">Website</a> · <a href="https://jumper-crawler.vercel.app/?token=0xb163228b3c371a752f297605a1dce34e12c85983">Run a crawl</a> · <a href="#run-it">Start locally</a> · <a href="#the-eight-crawlers">Crawlers</a> · <a href="#relayers-and-routers">Relayers and routers</a> · <a href="#limits">Limits</a></p>
+<p align="center"><a href="https://jumper-terminal.xyz">Website</a> · <a href="https://jumper-terminal.xyz/?token=0xb163228b3c371a752f297605a1dce34e12c85983">Run a crawl</a> · <a href="#run-it">Start locally</a> · <a href="#the-eight-crawlers">Crawlers</a> · <a href="#relayers-and-routers">Relayers and routers</a> · <a href="#limits">Limits</a></p>
 
 ## What it is
 

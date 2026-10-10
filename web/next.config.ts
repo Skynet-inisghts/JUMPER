@@ -34,6 +34,16 @@ const nextConfig: NextConfig = {
   },
   experimental: { externalDir: true },
   poweredByHeader: false,
+  // One address for the site: www and the old project host send visitors to
+  // the domain, path and query kept. Preview deployments are left alone.
+  async redirects() {
+    return ["www.jumper-terminal.xyz", "jumper-crawler.vercel.app"].map((value) => ({
+      source: "/:path*",
+      has: [{ type: "host" as const, value }],
+      destination: "https://jumper-terminal.xyz/:path*",
+      permanent: true,
+    }));
+  },
   webpack: (config) => {
     config.resolve.extensionAlias = { ".js": [".ts", ".tsx", ".js"] };
     config.resolve.alias = { ...(config.resolve.alias ?? {}), "@engine": join(root, "src") };

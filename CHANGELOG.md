@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 · 2026-10-10
+
+- The site lives at jumper-terminal.xyz. www and the old jumper-crawler.vercel.app address redirect there, path and token kept.
+- Share cards carry the new address.
+
 ## 0.4.0 · 2026-10-07
 
 - The crawl plays out in the room: the holder graph builds on the back wall, each crawler's desk lights up while it works with its live progress and newest line, crawlers run errands to the wall, waiting ones doze, finished desks turn green with their result.

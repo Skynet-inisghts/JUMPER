@@ -19,7 +19,7 @@ import { BANDS, bandOf } from "../score/scale.js";
  * by mascot.py), scaled with nearest-neighbour: never redrawn here.
  */
 
-export const SITE_HOST = process.env.JUMPER_SITE_HOST ?? "jumper-crawler.vercel.app";
+export const SITE_HOST = process.env.JUMPER_SITE_HOST ?? "jumper-terminal.xyz";
 
 const BG = "#07060A";
 const PANEL = "#110D18";
