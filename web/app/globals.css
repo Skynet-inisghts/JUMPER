@@ -76,7 +76,10 @@ h1 span{color:var(--ac);text-shadow:0 0 44px rgba(180,124,255,.4)}
 .ticker{display:flex;gap:34px;padding:11px 0;white-space:nowrap;width:max-content;
  animation:slide 42s linear infinite}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ti{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--dm)}
+.tickerrail:hover .ticker{animation-play-state:paused}
+.ti{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--dm);background:none;border:0;padding:0;font-family:inherit;cursor:copy}
+.ti .ca{color:var(--dm2);min-width:11ch}
+.ti:hover .ca{color:var(--ac)}
 .ti b{color:var(--tx);font-weight:400}
 .ti u{text-decoration:none;font-size:10.5px;padding:1px 7px;border:1px solid;border-radius:2px}
 .ti u.ok{color:var(--ac2);border-color:rgba(125,240,200,.4)}
