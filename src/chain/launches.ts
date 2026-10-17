@@ -28,6 +28,8 @@ export interface LaunchInfo {
   phaseLabel: string;
   graduated: boolean;
   curveProgress: number; // 0..1, raised vs graduation threshold
+  /** The curve's quote reserve, in quote base units. */
+  quoteReserve: bigint;
   launchedAt: number;
   launchBlock: number;
   launchTxHash: Hex | null;
@@ -171,6 +173,7 @@ export async function readLaunch(token: Address, hint?: LaunchHint): Promise<Lau
     phaseLabel: PHASE_NAME[Number(record.phase)] ?? String(record.phase),
     graduated: ok<boolean>(4) ?? Number(record.phase) === 2,
     curveProgress: threshold > 0n ? Math.min(1, Number((raised * 10_000n) / threshold) / 10_000) : 0,
+    quoteReserve: raised,
     launchedAt,
     launchBlock,
     launchTxHash,

@@ -111,6 +111,7 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
       phaseLabel: launch.phaseLabel,
       graduated: launch.graduated,
       curveProgress: launch.curveProgress,
+      quoteReserve: launch.quoteReserve,
       launchedAt: launch.launchedAt,
       launchBlock: launch.launchBlock,
       totalSupply: launch.totalSupply,
@@ -184,6 +185,7 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
   if (funding.read > 0) sources.push("blockscout");
   tape.quoteUsd = prices.quote?.usd ?? null;
   tape.tokenUsd = prices.direct?.usd ?? null;
+  tape.liquidityUsd = prices.direct?.liquidityUsd ?? null;
   if (prices.quote) sources.push(`${prices.quote.source} rate`);
   if (prices.direct) sources.push("dexscreener price");
 
