@@ -269,6 +269,22 @@ export interface HolderRow {
   heldSec: number;
 }
 
+export interface EarlyBuyer {
+  wallet: string;
+  /** Blocks and seconds from the launch to its first buy. */
+  delayBlocks: number;
+  delaySec: number;
+  /** % of supply its first buy took. */
+  atBuy: number;
+  /** % of supply it holds now. */
+  now: number;
+  /** holding, added more, partly sold, sold out, or moved its tokens to another wallet. */
+  status: "holding" | "added" | "partly sold" | "sold" | "moved";
+  /** % of its peak that is gone. */
+  soldPct: number;
+  roles: Role[];
+}
+
 export interface CrawlerReport {
   name: CrawlerName;
   color: string;
@@ -345,6 +361,8 @@ export interface Report {
   facts: [string, string, string];
   crawlers: CrawlerReport[];
   holders: HolderRow[];
+  /** The first twenty buyers, in order (absent on reports from before 0.6). */
+  early?: EarlyBuyer[];
   fills: Fill[];
   /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
   chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];
