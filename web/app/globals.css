@@ -431,6 +431,8 @@ button.inputchip{all:unset}
 /* numeric columns: header and values share one centre line */
 .tophold .thead span:nth-child(n+4){text-align:center}
 .tophold .tr .v.d{color:var(--dm)}.tophold .tr .v.g{color:var(--ac2)}.tophold .tr .v.rd{color:var(--rd)}
+.tophold .th .sum.ops{margin-right:10px}
+.role.op{color:var(--bg);background:var(--ye);border-color:var(--ye)}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}

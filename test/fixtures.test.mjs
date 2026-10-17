@@ -71,3 +71,15 @@ test("the room's material: candles over the token's life and a panel per crawler
   assert.equal(r.panels.tracker.exitsByBucket.reduce((a, b) => a + b, 0), Number(r.crawlers[1].stats[0].split(" ")[0].replace(/\s/g, "")));
   assert.equal(r.panels.sieve.clean + r.panels.sieve.dust + r.panels.sieve.transferOnly + r.panels.sieve.virgins >= r.metrics.holders, true);
 });
+
+test("two top holders that passed tokens between them are one operator", () => {
+  const tape = fixture("twain");
+  const before = crawlTape(tape);
+  assert.equal(before.operators.hands, before.operators.wallets);
+  const [a, b] = before.holders;
+  tape.transfers.push({ from: a.wallet, to: b.wallet, value: 1n, block: tape.headBlock, logIndex: 99_999 });
+  const r = crawlTape(tape);
+  assert.equal(r.operators.hands, r.operators.wallets - 1);
+  assert.deepEqual(r.operators.groups[0].ties, ["transfer"]);
+  assert.equal(r.holders.find((h) => h.wallet === a.wallet).op, r.holders.find((h) => h.wallet === b.wallet).op);
+});

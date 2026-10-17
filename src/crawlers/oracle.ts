@@ -5,7 +5,7 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, Fill, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  CrawlerName, CrawlerReport, Fill, Operators, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, WeaverOut,
 } from "./types.js";
 
@@ -109,6 +109,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     `${pctText(sniperSupply)} sniped · ${grouped(web.holders.length)} holders`,
   ];
 
+  const ops = operators(tape, c);
   return {
     version: 1,
     token: {
@@ -143,11 +144,75 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     crawlers: crawlerReports(tape, c, metrics),
     chart: chart(tape, c),
     panels: panels(tape, c, parts),
-    holders: holderRows(tape, c),
+    holders: withOperators(holderRows(tape, c), ops),
+    operators: ops,
     fills: fills(tape, c),
     graph: graph(tape, c),
   };
 }
+
+/**
+ * Operators: the top fifty holders tied into the hands behind them. Two
+ * wallets are one hand when tokens went straight from one to the other,
+ * when KNOT found them funded from one source inside its window, or when
+ * three or more bought in the same block within 2% of the same amount.
+ */
+function operators(tape: Tape, c: Crawled): Operators {
+  const top = c.web.holders.slice(0, 50).map((h) => h.address);
+  const inTop = new Set(top);
+  const parent = new Map(top.map((a) => [a, a]));
+  const find = (a: string): string => { let x = a; while (parent.get(x) !== x) x = parent.get(x)!; parent.set(a, x); return x; };
+  const ties = new Map<string, Set<"transfer" | "funder" | "same block">>();
+  const join = (a: string, b: string, why: "transfer" | "funder" | "same block") => {
+    const ra = find(a), rb = find(b);
+    if (ra !== rb) parent.set(ra, rb);
+    for (const w of [a, b]) { const t = ties.get(w) ?? new Set(); t.add(why); ties.set(w, t); }
+  };
+  for (const t of tape.transfers) {
+    const f = lc(t.from), to = lc(t.to);
+    if (f !== to && inTop.has(f) && inTop.has(to)) join(f, to, "transfer");
+  }
+  for (const k of c.knotted.clusters) {
+    const mine = k.wallets.filter((w) => inTop.has(w));
+    for (let i = 1; i < mine.length; i++) join(mine[0], mine[i], "funder");
+  }
+  const firstBuy = new Map<string, { block: number; tokens: bigint }>();
+  for (const b of c.web.buys) if (inTop.has(b.wallet) && !firstBuy.has(b.wallet)) firstBuy.set(b.wallet, b);
+  const byBlock = new Map<number, { wallet: string; tokens: bigint }[]>();
+  for (const [wallet, b] of firstBuy) byBlock.set(b.block, [...(byBlock.get(b.block) ?? []), { wallet, tokens: b.tokens }]);
+  for (const group of byBlock.values()) {
+    if (group.length < 3) continue;
+    group.sort((a, b) => (a.tokens < b.tokens ? -1 : 1));
+    // runs of near-equal buys inside the block
+    let run = [group[0]];
+    const flush = () => { if (run.length >= 3) for (let i = 1; i < run.length; i++) join(run[0].wallet, run[i].wallet, "same block"); };
+    for (let i = 1; i < group.length; i++) {
+      const prev = run[run.length - 1].tokens;
+      if (prev > 0n && (group[i].tokens - prev) * 50n <= prev) run.push(group[i]);
+      else { flush(); run = [group[i]]; }
+    }
+    flush();
+  }
+  const comps = new Map<string, string[]>();
+  for (const a of top) comps.set(find(a), [...(comps.get(find(a)) ?? []), a]);
+  const balance = new Map(c.web.holders.map((h) => [h.address, h.balance]));
+  const groups = [...comps.values()]
+    .filter((ws) => ws.length >= 2)
+    .map((ws) => ({ ws, held: ws.reduce((a, w) => a + (balance.get(w) ?? 0n), 0n) }))
+    .sort((a, b) => (a.held > b.held ? -1 : a.held < b.held ? 1 : 0))
+    .map(({ ws, held }, i) => ({
+      id: i + 1,
+      wallets: ws,
+      share: pctOf(held, tape.launch.totalSupply),
+      ties: [...new Set(ws.flatMap((w) => [...(ties.get(w) ?? [])]))],
+    }));
+  return { wallets: top.length, hands: comps.size, groups };
+}
+
+const withOperators = (rows: HolderRow[], ops: Operators): HolderRow[] => {
+  const of = new Map(ops.groups.flatMap((g) => g.wallets.map((w) => [w, g.id] as const)));
+  return rows.map((r) => ({ ...r, op: of.get(r.wallet) ?? null }));
+};
 
 /** The top fifty holders, each with a few words on who it is. */
 function holderRows(tape: Tape, c: Crawled): HolderRow[] {

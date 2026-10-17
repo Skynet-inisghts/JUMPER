@@ -582,6 +582,14 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
       <div className="th">
         <div>
           <b>top {rows.length} holders</b>
+          {r.operators && (
+            <span className="sum ops" title="wallets tied by a direct transfer, one funder inside KNOT's window, or near-equal buys in one block">
+              <span className={"role " + (r.operators.groups.length ? "y" : "d")}>{r.operators.wallets} wallets = {r.operators.hands} hands</span>
+              {r.operators.groups.slice(0, 4).map((g) => (
+                <span key={g.id} className="role y">op {g.id}: {g.wallets.length} wallets, {g.share < 1 ? g.share.toFixed(2) : g.share.toFixed(1)}% · {g.ties.join(", ")}</span>
+              ))}
+            </span>
+          )}
           <span className="sum">
             {[...counts.entries()].filter(([k]) => k !== "trader" && k !== "router").map(([k, n]) => (
               <span key={k} className={"role " + (ROLE[k]?.cls ?? "d")}>{n} {ROLE[k]?.label ?? k}</span>
@@ -596,6 +604,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
           <span className="n">{i + 1}</span>
           <span className="w">{short(h.wallet)}</span>
           <span className="who">
+            {h.op != null && <span className="role op">op {h.op}</span>}
             {(h.roles ?? []).map((k) => <span key={k} className={"role " + (ROLE[k]?.cls ?? "d")}>{ROLE[k]?.label ?? k}</span>)}
             <i>{h.who ?? h.flags.join(", ")}</i>
           </span>

@@ -267,6 +267,16 @@ export interface HolderRow {
   markets: number | null;
   /** Seconds since it first got this token. */
   heldSec: number;
+  /** The operator this wallet belongs to, when it is tied to another top holder (absent on older reports). */
+  op?: number | null;
+}
+
+/** Top holders tied together: one hand behind several wallets. */
+export interface Operators {
+  /** Top holders looked at, and how many hands they come to. */
+  wallets: number;
+  hands: number;
+  groups: { id: number; wallets: string[]; share: number; ties: ("transfer" | "funder" | "same block")[] }[];
 }
 
 export interface CrawlerReport {
@@ -345,6 +355,8 @@ export interface Report {
   facts: [string, string, string];
   crawlers: CrawlerReport[];
   holders: HolderRow[];
+  /** The top holders tied into operators (absent on older reports). */
+  operators?: Operators;
   fills: Fill[];
   /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
   chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];
