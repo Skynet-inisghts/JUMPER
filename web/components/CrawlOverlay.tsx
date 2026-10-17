@@ -410,6 +410,15 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           <div className="repwrap">
             <div className="repcore" ref={coreRef}>
               <RugWarning r={r} />
+              {r.outcome ? (
+                <div className="gradehead">
+                  <div className="gradeltr" style={{ color: "var(--dm)" }}>{r.outcome.kind.toUpperCase()}</div>
+                  <div>
+                    <div className="gradenum"><b style={{ color: "var(--dm)" }}>N/A</b></div>
+                    <div className="gradeln">${r.token.symbol} · no score: {r.outcome.why}</div>
+                  </div>
+                </div>
+              ) : (
               <div className="gradehead">
                 <div className="gradeltr" style={{ color: b.color }}>{r.label}</div>
                 <div>
@@ -417,7 +426,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                   <div className="gradeln">${r.token.symbol} · {r.verdict.toLowerCase()}: {r.subline}</div>
                 </div>
               </div>
-              <div className="gwrap">
+              )}
+              {!r.outcome && <div className="gwrap">
                 <div className="gradebar">
                   <i style={{ width: "34%", background: "#8C2F3F" }} />
                   <i style={{ width: "35%", background: "#8A7A2A" }} />
@@ -427,7 +437,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                 <div className="gradeticks"><span>1</span><span>35</span><span>70</span><span>100</span></div>
                 <ScoreBuild r={r} />
                 <div className="gradenote">0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in. it measures the past, it does not predict. not financial advice.</div>
-              </div>
+              </div>}
               <Quads r={r} />
             </div>
             <div className="repside">

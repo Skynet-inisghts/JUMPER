@@ -298,6 +298,12 @@ export interface Rug {
   sellers: { group: RugGroup; wallets: number; share: number }[];
 }
 
+/** A token the score cannot judge: too few holders yet, or supply handed out instead of bought. */
+export interface Outcome {
+  kind: "too early" | "no verdict";
+  why: string;
+}
+
 export interface CrawlerReport {
   name: CrawlerName;
   color: string;
@@ -363,6 +369,8 @@ export interface Report {
   verdict: string;
   /** the verdict plate's second line */
   subline: string;
+  /** Set when no score is given: the page and the card show this instead of the number (absent on older reports). */
+  outcome?: Outcome | null;
   metrics: Metrics;
   quadrants: {
     web: { retention: Partial<Record<CheckpointLabel, number>>; hold: number; gone: number; firstMinuteKept: number | null; realRetention: number; stillIn: number; settled: number; flips: number; firstMinuteBots: number };

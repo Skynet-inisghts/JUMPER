@@ -5,7 +5,7 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, EarlyBuyer, Fill, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  CrawlerName, CrawlerReport, EarlyBuyer, Fill, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
 } from "./types.js";
 
@@ -106,7 +106,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     scouted.online
       ? `${scouted.smart.length} ${smartWord} on ${pctText(smartSupply)} · ${devPhrase}`
       : `smart money unread · ${devPhrase}`,
-    `${pctText(sniperSupply)} sniped · ${grouped(web.holders.length)} holders`,
+    `${pctText(sniperSupply)} sniped · ${plural(web.holders.length, "holder")}`,
   ];
 
   const candles = chart(tape, c);
@@ -129,6 +129,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     label: labelOf(score),
     verdict: band.verdict,
     subline: SUBLINES[band.band],
+    outcome: outcomeOf(tape, c),
     metrics,
     quadrants: {
       web: { retention: snared.retention, hold, gone, firstMinuteKept, realRetention: Math.round(realRetention * 1000) / 10, stillIn: Math.round(stillIn * 1000) / 10, settled: Math.round(settledShare * 1000) / 10, flips, firstMinuteBots: snared.firstMinuteBots },
@@ -275,6 +276,22 @@ function rugCheck(tape: Tape, c: Crawled, candles: Report["chart"]): Rug | null 
   const inside = held.filter((x) => x.group !== "later buyers").reduce((a, x) => a + x.share, 0);
   const rugged = c.tracked.devState === "dumped" || (heldTotal > 0 && (inside / heldTotal) * 100 >= THRESHOLDS.rugInsideSharePct);
   return { drawdown, peakAgoSec: Math.max(0, tape.now - candles[peak].t), rugged, devState: c.tracked.devState, sellers };
+}
+
+/** TOO EARLY with too few holders to read; NO VERDICT when the supply was handed out, not bought. */
+function outcomeOf(tape: Tape, c: Crawled): Outcome | null {
+  const n = c.web.holders.length;
+  if (n < THRESHOLDS.tooEarlyHolders) {
+    return { kind: "too early", why: `${n} holder${n === 1 ? "" : "s"} so far: too few to read, crawl it again once people buy in` };
+  }
+  const dev = devSet(tape);
+  const dropped = c.web.holders.filter((h) => h.bought === 0n && h.received > 0n && !dev.has(h.address));
+  const droppedHeld = dropped.reduce((a, h) => a + h.balance, 0n);
+  const share = c.web.holdSupply > 0n ? Number((droppedHeld * 1000n) / c.web.holdSupply) / 10 : 0;
+  if (dropped.length >= THRESHOLDS.airdropWallets && share >= THRESHOLDS.airdropHeldPct) {
+    return { kind: "no verdict", why: `${grouped(dropped.length)} holders never bought, they were sent ${Math.round(share)}% of what is held: an airdrop, the score cannot judge it` };
+  }
+  return null;
 }
 
 /** The top fifty holders, each with a few words on who it is. */

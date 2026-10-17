@@ -33,6 +33,11 @@ export const THRESHOLDS = {
   rugDrawdownPct: 80,
   /** ...and calls it a rug, not a collapse, when the dev dumped or at least this % of the selling since the peak (flippers left out) came from the dev, insiders, snipers, bundles, transfers or the first minute. */
   rugInsideSharePct: 30,
+  /** Fewer holders than this: TOO EARLY, no score is given. */
+  tooEarlyHolders: 10,
+  /** At least this many holders that never bought, holding this % of the held supply: an airdrop, NO VERDICT. */
+  airdropWallets: 20,
+  airdropHeldPct: 25,
   /** SNARE: buys inside the launch block and the two after it. */
   sniperBlocks: 3,
   /** First-minute cohort window and the keep ratio (balance >= 80% of peak). */
