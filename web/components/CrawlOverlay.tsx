@@ -455,6 +455,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
               </div>
             </div>
             <div className="repfull">
+              <PriceChart r={r} />
               <TopHolders r={r}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
@@ -708,6 +709,61 @@ function RugWarning({ r }: { r: Report }) {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * The token's price over its whole life: the report's candles (curve trades,
+ * then pool swaps) on a log scale, so a launch spike and the weeks after both
+ * read, with the volume under them. Dollars when the crawl read a rate.
+ */
+function PriceChart({ r }: { r: Report }) {
+  const cs = r.chart ?? [];
+  if (cs.length < 2 || !cs.some((c) => c.h !== c.l || c.o !== c.c)) return null;
+  const led = r.panels?.ledger;
+  const k = led?.priceUsd != null && led.priceQuote ? led.priceUsd / led.priceQuote : null;
+  const W = 1000, H = 150, V = 34, PAD = 4;
+  const lows = cs.map((c) => c.l).filter((x) => x > 0);
+  const lo = Math.min(...lows), hi = Math.max(...cs.map((c) => c.h));
+  if (!(lo > 0) || !(hi > 0)) return null;
+  const L0 = Math.log(lo), L1 = Math.log(hi) === L0 ? L0 + 1 : Math.log(hi);
+  const y = (p: number) => PAD + (H - 2 * PAD) * (1 - (Math.log(Math.max(p, lo)) - L0) / (L1 - L0));
+  const step = W / cs.length;
+  const bw = Math.max(1.5, step * 0.62);
+  const vmax = Math.max(...cs.map((c) => c.v)) || 1;
+  const money = (p: number) => {
+    const x = k != null ? p * k : p;
+    const z = x >= 1 ? 2 : Math.min(12, Math.max(0, -Math.floor(Math.log10(x)) - 1) + 3);
+    return (k != null ? "$" : "") + x.toFixed(z) + (k != null ? "" : " " + r.token.pairSymbol);
+  };
+  const day = (t: number) => new Date(t * 1000).toISOString().slice(5, 16).replace("T", " ");
+  return (
+    <div className="pchart">
+      <div className="ph">
+        <b>price</b>
+        <span>high {money(hi)} · low {money(lo)} · now {money(cs[cs.length - 1].c)}</span>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H + V}`} preserveAspectRatio="none" role="img" aria-label={`$${r.token.symbol} price over its life`}>
+        {cs.map((c, i) => {
+          const x = i * step + step / 2;
+          const up = c.c >= c.o;
+          const col = up ? "var(--ac2)" : "var(--rd)";
+          const top = y(Math.max(c.o, c.c)), bot = y(Math.min(c.o, c.c));
+          return (
+            <g key={i}>
+              <line x1={x} x2={x} y1={y(c.h)} y2={y(c.l)} stroke={col} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+              <rect x={x - bw / 2} y={top} width={bw} height={Math.max(1, bot - top)} fill={col} />
+              {c.v > 0 && <rect x={x - bw / 2} y={H + V - (V - 6) * (c.v / vmax)} width={bw} height={(V - 6) * (c.v / vmax)} fill={col} opacity="0.35" />}
+            </g>
+          );
+        })}
+      </svg>
+      <div className="pf">
+        <span>{day(cs[0].t)} UTC launch</span>
+        <span>log scale · curve trades and pool swaps read from the robinhood rpc</span>
+        <span>now</span>
+      </div>
     </div>
   );
 }
