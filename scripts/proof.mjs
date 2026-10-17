@@ -1,11 +1,13 @@
 // Backtest for the /proof page: what JUMPER would have said about a token
-// thirty minutes after its launch, next to what its price did afterwards.
+// two hours after its launch, next to what its price did afterwards.
 //
-//   pnpm build:cli && node scripts/proof.mjs tokens.json [out.json]
+//   pnpm build:cli && node scripts/proof.mjs tokens.json [out.json] [cut minutes, default 120]
 //
 // tokens.json is a list of { token } (or plain addresses), for example the
 // busiest launches of the last days. Each token is read in full, then its
-// Tape is cut at launch + 30 min: only the chain up to that block is kept.
+// Tape is cut at launch + the cut: only the chain up to that block is kept.
+// Thirty minutes is too soon: holding is measured against an hour, and at
+// thirty minutes nobody has held one, so every token reads TORN.
 // The wallet index and its books describe today, so they are dropped:
 // SCOUT and LEDGER run as if the index were offline, nothing from after
 // the cut leaks into the verdict. The price after the cut decides the
@@ -16,9 +18,10 @@ import { crawlTape } from "../.jumper-build/crawlers/pipeline.js";
 import { loadEnv } from "../.jumper-build/env.js";
 
 loadEnv(new URL("../.env", import.meta.url).pathname);
-const [, , input, output = "web/sample/proof.json"] = process.argv;
-const CUT_SEC = 30 * 60;
-const MIN_AGE_SEC = 6 * 3600;
+const [, , input, output = "web/sample/proof.json", cutMin = "120"] = process.argv;
+const CUT_SEC = Number(cutMin) * 60;
+/** The outcome needs time to show: six hours after the cut at least. */
+const MIN_AGE_SEC = CUT_SEC + 6 * 3600;
 const list = JSON.parse(readFileSync(input, "utf8")).map((x) => (typeof x === "string" ? x : x.token));
 
 /** Whole quote per whole token, in block order: curve trades, then pool swaps. */

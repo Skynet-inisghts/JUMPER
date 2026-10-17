@@ -6,7 +6,7 @@ import proof from "@/sample/proof.json";
 
 export const metadata: Metadata = {
   title: "JUMPER · proof",
-  description: "Backtest: what JUMPER said about Pons launches thirty minutes in, next to what their price did afterwards.",
+  description: "Backtest: what JUMPER said about Pons launches two hours in, next to what their price did afterwards.",
 };
 
 interface Row {
@@ -58,7 +58,7 @@ export default function ProofPage() {
       <div className="wrap">
         <h2>PROOF</h2>
         <p className="plede">
-          A backtest on {data.tested} real Pons launches: the busiest of the last three days by wallets, each at least six hours old.
+          A backtest on {data.tested} real Pons launches: the busiest of the last three days by wallets, each old enough to show what came after.
           For every token the chain was cut {data.cutMin} minutes after its launch and the swarm ran on what was there, with the wallet
           index left out so nothing from after the cut leaks in. Next to that verdict: the highest price after the cut, and the price now.
           Run {data.generatedAt.slice(0, 16).replace("T", " ")} UTC. It measures the past, it does not predict. Not financial advice.
