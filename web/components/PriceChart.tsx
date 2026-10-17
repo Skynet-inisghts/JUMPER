@@ -12,7 +12,8 @@ type Hover = { t: number; p: number; h: number | null } | null;
 /**
  * The token's price over its whole life: the close of each of the report's
  * candles (curve trades, then pool swaps) as one purple line on a log scale,
- * with the price axis on the right. The wheel or a pinch zooms, a drag
+ * read as the market cap in dollars on the right axis (the price when no cap
+ * was read). The wheel or a pinch zooms, a drag
  * scrolls, a double click on the time axis fits the whole life again.
  * Dollars when the crawl read a rate.
  */
@@ -25,12 +26,23 @@ export default function PriceChart({ r }: { r: Report }) {
   const raw = r.chart ?? [];
   const usable = raw.length >= 2 && raw.some((c) => c.h !== c.l || c.o !== c.c);
 
-  const money = (p: number) => {
-    const x = k != null ? p * k : p;
-    if (!(x > 0)) return k != null ? "$0" : "0";
+  // market cap in dollars when the crawl read a rate and a cap; the price otherwise
+  const m = r.market;
+  const supply = m?.mcapUsd && m?.priceUsd ? m.mcapUsd / m.priceUsd : null;
+  const cap = k != null && supply != null ? k * supply : null;
+  const toShown = (p: number) => (cap != null ? p * cap : k != null ? p * k : p);
+  const label = (x: number) => {
+    if (!(x > 0)) return cap != null || k != null ? "$0" : "0";
+    if (cap != null) {
+      if (x >= 1e9) return "$" + (x / 1e9).toFixed(2) + "B";
+      if (x >= 1e6) return "$" + (x / 1e6).toFixed(2) + "M";
+      if (x >= 1e3) return "$" + (x / 1e3).toFixed(1) + "K";
+      return "$" + x.toFixed(0);
+    }
     const z = x >= 1 ? 2 : Math.min(12, Math.max(0, -Math.floor(Math.log10(x)) - 1) + 3);
     return (k != null ? "$" : "") + x.toFixed(z) + (k != null ? "" : " " + r.token.pairSymbol);
   };
+  const money = (p: number) => label(toShown(p));
 
   useEffect(() => {
     const el = box.current;
@@ -46,7 +58,7 @@ export default function PriceChart({ r }: { r: Report }) {
       raw.forEach((c, i) => {
         if (!(c.c > 0) || seen.has(c.t)) return;
         seen.add(c.t);
-        pts.push({ t: c.t, p: k != null ? c.c * k : c.c, h: hc ? hc[i] : null });
+        pts.push({ t: c.t, p: toShown(c.c), h: hc ? hc[i] : null });
       });
       pts.sort((a, b) => a.t - b.t);
       if (pts.length < 2) return;
@@ -71,11 +83,6 @@ export default function PriceChart({ r }: { r: Report }) {
         handleScale: { mouseWheel: true, pinch: true, axisPressedMouseMove: true, axisDoubleClickReset: true },
       });
 
-      const fmtPrice = (x: number) => {
-        if (!(x > 0)) return "0";
-        const z = x >= 1 ? 2 : Math.min(12, Math.max(0, -Math.floor(Math.log10(x)) - 1) + 3);
-        return (k != null ? "$" : "") + x.toFixed(z);
-      };
       const area = chart.addSeries(AreaSeries, {
         lineWidth: 2,
         lineColor: mix(1),
@@ -84,7 +91,7 @@ export default function PriceChart({ r }: { r: Report }) {
         priceLineColor: "#B47CFF",
         priceLineStyle: LineStyle.Dashed,
         crosshairMarkerBackgroundColor: "#E2CCFF",
-        priceFormat: { type: "custom", formatter: fmtPrice, minMove: 1e-12 },
+        priceFormat: { type: "custom", formatter: label, minMove: cap != null ? 1 : 1e-12 },
       });
       const last = pts.length - 1;
       area.setData(pts.map((x, i) => ({ time: x.t as never, value: x.p, lineColor: mix(i / last) })));
@@ -128,17 +135,12 @@ export default function PriceChart({ r }: { r: Report }) {
   const hc = r.holderCurve && r.holderCurve.length === raw.length ? r.holderCurve : null;
   const hmax = hc ? Math.max(1, ...hc) : 1;
   const day = (t: number) => new Date(t * 1000).toISOString().slice(5, 16).replace("T", " ");
-  const shown = (p: number) => {
-    const z = p >= 1 ? 2 : Math.min(12, Math.max(0, -Math.floor(Math.log10(p)) - 1) + 3);
-    return (k != null ? "$" : "") + p.toFixed(z) + (k != null ? "" : " " + r.token.pairSymbol);
-  };
-
   return (
     <div className="pchart">
       <div className="ph">
-        <b>price</b>
+        <b>{cap != null ? "market cap" : "price"}</b>
         {hover ? (
-          <span className="phov">{day(hover.t)} UTC · <em>{shown(hover.p)}</em>{hover.h != null ? <> · {fmt(hover.h)} holders</> : null}</span>
+          <span className="phov">{day(hover.t)} UTC · <em>{label(hover.p)}</em>{hover.h != null ? <> · {fmt(hover.h)} holders</> : null}</span>
         ) : (
           <span>high {money(hi)} · low {money(lo)} · now {money(raw[raw.length - 1].c)}</span>
         )}
