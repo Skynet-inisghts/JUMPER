@@ -5,7 +5,7 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, EarlyBuyer, Fill, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  CrawlerName, CrawlerReport, EarlyBuyer, Fill, Market, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
 } from "./types.js";
 
@@ -141,6 +141,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
         takenOut, takenOutUsd: tape.quoteUsd !== null ? takenOut * tape.quoteUsd : null, pairSymbol: tape.launch.pairSymbol,
       },
     },
+    market: market(tape, c),
     facts,
     crawlers: crawlerReports(tape, c, metrics),
     chart: candles,
@@ -292,6 +293,37 @@ function outcomeOf(tape: Tape, c: Crawled): Outcome | null {
     return { kind: "no verdict", why: `${grouped(dropped.length)} holders never bought, they were sent ${Math.round(share)}% of what is held: an airdrop, the score cannot judge it` };
   }
   return null;
+}
+
+/**
+ * The market strip: price and cap from the crawl's own price, liquidity
+ * from the curve's quote reserve or the DEX after graduation, and the last
+ * day's volume from the trades read.
+ */
+function market(tape: Tape, c: Crawled): Market {
+  const qd = 10 ** tape.launch.pairDecimals;
+  const usd = tape.quoteUsd;
+  const priceUsd = c.books.priceUsd;
+  const whole = Number(tape.launch.totalSupply) / 1e18;
+  let liquidityUsd: number | null = null;
+  if (tape.launch.graduated) liquidityUsd = tape.liquidityUsd ?? null;
+  else if (usd !== null && tape.launch.quoteReserve !== undefined) liquidityUsd = (Number(tape.launch.quoteReserve) / qd) * usd;
+  const dayAgo = tape.headBlock - Math.round(86_400 / tape.secPerBlock);
+  let vol = 0;
+  let n = 0;
+  for (const t of c.web.trades) if (t.block >= dayAgo) { vol += Number(t.quoteWei) / qd; n++; }
+  for (const s of tape.swaps ?? []) if (s.block >= dayAgo) { vol += Number(s.quote) / qd; n++; }
+  const top10 = c.web.holders.slice(0, 10).reduce((a, h) => a + h.balance, 0n);
+  return {
+    priceUsd,
+    mcapUsd: priceUsd !== null ? priceUsd * whole : null,
+    liquidityUsd,
+    liquidityIn: tape.launch.graduated ? "pool" : "curve",
+    vol24hUsd: usd !== null ? vol * usd : null,
+    vol24hQuote: vol,
+    trades24h: n,
+    top10: pctOf(top10, tape.launch.totalSupply),
+  };
 }
 
 /** The top fifty holders, each with a few words on who it is. */

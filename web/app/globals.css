@@ -444,6 +444,12 @@ button.inputchip{all:unset}
 .rugwarn .rs b{color:var(--rd);font-weight:400}
 .rugwarn .rs .o b{color:var(--dm)}
 .rugwarn .rs i{font-style:normal;color:var(--dm2)}
+.mstrip{display:flex;flex-wrap:wrap;gap:8px 22px;padding:10px 14px;margin-bottom:14px;border:1px solid var(--ln);background:var(--pan);border-radius:5px;font-size:12px;font-variant-numeric:tabular-nums}
+.mstrip div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mstrip span{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dm2);white-space:nowrap}
+.mstrip b{font-weight:400;color:var(--tx);white-space:nowrap}
+.mstrip b i{font-style:normal;color:var(--dm)}
+.mstrip a{color:var(--tx);text-decoration:none;border-bottom:1px dotted var(--dm2)}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}
