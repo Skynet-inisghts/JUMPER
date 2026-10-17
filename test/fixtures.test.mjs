@@ -96,6 +96,7 @@ test("supply handed out instead of bought gets no score: NO VERDICT", () => {
   for (const h of r0.holders.filter((x) => !x.roles.includes("dev"))) {
     if (moved >= 34) break;
     const bal = tape.transfers.reduce((a, t) => a + (t.to.toLowerCase() === h.wallet ? t.value : 0n) - (t.from.toLowerCase() === h.wallet ? t.value : 0n), 0n);
+    // many small drops: each well under 0.2% of supply
     const part = bal / 25n;
     for (let i = 0; i < 25; i++) {
       tape.transfers.push({ from: h.wallet, to: `0x${(0xd00d0000 + logIndex).toString(16).padStart(40, "0")}`, value: part, block: head, logIndex: logIndex++ });
@@ -140,4 +141,18 @@ test("holders that got their first tokens from one wallet without buying are one
   const r = crawlTape(tape);
   const g = r.operators.groups.find((x) => x.ties.includes("same sender") || x.ties.includes("transfer"));
   assert.ok(g && g.wallets.length >= 3, JSON.stringify(r.operators.groups));
+});
+
+test("a few big equal chunks handed out is a stash, not an airdrop: it is scored", () => {
+  const tape = fixture("twain");
+  const r0 = crawlTape(tape);
+  const giver = r0.holders[0].wallet;
+  const bal = tape.transfers.reduce((a, t) => a + (t.to.toLowerCase() === giver ? t.value : 0n) - (t.from.toLowerCase() === giver ? t.value : 0n), 0n);
+  // the top holder hands its bag out in 22 chunks of about 1% of supply
+  const chunk = tape.launch.totalSupply / 100n;
+  for (let i = 0; i < 22 && chunk * BigInt(i + 1) <= bal; i++) {
+    tape.transfers.push({ from: giver, to: `0x${(0xcafe00 + i).toString(16).padStart(40, "0")}`, value: chunk, block: tape.headBlock, logIndex: 80_000 + i });
+  }
+  const r = crawlTape(tape);
+  assert.notEqual(r.outcome?.kind, "no verdict", JSON.stringify(r.outcome));
 });
