@@ -150,6 +150,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     crawlers: crawlerReports(tape, c, metrics),
     chart: candles,
     rug: rugCheck(tape, c, candles),
+    sellingNow: sellingNow(tape, c),
     panels: panels(tape, c, parts),
     holders: withOperators(holderRows(tape, c), ops),
     operators: ops,
@@ -235,6 +236,41 @@ function earlyBuyers(tape: Tape, c: Crawled): EarlyBuyer[] {
 }
 
 /**
+ * Who sold from `fromBlock` on, by what is known of every seller without its
+ * history: the launch, the first minute, the funding graph, how long it
+ * held. Share of all tokens sold in the window, and how many wallets.
+ */
+function sellersSince(tape: Tape, c: Crawled, fromBlock: number): Rug["sellers"] {
+  const roleOf = roleReader(tape, c);
+  const firstMinute = new Set(c.snared.firstMinute);
+  const flipBlocks = Math.round(THRESHOLDS.flipSec / tape.secPerBlock);
+  const groups = new Map<RugGroup, { wallets: Set<string>; tokens: bigint }>();
+  let total = 0n;
+  for (const s of c.web.sells) {
+    if (s.block < fromBlock) continue;
+    const w = c.web.wallets.get(s.wallet);
+    const roles = w ? roleOf(w).roles : [];
+    const g: RugGroup = roles.includes("dev") || roles.includes("insider") ? "dev and insiders"
+      : roles.includes("sniper") ? "snipers" : roles.includes("bundle") ? "bundles"
+      : roles.includes("transfer") ? "got it by transfer"
+      : w && isFlip(w, flipBlocks) ? "ten-minute flippers"
+      : firstMinute.has(s.wallet) ? "first-minute buyers" : "later buyers";
+    const v = groups.get(g) ?? { wallets: new Set<string>(), tokens: 0n };
+    v.wallets.add(s.wallet);
+    v.tokens += s.tokens;
+    groups.set(g, v);
+    total += s.tokens;
+  }
+  return [...groups.entries()]
+    .map(([group, v]) => ({ group, wallets: v.wallets.size, share: total > 0n ? Number((v.tokens * 1000n) / total) / 10 : 0 }))
+    .sort((a, b) => b.share - a.share);
+}
+
+/** The last hour's sellers by kind: who is leaving right now. */
+const sellingNow = (tape: Tape, c: Crawled): Rug["sellers"] =>
+  sellersSince(tape, c, tape.headBlock - Math.round(3600 / tape.secPerBlock));
+
+/**
  * A price that fell 80% or more from its peak: how deep, how long ago, and
  * who did the selling since the peak, by kind of wallet. Null when the
  * price is within reach of its high.
@@ -249,31 +285,7 @@ function rugCheck(tape: Tape, c: Crawled, candles: Report["chart"]): Rug | null 
   const drawdown = Math.round((1 - last / high) * 1000) / 10;
   if (drawdown < THRESHOLDS.rugDrawdownPct) return null;
   const peakBlock = tape.launch.launchBlock + Math.floor((candles[peak].t - tape.launch.launchedAt) / tape.secPerBlock);
-  // what is known of every seller without its history: the launch, the
-  // first minute, the funding graph, how long it held
-  const roleOf = roleReader(tape, c);
-  const firstMinute = new Set(c.snared.firstMinute);
-  const flipBlocks = Math.round(THRESHOLDS.flipSec / tape.secPerBlock);
-  const groups = new Map<RugGroup, { wallets: Set<string>; tokens: bigint }>();
-  let total = 0n;
-  for (const s of c.web.sells) {
-    if (s.block < peakBlock) continue;
-    const w = c.web.wallets.get(s.wallet);
-    const roles = w ? roleOf(w).roles : [];
-    const g: RugGroup = roles.includes("dev") || roles.includes("insider") ? "dev and insiders"
-      : roles.includes("sniper") ? "snipers" : roles.includes("bundle") ? "bundles"
-      : roles.includes("transfer") ? "got it by transfer"
-      : w && isFlip(w, flipBlocks) ? "ten-minute flippers"
-      : firstMinute.has(s.wallet) ? "first-minute buyers" : "later buyers";
-    const v = groups.get(g) ?? { wallets: new Set<string>(), tokens: 0n };
-    v.wallets.add(s.wallet);
-    v.tokens += s.tokens;
-    groups.set(g, v);
-    total += s.tokens;
-  }
-  const sellers = [...groups.entries()]
-    .map(([group, v]) => ({ group, wallets: v.wallets.size, share: total > 0n ? Number((v.tokens * 1000n) / total) / 10 : 0 }))
-    .sort((a, b) => b.share - a.share);
+  const sellers = sellersSince(tape, c, peakBlock);
   // A crowd selling a top is a collapse; a dev that dumped, or a launch side
   // doing the selling, is a rug. Flippers buy back what they sell, so their
   // volume is left out of the comparison.

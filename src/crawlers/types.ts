@@ -434,6 +434,8 @@ export interface Report {
   holders: HolderRow[];
   /** Set when the price fell 80% or more from its peak (absent on older reports). */
   rug?: Rug | null;
+  /** Who sold in the last hour, by kind of wallet (absent on older reports). */
+  sellingNow?: Rug["sellers"];
   /** The first twenty buyers, in order (absent on reports from before 0.6). */
   early?: EarlyBuyer[];
   /** The top holders tied into operators (absent on older reports). */

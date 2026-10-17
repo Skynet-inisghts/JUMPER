@@ -508,7 +508,7 @@ function Quads({ r }: { r: Report }) {
             ? `all of them have sold: ${pct0(q.snare.sniperHeld ?? 0)} still in sniper hands`
             : `${pct0(q.snare.sniperHeld ?? 0)} of supply still in sniper hands, ${q.snare.sniperExited} of ${q.snare.sniperWallets} have sold`,
           `${q.snare.bundles} bundled cluster${q.snare.bundles === 1 ? "" : "s"} funded from one source, ${pct0(q.snare.bundleSupply)} of supply`]],
-    exitQuad(q.exit),
+    exitQuad(q.exit, r.sellingNow),
   ];
   return (
     <div className="quads">
@@ -560,7 +560,7 @@ function ScoreBuild({ r }: { r: Report }) {
 }
 
 /** EXIT: what the last hour actually did, both sides, and what leavers took in dollars. */
-function exitQuad(e: Report["quadrants"]["exit"]): [string, string, string, number, string, string, null, string[]] {
+function exitQuad(e: Report["quadrants"]["exit"], who?: Report["sellingNow"]): [string, string, string, number, string, string, null, string[]] {
   const sold = e.soldHour ?? e.exitPressure;
   const bought = e.boughtHour ?? 0;
   const net = bought - sold;
@@ -574,6 +574,7 @@ function exitQuad(e: Report["quadrants"]["exit"]): [string, string, string, numb
     sold === 0 && bought === 0
       ? "no buys and no sales in the last hour"
       : `last hour: ${p1(bought)} of supply bought, ${p1(sold)} sold, ${net >= 0 ? `net ${p1(net)} came in` : `net ${p1(-net)} went out`}`,
+    ...(who?.length ? [`who sold this hour: ${who.filter((x) => x.share >= 1).slice(0, 4).map((x) => `${Math.round(x.share)}% ${x.group} (${x.wallets})`).join(", ")}`] : []),
     `dev wallet: ${e.devState}${e.devSoldPct > 0 ? `, sold ${pct0(e.devSoldPct)} of its peak` : ""}`,
     taken,
   ]];
