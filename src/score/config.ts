@@ -29,6 +29,10 @@ export const SCORE = {
 } as const;
 
 export const THRESHOLDS = {
+  /** The report warns "probably rugged" when the price is this far (%) below its peak. */
+  rugDrawdownPct: 80,
+  /** ...and calls it a rug, not a collapse, when the dev dumped or at least this % of the selling since the peak (flippers left out) came from the dev, insiders, snipers, bundles, transfers or the first minute. */
+  rugInsideSharePct: 30,
   /** SNARE: buys inside the launch block and the two after it. */
   sniperBlocks: 3,
   /** First-minute cohort window and the keep ratio (balance >= 80% of peak). */
