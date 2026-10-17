@@ -3,6 +3,7 @@ import { scoreParts, type ScoreParts } from "../score/score.js";
 import { SCORE, THRESHOLDS } from "../score/config.js";
 import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
+import { BURN_ADDRESSES } from "../chain/chain.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
   CrawlerName, CrawlerReport, Fill, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
@@ -151,6 +152,16 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
 
 /** The top fifty holders, each with a few words on who it is. */
 function holderRows(tape: Tape, c: Crawled): HolderRow[] {
+  // what each wallet burned, and when it last sold
+  const burned = new Map<string, bigint>();
+  for (const t of tape.transfers) {
+    if (!BURN_ADDRESSES.has(lc(t.to))) continue;
+    const f = lc(t.from);
+    burned.set(f, (burned.get(f) ?? 0n) + t.value);
+  }
+  const lastSell = new Map<string, number>();
+  for (const s of c.web.sells) if (s.block > (lastSell.get(s.wallet) ?? 0)) lastSell.set(s.wallet, s.block);
+  const pctOfGot = (x: bigint, got: bigint) => (got > 0n ? Math.round(Number((x * 1000n) / got)) / 10 : 0);
   const dev = devSet(tape);
   const snipers = new Map(c.snared.snipers.map((s) => [s.wallet, s]));
   const smart = new Map(c.scouted.smart.map((s) => [s.wallet, s]));
@@ -220,6 +231,13 @@ function holderRows(tape: Tape, c: Crawled): HolderRow[] {
       who,
       markets: hist ? hist.markets : null,
       heldSec: Math.max(0, Math.round((tape.headBlock - h.firstBlock) * tape.secPerBlock)),
+      exit: (() => {
+        const got = h.bought + h.received;
+        const burnt = burned.get(h.address) ?? 0n;
+        const moved = h.sent > burnt ? h.sent - burnt : 0n;
+        return { sold: pctOfGot(h.sold, got), moved: pctOfGot(moved, got), burned: pctOfGot(burnt, got) };
+      })(),
+      lastSellSec: lastSell.has(h.address) ? Math.max(0, Math.round((tape.headBlock - lastSell.get(h.address)!) * tape.secPerBlock)) : null,
     };
   });
 }

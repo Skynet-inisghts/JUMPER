@@ -267,6 +267,10 @@ export interface HolderRow {
   markets: number | null;
   /** Seconds since it first got this token. */
   heldSec: number;
+  /** What it did with what it got, as % of everything it bought or received (absent on older reports). */
+  exit?: { sold: number; moved: number; burned: number };
+  /** Seconds since its last sale, null when it never sold. */
+  lastSellSec?: number | null;
 }
 
 export interface CrawlerReport {
