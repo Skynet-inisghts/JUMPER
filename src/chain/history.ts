@@ -20,6 +20,7 @@
  *   GET  /latest                            the newest full report
  *   GET  /logs?token=  PUT /logs?token=     a token's cached logs (see src/cache.ts)
  *   GET  /active                            the Pons tokens busiest in the last hour
+ *   GET  /wallet?address=                   one wallet: record, last markets, reports that name it
  */
 
 export interface WalletHistory {
@@ -97,6 +98,17 @@ export async function readHistory(wallets: string[], exclude: string): Promise<{
 
 /** The Pons tokens with the most trades in the last hour, busiest first. */
 export const readActive = async (): Promise<string[]> => (await call<{ tokens: string[] }>("/active", undefined, 10_000)).tokens;
+
+/** One wallet for the site's wallet check: its record, last markets, and the kept reports that name it. */
+export interface WalletCheck {
+  wallet: string;
+  tip: number;
+  record: WalletHistory;
+  seen: { token: string; symbol: string; score: number; band: string; at: number; roles: string[]; who: string | null; share: number | null; early: { delaySec: number; status: string } | null }[];
+  recent: { token: string; symbol: string | null; trades: number; lastBlock: number; boughtEth: number; soldEth: number; verdict: { score: number; band: string; at: number } | null }[];
+}
+
+export const readWallet = (address: string): Promise<WalletCheck> => call<WalletCheck>(`/wallet?address=${address.toLowerCase()}`, undefined, 15_000);
 
 export const readBooks = (token: string, curve: string): Promise<TokenBooks> => call<TokenBooks>("/positions", { token, curve });
 
