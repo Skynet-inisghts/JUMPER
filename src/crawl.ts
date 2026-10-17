@@ -3,7 +3,8 @@ import { readLaunch } from "./chain/launches.js";
 import { makeClock } from "./chain/blocks.js";
 import { DeadlineError, readCurveTrades, readPoolSwaps, readTransfers } from "./chain/logs.js";
 import { ADDR } from "./chain/chain.js";
-import { indexConfigured, readBooks, readHistory } from "./chain/history.js";
+import { indexConfigured, readBooks, readHistory, readTokens } from "./chain/history.js";
+import { readDevLaunches } from "./chain/devhistory.js";
 import { readFundingFor } from "./chain/funding.js";
 import { dexPriceUsd, ethUsd, tokenUsd } from "./chain/prices.js";
 import { rpcCallCount } from "./chain/rpc.js";
@@ -79,6 +80,17 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
     return { quote, direct };
   })();
   const booksP = indexConfigured() ? readBooks(launch.token, launch.curve).catch(() => null) : Promise.resolve(null);
+  // the dev's other launches: a few narrow factory reads, then the index for each at a glance
+  const devP = (async () => {
+    const { launches, complete } = await readDevLaunches(launch.deployer, toBlock);
+    const others = launches.filter((l) => l.token !== launch.token.toLowerCase()).slice(0, 40);
+    const glance = others.length && indexConfigured() ? await readTokens(others.map((l) => l.token)).catch(() => null) : null;
+    return {
+      complete,
+      tokens: others.map((l) => glance?.find((g) => g.token === l.token) ?? { token: l.token, symbol: null, block: l.block, wallets: 0, trades: 0, lastBlock: 0, verdict: null }),
+      total: launches.length,
+    };
+  })().catch(() => null);
 
   const logs = await readLogs(launch, toBlock, deadline, (done, total, n) =>
     onEvent({ type: "progress", crawler: "WEAVER", done, total, detail: `${n} transfers` }));
@@ -156,12 +168,14 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
 
   // past the finish line a late source is left out, as if it were offline
   const finish = options.finishMs ? started + options.finishMs : Infinity;
-  const [history, funding, books, prices] = await Promise.all([
+  const [history, funding, books, prices, dev] = await Promise.all([
     within(historyP, finish, null).then((h) => { onEvent({ type: "stage", crawler: "SCOUT", state: "done" }); return h; }),
     fundingP.then((f) => { onEvent({ type: "stage", crawler: "KNOT", state: "done" }); return f; }),
     within(booksP, finish, null),
     within(pricesP, finish, { quote: null, direct: null }),
+    within(devP, finish, null),
   ]);
+  if (dev) tape.devLaunches = dev;
 
   if (history) {
     tape.history = history.wallets;

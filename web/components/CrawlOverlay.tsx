@@ -459,6 +459,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
             </div>
             <div className="repfull">
               <PriceChart r={r} />
+              <DevHistory r={r} />
               <TopHolders r={r} onWallet={setWallet}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
@@ -810,5 +811,43 @@ function ExitCell({ h, age }: { h: Report["holders"][number]; age: (s: number) =
       {parts.length ? parts.map(([t, c]) => <i key={t} className={c}>{t}</i>) : <i className="g">holding</i>}
       {last && <u>{last}</u>}
     </span>
+  );
+}
+
+/** The deployer's other launches: how many, how many died, and JUMPER's verdict where one was crawled. */
+function DevHistory({ r }: { r: Report }) {
+  const d = r.devHistory;
+  if (!d) return null;
+  const others = d.total - 1;
+  const BANDC: Record<string, string> = { TORN: "rd", PATCHED: "y", TAUT: "g" };
+  const ago = (block: number) => {
+    const s = Math.max(0, (r.provenance.block - block) * 0.1);
+    return s < 3600 ? `${Math.max(1, Math.round(s / 60))}m ago` : s < 86400 ? `${Math.round(s / 3600)}h ago` : `${Math.round(s / 86400)}d ago`;
+  };
+  return (
+    <div className="devhist">
+      <div className="dh">
+        <b>dev history</b>
+        {others <= 0
+          ? <span className="g">the first launch from this deployer</span>
+          : <span className={d.dead / Math.max(1, d.tokens.length) >= 0.5 ? "rd" : "y"}>
+              {others} other launch{others === 1 ? "" : "es"} from this deployer: {d.dead} dead within a day, {d.quiet} never took off
+            </span>}
+        {!d.complete && <i>part of the factory log could not be read</i>}
+      </div>
+      {d.tokens.length > 0 && (
+        <div className="dl">
+          {d.tokens.slice(0, 12).map((t) => (
+            <a key={t.token} href={`/?token=${t.token}`} className="dr">
+              <b>{t.symbol ? `$${t.symbol}` : short(t.token)}</b>
+              <span>{ago(t.block)}</span>
+              <span>{fmt(t.wallets)} wallets</span>
+              <span className={t.lastBlock > 0 && r.provenance.block - t.lastBlock > 864_000 ? "rd" : "g"}>{t.lastBlock > 0 && r.provenance.block - t.lastBlock > 864_000 ? "dead" : "trading"}</span>
+              <span className={t.verdict ? BANDC[t.verdict.band] : ""}>{t.verdict ? `${t.verdict.score} ${t.verdict.band}` : "not crawled"}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

@@ -19,6 +19,7 @@
  *   GET  /pulse                             counters and recently crawled tokens
  *   GET  /latest                            the newest full report
  *   GET  /logs?token=  PUT /logs?token=     a token's cached logs (see src/cache.ts)
+ *   POST /tokens     { tokens }             a few tokens at a glance: ticker, wallets, last trade, verdict
  *   GET  /active                            the Pons tokens busiest in the last hour
  *   GET  /wallet?address=                   one wallet: record, last markets, reports that name it
  */
@@ -109,6 +110,20 @@ export interface WalletCheck {
 }
 
 export const readWallet = (address: string): Promise<WalletCheck> => call<WalletCheck>(`/wallet?address=${address.toLowerCase()}`, undefined, 15_000);
+
+/** A token at a glance, from the index: for a dev's other launches. */
+export interface TokenGlance {
+  token: string;
+  symbol: string | null;
+  block: number;
+  wallets: number;
+  trades: number;
+  lastBlock: number;
+  verdict: { score: number; band: string; at: number } | null;
+}
+
+export const readTokens = async (tokens: string[]): Promise<TokenGlance[]> =>
+  (await call<{ tokens: TokenGlance[] }>("/tokens", { tokens }, 15_000)).tokens;
 
 export const readBooks = (token: string, curve: string): Promise<TokenBooks> => call<TokenBooks>("/positions", { token, curve });
 

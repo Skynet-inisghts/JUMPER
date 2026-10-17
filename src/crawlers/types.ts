@@ -96,6 +96,8 @@ export interface Tape {
   tokenUsd: number | null;
   /** The pool's dollar liquidity from the DEX source (graduated tokens; absent on older tapes). */
   liquidityUsd?: number | null;
+  /** The deployer's other Pons launches, newest first (absent on older tapes, null when unread). */
+  devLaunches?: DevLaunches | null;
   sources: string[];
 }
 
@@ -354,6 +356,15 @@ export interface Operators {
   groups: { id: number; wallets: string[]; share: number; ties: ("transfer" | "funder" | "same block" | "same sender")[] }[];
 }
 
+/** What the deployer launched before (and after) this token, from the factory and the index. */
+export interface DevLaunches {
+  /** Every launch by this deployer, this one included. */
+  total: number;
+  /** False when a window of the factory log could not be read. */
+  complete: boolean;
+  tokens: { token: string; symbol: string | null; block: number; wallets: number; trades: number; lastBlock: number; verdict: { score: number; band: string; at: number } | null }[];
+}
+
 export interface CrawlerReport {
   name: CrawlerName;
   color: string;
@@ -444,6 +455,8 @@ export interface Report {
   operators?: Operators;
   /** The biggest hand selling into today's liquidity; null when the liquidity is unknown. */
   dump?: DumpImpact | null;
+  /** The deployer's other launches and how they went (absent on older reports). */
+  devHistory?: (DevLaunches & { dead: number; quiet: number }) | null;
   fills: Fill[];
   /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
   chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];

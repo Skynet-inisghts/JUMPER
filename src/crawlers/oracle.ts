@@ -156,9 +156,23 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     holders: withOperators(holderRows(tape, c), ops),
     operators: ops,
     early: earlyBuyers(tape, c),
+    devHistory: devHistory(tape),
     fills: fills(tape, c),
     graph: graph(tape, c),
   };
+}
+
+/**
+ * The deployer's other launches: dead when nobody traded it for a day,
+ * quiet when fewer than twenty wallets ever touched it.
+ */
+function devHistory(tape: Tape): Report["devHistory"] {
+  const d = tape.devLaunches;
+  if (!d) return null;
+  const day = Math.round(86_400 / tape.secPerBlock);
+  const dead = d.tokens.filter((t) => t.lastBlock > 0 && tape.headBlock - t.lastBlock > day).length;
+  const quiet = d.tokens.filter((t) => t.wallets < 20).length;
+  return { ...d, dead, quiet };
 }
 
 /**

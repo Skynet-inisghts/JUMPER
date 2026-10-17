@@ -508,6 +508,14 @@ button.inputchip{all:unset}
 .pempty{color:var(--dm2);font-size:12px}
 .pall{margin:30px 0 60px}.pall summary{cursor:pointer;color:var(--dm);font-size:12px;margin-bottom:10px}
 @media(max-width:760px){.pstats{grid-template-columns:1fr}.ptable .ph{display:none}.ptable .pr{grid-template-columns:1fr 1fr 1fr}.ptable .pr .d:nth-child(2),.ptable .pr .d:nth-child(4){display:none}}
+.devhist{border:1px solid var(--ln);background:var(--pan);border-radius:5px;margin-bottom:14px;font-size:12px}
+.devhist .dh{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;padding:10px 16px}
+.devhist .dh b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
+.devhist .dh i{font-style:normal;color:var(--dm2)}
+.devhist .g{color:var(--ac2)}.devhist .y{color:var(--ye)}.devhist .rd{color:var(--rd)}
+.devhist .dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));border-top:1px solid var(--ln)}
+.devhist .dr{display:grid;grid-template-columns:minmax(0,1.2fr) .8fr .9fr .7fr 1fr;gap:8px;padding:6px 16px;color:var(--dm);text-decoration:none;border-bottom:1px solid rgba(36,27,51,.6)}
+.devhist .dr:hover{background:rgba(180,124,255,.06)}.devhist .dr b{font-weight:400;color:var(--tx);overflow:hidden;text-overflow:ellipsis}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}
