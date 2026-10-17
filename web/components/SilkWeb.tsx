@@ -28,24 +28,44 @@ export default function SilkWeb({ nodes, symbol, onWallet }: { nodes: SilkNode[]
   const angle = (k: number) => (k / SPOKES) * Math.PI * 2 - Math.PI / 2;
   const at = (k: number, r: number): [number, number] => [C + Math.cos(angle(k)) * r * R, C + Math.sin(angle(k)) * r * R];
 
-  // operators first, each on its own spoke, spread round the web; then the rest by share
+  // each operator gets a sector of neighbouring spokes, sized by its wallets;
+  // everyone else is dealt round the remaining spokes, biggest first
   const ops = [...new Set(nodes.filter((n) => n.op != null).map((n) => n.op as number))].sort((a, b) => a - b);
-  const opSpoke = new Map<number, number>();
-  ops.forEach((id, i) => opSpoke.set(id, Math.round((i * SPOKES) / Math.max(ops.length, 1) + i * 0.37) % SPOKES));
-  const free = [...Array(SPOKES).keys()].filter((k) => ![...opSpoke.values()].includes(k));
+  const opSectors = new Map<number, number[]>();
+  let next = 2; // the top spoke carries the ring names
+  for (const id of ops) {
+    const members = nodes.filter((n) => n.op === id).length;
+    const span = Math.min(6, Math.max(1, Math.ceil(members / 5)));
+    opSectors.set(id, [...Array(span).keys()].map((j) => (next + j) % SPOKES));
+    next += span + 1;
+  }
+  const taken = new Set([...opSectors.values()].flat());
+  const free = [...Array(SPOKES).keys()].filter((k) => !taken.has(k));
   const placed: { n: SilkNode; x: number; y: number; k: number; r: number }[] = [];
   const crowd = new Map<string, number>();
+  const opSeen = new Map<number, number>();
   let rr = 0;
   const order = [...nodes].sort((a, b) => Math.max(b.share, b.peak) - Math.max(a.share, a.peak));
   for (const n of order) {
-    const k = n.op != null ? opSpoke.get(n.op)! : free.length ? free[rr++ % free.length] : rr++ % SPOKES;
-    const key = `${k}:${n.ring}`;
-    const i = crowd.get(key) ?? 0;
-    crowd.set(key, i + 1);
-    // inside a ring band: step outwards and sideways so neighbours do not sit on each other
-    const band = (n.ring < 4 ? RINGS[n.ring + 1] - RINGS[n.ring] : 0.1);
-    const r = RINGS[n.ring] + band * (0.15 + ((i * 0.27) % 0.7));
-    const kk = k + (i % 2 ? 1 : -1) * Math.min(0.42, 0.14 * Math.ceil(i / 2));
+    const band = n.ring < 4 ? RINGS[n.ring + 1] - RINGS[n.ring] : 0.12;
+    let k: number, r: number, kk: number;
+    if (n.op != null) {
+      const sector = opSectors.get(n.op)!;
+      const i = opSeen.get(n.op) ?? 0;
+      opSeen.set(n.op, i + 1);
+      k = sector[i % sector.length];
+      const depth = Math.floor(i / sector.length);
+      r = RINGS[n.ring] + band * Math.min(0.92, 0.12 + depth * 0.2);
+      kk = k + (depth % 2 ? 0.35 : 0);
+    } else {
+      k = free.length ? free[rr++ % free.length] : rr++ % SPOKES;
+      const key = `${k}:${n.ring}`;
+      const i = crowd.get(key) ?? 0;
+      crowd.set(key, i + 1);
+      // inside a ring band: step outwards and sideways so neighbours do not sit on each other
+      r = RINGS[n.ring] + band * (0.15 + ((i * 0.27) % 0.7));
+      kk = k + (i % 2 ? 1 : -1) * Math.min(0.42, 0.14 * Math.ceil(i / 2));
+    }
     const [x, y] = at(kk, r);
     placed.push({ n, x, y, k, r });
   }
@@ -61,8 +81,9 @@ export default function SilkWeb({ nodes, symbol, onWallet }: { nodes: SilkNode[]
   });
 
   const threads = ops.map((id) => {
-    const pts = placed.filter((p) => p.n.op === id).sort((a, b) => a.r - b.r);
-    const [hx, hy] = at(opSpoke.get(id)!, 0.1);
+    const pts = placed.filter((p) => p.n.op === id).sort((a, b) => a.k - b.k || a.r - b.r);
+    const sector = opSectors.get(id)!;
+    const [hx, hy] = at(sector[Math.floor(sector.length / 2)], 0.1);
     return { id, d: `M${hx.toFixed(1)},${hy.toFixed(1)} ` + pts.map((p) => `L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ") };
   });
 
@@ -85,10 +106,9 @@ export default function SilkWeb({ nodes, symbol, onWallet }: { nodes: SilkNode[]
           {segs.map((s, i) => (
             <path key={i} d={s.d} stroke={s.torn ? "var(--rd)" : "var(--ln2)"} strokeWidth={s.torn ? 1 : 0.9} strokeDasharray={s.torn ? "3 9" : undefined} opacity={s.torn ? 0.8 : 1} />
           ))}
-          {RINGS.map((rad, i) => {
-            const [x, y] = at(SPOKES * 0.25 - 0.5, rad);
-            return <text key={i} x={x + 4} y={y - 4} className="rl">{RING_NAMES[i]}</text>;
-          })}
+          {RINGS.map((rad, i) => (
+            <text key={i} x={C - 6} y={C - rad * R + 12} textAnchor="end" className="rl">{RING_NAMES[i]}</text>
+          ))}
           {threads.map((t) => <path key={t.id} d={t.d} fill="none" stroke="var(--ye)" strokeWidth="2.2" opacity="0.75" />)}
           <circle cx={C} cy={C} r={R * 0.1} fill="var(--bg2)" stroke="var(--ac)" strokeWidth="1.5" />
           <text x={C} y={C + 5} textAnchor="middle" className="hub">${symbol.slice(0, 8)}</text>
