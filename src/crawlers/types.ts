@@ -349,7 +349,7 @@ export interface Operators {
   /** Top holders looked at, and how many hands they come to. */
   wallets: number;
   hands: number;
-  groups: { id: number; wallets: string[]; share: number; ties: ("transfer" | "funder" | "same block")[] }[];
+  groups: { id: number; wallets: string[]; share: number; ties: ("transfer" | "funder" | "same block" | "same sender")[] }[];
 }
 
 export interface CrawlerReport {

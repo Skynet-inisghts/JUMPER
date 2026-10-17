@@ -4,7 +4,7 @@ import { SCORE, THRESHOLDS } from "../score/config.js";
 import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { BURN_ADDRESSES } from "../chain/chain.js";
-import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
+import { blockTs, devSet, venues, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
   CrawlerName, CrawlerReport, DumpImpact, EarlyBuyer, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
@@ -334,6 +334,7 @@ function market(tape: Tape, c: Crawled): Market {
 /**
  * Operators: the top fifty holders tied into the hands behind them. Two
  * wallets are one hand when tokens went straight from one to the other,
+ * when both got their first tokens, without buying, from the same wallet,
  * when KNOT found them funded from one source inside its window, or when
  * three or more bought in the same block within 2% of the same amount.
  */
@@ -342,8 +343,8 @@ function operators(tape: Tape, c: Crawled): Operators {
   const inTop = new Set(top);
   const parent = new Map(top.map((a) => [a, a]));
   const find = (a: string): string => { let x = a; while (parent.get(x) !== x) x = parent.get(x)!; parent.set(a, x); return x; };
-  const ties = new Map<string, Set<"transfer" | "funder" | "same block">>();
-  const join = (a: string, b: string, why: "transfer" | "funder" | "same block") => {
+  const ties = new Map<string, Set<"transfer" | "funder" | "same block" | "same sender">>();
+  const join = (a: string, b: string, why: "transfer" | "funder" | "same block" | "same sender") => {
     const ra = find(a), rb = find(b);
     if (ra !== rb) parent.set(ra, rb);
     for (const w of [a, b]) { const t = ties.get(w) ?? new Set(); t.add(why); ties.set(w, t); }
@@ -352,6 +353,14 @@ function operators(tape: Tape, c: Crawled): Operators {
     const f = lc(t.from), to = lc(t.to);
     if (f !== to && inTop.has(f) && inTop.has(to)) join(f, to, "transfer");
   }
+  // wallets whose first tokens came from one wallet (not a venue): handed out by one hand
+  const venueSet = venues(tape);
+  const bySender = new Map<string, string[]>();
+  for (const h of c.web.holders.slice(0, 50)) {
+    if (h.bought > 0n || !h.parent || venueSet.has(h.parent) || c.web.routers.has(h.parent)) continue;
+    bySender.set(h.parent, [...(bySender.get(h.parent) ?? []), h.address]);
+  }
+  for (const ws of bySender.values()) for (let i = 1; i < ws.length; i++) join(ws[0], ws[i], "same sender");
   for (const k of c.knotted.clusters) {
     const mine = k.wallets.filter((w) => inTop.has(w));
     for (let i = 1; i < mine.length; i++) join(mine[0], mine[i], "funder");

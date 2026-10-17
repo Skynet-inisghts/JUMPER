@@ -601,7 +601,7 @@ function TopHolders({ r, children, onWallet }: { r: Report; children?: React.Rea
         <div>
           <b>top {rows.length} holders</b>
           {r.operators && (
-            <span className="sum ops" title="wallets tied by a direct transfer, one funder inside KNOT's window, or near-equal buys in one block">
+            <span className="sum ops" title="wallets tied by a direct transfer, first tokens from one sender, one funder inside KNOT's window, or near-equal buys in one block">
               <span className={"role " + (r.operators.groups.length ? "y" : "d")}>{r.operators.wallets} wallets = {r.operators.hands} hands</span>
               {r.operators.groups.slice(0, 4).map((g) => (
                 <span key={g.id} className="role y">op {g.id}: {g.wallets.length} wallets, {g.share < 1 ? g.share.toFixed(2) : g.share.toFixed(1)}% · {g.ties.join(", ")}</span>

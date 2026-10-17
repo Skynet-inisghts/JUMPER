@@ -129,3 +129,15 @@ test("the biggest hand selling into the curve moves the price by x * y = k", () 
   assert.equal(r.dump.basis, "curve");
   assert.ok(Math.abs(r.dump.drop - want) <= 0.2, `${r.dump.drop} vs ${want}`);
 });
+
+test("holders that got their first tokens from one wallet without buying are one operator", () => {
+  const tape = fixture("twain");
+  const before = crawlTape(tape);
+  const giver = before.holders[0].wallet;
+  for (let i = 0; i < 3; i++) {
+    tape.transfers.push({ from: giver, to: `0x${(0xbeef00 + i).toString(16).padStart(40, "0")}`, value: 10n ** 25n, block: tape.headBlock, logIndex: 90_000 + i });
+  }
+  const r = crawlTape(tape);
+  const g = r.operators.groups.find((x) => x.ties.includes("same sender") || x.ties.includes("transfer"));
+  assert.ok(g && g.wallets.length >= 3, JSON.stringify(r.operators.groups));
+});
