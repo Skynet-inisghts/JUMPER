@@ -285,6 +285,19 @@ export interface EarlyBuyer {
   roles: Role[];
 }
 
+export type RugGroup = "dev and insiders" | "snipers" | "bundles" | "got it by transfer" | "first-minute buyers" | "ten-minute flippers" | "later buyers";
+
+export interface Rug {
+  /** % the price fell from its peak to now. */
+  drawdown: number;
+  peakAgoSec: number;
+  /** The dev dumped, or the launch side (dev, insiders, snipers, bundles, transfers, first minute) did enough of the selling to call it a rug. */
+  rugged: boolean;
+  devState: "clean" | "sold half" | "dumped";
+  /** Who sold since the peak: % of all tokens sold since then, and how many wallets. */
+  sellers: { group: RugGroup; wallets: number; share: number }[];
+}
+
 export interface CrawlerReport {
   name: CrawlerName;
   color: string;
@@ -361,6 +374,8 @@ export interface Report {
   facts: [string, string, string];
   crawlers: CrawlerReport[];
   holders: HolderRow[];
+  /** Set when the price fell 80% or more from its peak (absent on older reports). */
+  rug?: Rug | null;
   /** The first twenty buyers, in order (absent on reports from before 0.6). */
   early?: EarlyBuyer[];
   fills: Fill[];
