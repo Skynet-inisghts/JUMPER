@@ -5,6 +5,7 @@ import { renderCard } from "@engine/card/card.js";
 import { fetchTokenLogo } from "@engine/chain/logo.js";
 import { clientIp, coalesce, RateLimiter, reportTtlMs, TtlCache } from "@engine/web.js";
 import type { Report } from "@engine/crawlers/types.js";
+import { blockedMessage } from "@engine/blocked.js";
 import { cachedReport, crawlShared } from "@/lib/server";
 import sample from "@/sample/sample-report.json";
 
@@ -46,6 +47,8 @@ export async function GET(request: Request) {
   }
   const token = getAddress(raw);
   const key = token.toLowerCase();
+  const blocked = blockedMessage(token);
+  if (blocked) return NextResponse.json({ error: blocked }, { status: 404 });
   const hit = pngs.get(key);
   if (hit) return png(hit);
 

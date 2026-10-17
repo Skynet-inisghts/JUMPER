@@ -14,7 +14,7 @@ import type { CheckpointLabel } from "@engine/crawlers/types.js";
 type Step = "input" | "run" | "report";
 type Pass = { state: "queued" | "running" | "done"; pct: number };
 type Feed = { id: number; c: string; m: string; v: string; cls: string };
-type Failure = { message: string; candidates?: { token: string; symbol: string; name: string }[]; retryInSec?: number };
+type Failure = { message: string; blocked?: boolean; candidates?: { token: string; symbol: string; name: string }[]; retryInSec?: number };
 
 const PASSES: [string, string][] = [
   ["WEAVER", "mapping transfers"], ["TRACKER", "marking exits"], ["SNARE", "scanning first blocks"],
@@ -234,6 +234,9 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           setReport(r);
           setCmd(<>&gt; walk <b>{r.token.address.slice(0, 10) + "…" + r.token.address.slice(-8)}</b> --depth full · done</>);
           window.setTimeout(() => { if (!ac.signal.aborted) setStep("report"); }, 1300);
+        } else if (event === "blocked") {
+          finished = true;
+          toInput({ message: (data as { message: string }).message, blocked: true });
         } else if (event === "error") {
           finished = true;
           const e = data as Failure;
@@ -379,7 +382,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
             />
             <button className="btn" type="submit">Run a crawl</button>
           </form>
-          {failure && (
+          {failure?.blocked && <div className="inblock" role="status">{failure.message}</div>}
+          {failure && !failure.blocked && (
             <div className="inerr" role="alert">
               {retryLeft != null
                 ? <><b className="wait">reading the full history</b> · {failure.message} Crawling again in {retryLeft >= 60 ? `${Math.floor(retryLeft / 60)}m ${String(retryLeft % 60).padStart(2, "0")}s` : `${retryLeft}s`}. <button type="button" className="linkbtn" onClick={() => setRetryLeft(null)}>Cancel</button></>
