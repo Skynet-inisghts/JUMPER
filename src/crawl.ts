@@ -112,6 +112,7 @@ export async function crawl(token: Address, onEvent: (e: CrawlEvent) => void = (
       graduated: launch.graduated,
       curveProgress: launch.curveProgress,
       quoteReserve: launch.quoteReserve,
+      virtualReserves: launch.virtualReserves,
       launchedAt: launch.launchedAt,
       launchBlock: launch.launchBlock,
       totalSupply: launch.totalSupply,

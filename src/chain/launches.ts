@@ -30,6 +30,8 @@ export interface LaunchInfo {
   curveProgress: number; // 0..1, raised vs graduation threshold
   /** The curve's quote reserve, in quote base units. */
   quoteReserve: bigint;
+  /** The curve's pricing reserves (virtual: quote, tokens), base units; null when unread. */
+  virtualReserves: [bigint, bigint] | null;
   launchedAt: number;
   launchBlock: number;
   launchTxHash: Hex | null;
@@ -80,6 +82,7 @@ export async function readLaunch(token: Address, hint?: LaunchHint): Promise<Lau
       { ...c, functionName: "graduated" },
       { ...c, functionName: "realQuoteReserve" },
       { ...c, functionName: "graduationThreshold" },
+      { ...c, functionName: "getReserves" },
     ],
   });
   const ok = <T,>(i: number): T | null => (r[i].status === "success" ? (r[i].result as T) : null);
@@ -174,6 +177,7 @@ export async function readLaunch(token: Address, hint?: LaunchHint): Promise<Lau
     graduated: ok<boolean>(4) ?? Number(record.phase) === 2,
     curveProgress: threshold > 0n ? Math.min(1, Number((raised * 10_000n) / threshold) / 10_000) : 0,
     quoteReserve: raised,
+    virtualReserves: (() => { const v = ok<readonly [bigint, bigint]>(7); return v ? [v[0], v[1]] as [bigint, bigint] : null; })(),
     launchedAt,
     launchBlock,
     launchTxHash,

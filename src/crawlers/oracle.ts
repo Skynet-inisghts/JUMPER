@@ -6,7 +6,7 @@ import { isBotRecord } from "./scout.js";
 import { BURN_ADDRESSES } from "../chain/chain.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, EarlyBuyer, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  CrawlerName, CrawlerReport, DumpImpact, EarlyBuyer, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
 } from "./types.js";
 
@@ -112,6 +112,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
 
   const candles = chart(tape, c);
   const ops = operators(tape, c);
+  const mkt = market(tape, c);
   return {
     version: 1,
     token: {
@@ -143,7 +144,8 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
         takenOut, takenOutUsd: tape.quoteUsd !== null ? takenOut * tape.quoteUsd : null, pairSymbol: tape.launch.pairSymbol,
       },
     },
-    market: market(tape, c),
+    market: mkt,
+    dump: dumpImpact(tape, c, ops, mkt),
     facts,
     crawlers: crawlerReports(tape, c, metrics),
     chart: candles,
@@ -385,6 +387,40 @@ function operators(tape: Tape, c: Crawled): Operators {
       ties: [...new Set(ws.flatMap((w) => [...(ties.get(w) ?? [])]))],
     }));
   return { wallets: top.length, hands: comps.size, groups };
+}
+
+/**
+ * The biggest hand (an operator, or the top wallet when it holds more)
+ * sold whole into today's liquidity: on the curve through its own pricing
+ * reserves, x * y = k; after graduation the pool's dollar liquidity read
+ * as a full-range pool, so an estimate. Fees and other trades left out.
+ */
+function dumpImpact(tape: Tape, c: Crawled, ops: Operators, mkt: Market): DumpImpact | null {
+  const top = c.web.holders[0];
+  if (!top) return null;
+  const supply = tape.launch.totalSupply;
+  const balance = new Map(c.web.holders.map((h) => [h.address, h.balance]));
+  const g = ops.groups[0];
+  const gHeld = g ? g.wallets.reduce((a, w) => a + (balance.get(w) ?? 0n), 0n) : 0n;
+  const useOp = g !== undefined && gHeld > top.balance;
+  const held = useOp ? gHeld : top.balance;
+  let tokenReserve: number | null = null;
+  let basis: DumpImpact["basis"] = "curve";
+  if (!tape.launch.graduated && tape.launch.virtualReserves) tokenReserve = Number(tape.launch.virtualReserves[1]) / 1e18;
+  else if (tape.launch.graduated && mkt.liquidityUsd && mkt.priceUsd) {
+    tokenReserve = mkt.liquidityUsd / 2 / mkt.priceUsd;
+    basis = "pool estimate";
+  }
+  if (!tokenReserve || tokenReserve <= 0) return null;
+  const sold = Number(held) / 1e18;
+  const left = tokenReserve / (tokenReserve + sold);
+  return {
+    who: useOp ? "operator" : "wallet",
+    wallets: useOp ? g!.wallets.length : 1,
+    share: pctOf(held, supply),
+    drop: Math.round((1 - left * left) * 1000) / 10,
+    basis,
+  };
 }
 
 const withOperators = (rows: HolderRow[], ops: Operators): HolderRow[] => {

@@ -28,6 +28,8 @@ export interface TapeLaunch {
   curveProgress: number;
   /** The curve's quote reserve, quote base units (absent on older tapes). */
   quoteReserve?: bigint;
+  /** The curve's pricing reserves (virtual quote, virtual tokens), base units (absent on older tapes). */
+  virtualReserves?: [bigint, bigint] | null;
   launchedAt: number;
   launchBlock: number;
   totalSupply: bigint;
@@ -314,6 +316,19 @@ export interface Outcome {
   why: string;
 }
 
+/** What the biggest hand would do to the price selling everything into today's liquidity. */
+export interface DumpImpact {
+  /** "operator" when tied wallets hold more than any single one. */
+  who: "operator" | "wallet";
+  wallets: number;
+  /** % of supply it holds. */
+  share: number;
+  /** % the price would fall, fees and other trades left out. */
+  drop: number;
+  /** The curve's own reserves, or the pool's liquidity read as a full-range pool. */
+  basis: "curve" | "pool estimate";
+}
+
 /** The market strip at the top of the report, in dollars where a rate was read. */
 export interface Market {
   priceUsd: number | null;
@@ -423,6 +438,8 @@ export interface Report {
   early?: EarlyBuyer[];
   /** The top holders tied into operators (absent on older reports). */
   operators?: Operators;
+  /** The biggest hand selling into today's liquidity; null when the liquidity is unknown. */
+  dump?: DumpImpact | null;
   fills: Fill[];
   /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
   chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];

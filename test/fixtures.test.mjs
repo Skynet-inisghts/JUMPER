@@ -117,3 +117,15 @@ test("two top holders that passed tokens between them are one operator", () => {
   assert.deepEqual(r.operators.groups[0].ties, ["transfer"]);
   assert.equal(r.holders.find((h) => h.wallet === a.wallet).op, r.holders.find((h) => h.wallet === b.wallet).op);
 });
+
+test("the biggest hand selling into the curve moves the price by x * y = k", () => {
+  const tape = fixture("twain");
+  tape.launch.graduated = false;
+  // a curve with 1B virtual tokens: selling held tokens h leaves (1e9 / (1e9 + h))^2 of the price
+  tape.launch.virtualReserves = [2n * 10n ** 18n, 10n ** 27n];
+  const r = crawlTape(tape);
+  const held = r.holders[0].share / 100 * Number(tape.launch.totalSupply) / 1e18;
+  const want = Math.round((1 - (1e9 / (1e9 + held)) ** 2) * 1000) / 10;
+  assert.equal(r.dump.basis, "curve");
+  assert.ok(Math.abs(r.dump.drop - want) <= 0.2, `${r.dump.drop} vs ${want}`);
+});
