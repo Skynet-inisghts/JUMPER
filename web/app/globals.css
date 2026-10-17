@@ -460,7 +460,7 @@ button.inputchip{all:unset}
 .pchart .ph{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--dm);font-variant-numeric:tabular-nums}
 .pchart .ph b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
 .pchart .pcv{position:relative;width:100%;height:300px;cursor:crosshair;touch-action:pan-y}
-.pchart .ph .hv{color:var(--tx)}.pchart .ph .hv em{font-style:normal;color:#E2CCFF}
+.pchart .ph .phov{color:var(--tx)}.pchart .ph .phov em{font-style:normal;color:#E2CCFF}
 .pchart .ph .hl{color:var(--cy);display:inline-flex;align-items:center;gap:6px}.pchart .ph .hl i{display:inline-block;width:14px;height:0;border-top:1.5px dashed var(--cy)}
 .pchart .pf{display:flex;justify-content:space-between;gap:12px;font-size:10px;color:var(--dm2);margin-top:4px}
 @media(max-width:640px){.pchart .pf span:nth-child(2){display:none}.pchart .pcv{height:240px}}

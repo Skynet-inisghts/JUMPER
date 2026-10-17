@@ -138,7 +138,7 @@ export default function PriceChart({ r }: { r: Report }) {
       <div className="ph">
         <b>price</b>
         {hover ? (
-          <span className="hv">{day(hover.t)} UTC · <em>{shown(hover.p)}</em>{hover.h != null ? <> · {fmt(hover.h)} holders</> : null}</span>
+          <span className="phov">{day(hover.t)} UTC · <em>{shown(hover.p)}</em>{hover.h != null ? <> · {fmt(hover.h)} holders</> : null}</span>
         ) : (
           <span>high {money(hi)} · low {money(lo)} · now {money(raw[raw.length - 1].c)}</span>
         )}
