@@ -1,0 +1,108 @@
+{
+ "cutMin": 30,
+ "generatedAt": "2026-10-17T19:11:05.962Z",
+ "tested": 3,
+ "skipped": 0,
+ "bands": {
+  "TORN": {
+   "n": 3,
+   "fell90": 1,
+   "reached2x": 1
+  },
+  "PATCHED": {
+   "n": 0,
+   "fell90": 0,
+   "reached2x": 0
+  },
+  "TAUT": {
+   "n": 0,
+   "fell90": 0,
+   "reached2x": 0
+  }
+ },
+ "rugs": [
+  {
+   "token": "0x595bfc38d7989e1e204319125a7e5b510ecbab79",
+   "symbol": "OpenAI",
+   "launchedAt": 1792120413,
+   "score": 21,
+   "band": "TORN",
+   "verdict": "DO NOT TOUCH",
+   "facts": [
+    "68% still holding · 32% already gone",
+    "smart money unread · dev kept it",
+    "13% sniped · 528 holders"
+   ],
+   "holdersAtCut": 528,
+   "priceAtCut": 4.3300103890264206e-8,
+   "peakAfter": 7.85490008894146e-8,
+   "priceNow": 2.005217124881125e-9,
+   "peakX": 1.81,
+   "changeNow": -95.4,
+   "checkedAt": 1792264253
+  }
+ ],
+ "gems": [],
+ "rows": [
+  {
+   "token": "0xb2d1fa50508550b3488c0e9860d1f08937a29145",
+   "symbol": "EMPIREX",
+   "launchedAt": 1792177911,
+   "score": 27,
+   "band": "TORN",
+   "verdict": "DO NOT TOUCH",
+   "facts": [
+    "79% still holding · 21% already gone",
+    "smart money unread · dev sold half",
+    "0% sniped · 753 holders"
+   ],
+   "holdersAtCut": 753,
+   "priceAtCut": 2.7423187640643755e-7,
+   "peakAfter": 6.246985018187632e-7,
+   "priceNow": 3.8310798194306894e-7,
+   "peakX": 2.28,
+   "changeNow": 39.7,
+   "checkedAt": 1792264227
+  },
+  {
+   "token": "0xf125a5ba63bd93f524e901dadd7fba887910a662",
+   "symbol": "CUE",
+   "launchedAt": 1792122308,
+   "score": 0,
+   "band": "TORN",
+   "verdict": "DO NOT TOUCH",
+   "facts": [
+    "26% still holding · 74% already gone",
+    "smart money unread · dev dumped it",
+    "40% sniped · 451 holders"
+   ],
+   "holdersAtCut": 451,
+   "priceAtCut": 4.034978555605662e-9,
+   "peakAfter": 4.123655508632844e-9,
+   "priceNow": 1.6750764649168756e-9,
+   "peakX": 1.02,
+   "changeNow": -58.5,
+   "checkedAt": 1792264240
+  },
+  {
+   "token": "0x595bfc38d7989e1e204319125a7e5b510ecbab79",
+   "symbol": "OpenAI",
+   "launchedAt": 1792120413,
+   "score": 21,
+   "band": "TORN",
+   "verdict": "DO NOT TOUCH",
+   "facts": [
+    "68% still holding · 32% already gone",
+    "smart money unread · dev kept it",
+    "13% sniped · 528 holders"
+   ],
+   "holdersAtCut": 528,
+   "priceAtCut": 4.3300103890264206e-8,
+   "peakAfter": 7.85490008894146e-8,
+   "priceNow": 2.005217124881125e-9,
+   "peakX": 1.81,
+   "changeNow": -95.4,
+   "checkedAt": 1792264253
+  }
+ ]
+}

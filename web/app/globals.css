@@ -431,6 +431,25 @@ button.inputchip{all:unset}
 /* numeric columns: header and values share one centre line */
 .tophold .thead span:nth-child(n+4){text-align:center}
 .tophold .tr .v.d{color:var(--dm)}.tophold .tr .v.g{color:var(--ac2)}.tophold .tr .v.rd{color:var(--rd)}
+.proofpage h2{margin-top:36px}
+.proofpage h3{font-family:var(--f-tiny),monospace;font-weight:400;font-size:24px;margin:34px 0 4px}
+.plede{max-width:860px;color:var(--dm);font-size:13px;line-height:1.7}
+.psub{color:var(--dm2);font-size:12px;margin:0 0 10px}
+.pstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:26px}
+.pstat{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--dm)}
+.pstat b{font-family:var(--f-tiny),monospace;font-weight:400;font-size:26px}
+.pstat.bad b{color:var(--rd)}.pstat.mid b{color:var(--ye)}.pstat.ok b{color:var(--ac2)}
+.pstat i{font-style:normal;color:var(--tx)}
+.ptable{border:1px solid var(--ln);background:var(--pan);border-radius:5px;overflow:hidden;font-size:12px;font-variant-numeric:tabular-nums}
+.ptable .ph,.ptable .pr{display:grid;grid-template-columns:minmax(0,1.4fr) 1.2fr repeat(4,minmax(0,1fr));gap:12px;padding:8px 16px;align-items:center}
+.ptable .ph{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dm2);border-bottom:1px solid var(--ln)}
+.ptable .pr{color:inherit;text-decoration:none;border-bottom:1px solid rgba(36,27,51,.6)}
+.ptable .pr:last-child{border-bottom:0}.ptable .pr:hover{background:rgba(180,124,255,.06)}
+.ptable .pr b{font-weight:400;color:var(--tx)}
+.ptable .d{color:var(--dm)}.ptable .bad{color:var(--rd)}.ptable .mid{color:var(--ye)}.ptable .ok{color:var(--ac2)}
+.pempty{color:var(--dm2);font-size:12px}
+.pall{margin:30px 0 60px}.pall summary{cursor:pointer;color:var(--dm);font-size:12px;margin-bottom:10px}
+@media(max-width:760px){.pstats{grid-template-columns:1fr}.ptable .ph{display:none}.ptable .pr{grid-template-columns:1fr 1fr 1fr}.ptable .pr .d:nth-child(2),.ptable .pr .d:nth-child(4){display:none}}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}
