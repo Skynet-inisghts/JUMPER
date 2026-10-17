@@ -319,13 +319,13 @@ function outcomeOf(tape: Tape, c: Crawled): Outcome | null {
     return { kind: "too early", why: `${n} holder${n === 1 ? "" : "s"} so far: too few to read, crawl it again once people buy in` };
   }
   const dev = devSet(tape);
-  const dropped = c.web.holders.filter((h) => h.bought === 0n && h.received > 0n && !dev.has(h.address));
+  // an airdrop is many small drops: a holder that never bought and holds under the drop size.
+  // Bigger chunks handed out are a stash, and the score must see it, so they do not count here.
+  const cap = (tape.launch.totalSupply * BigInt(Math.round(THRESHOLDS.airdropDropPct * 1000))) / 100_000n;
+  const dropped = c.web.holders.filter((h) => h.bought === 0n && h.received > 0n && !dev.has(h.address) && h.balance < cap);
   const droppedHeld = dropped.reduce((a, h) => a + h.balance, 0n);
   const share = c.web.holdSupply > 0n ? Number((droppedHeld * 1000n) / c.web.holdSupply) / 10 : 0;
-  // an airdrop is many small drops; a few big equal chunks handed out is a stash, and the score must see it
-  const sizes = dropped.map((h) => pctOf(h.balance, tape.launch.totalSupply)).sort((a, b) => a - b);
-  const median = sizes.length ? sizes[Math.floor(sizes.length / 2)] : 0;
-  if (dropped.length >= THRESHOLDS.airdropWallets && share >= THRESHOLDS.airdropHeldPct && median < THRESHOLDS.airdropMedianPct) {
+  if (dropped.length >= THRESHOLDS.airdropWallets && share >= THRESHOLDS.airdropHeldPct) {
     return { kind: "no verdict", why: `${grouped(dropped.length)} holders never bought, they were sent ${Math.round(share)}% of what is held: an airdrop, the score cannot judge it` };
   }
   return null;
