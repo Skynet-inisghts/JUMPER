@@ -40,5 +40,7 @@ export async function GET(request: Request) {
     const transfers = await inBackground(() => warmLogs(token as Address, undefined, Math.min(left, PER_TOKEN_MS))).catch(() => -1);
     warmed.push({ token, transfers, ms: Date.now() - t });
   }
+  // one line per run in the function logs: what was warmed and how long it took
+  console.log(`warm ${JSON.stringify(warmed)}`);
   return NextResponse.json({ active: tokens.length, warmed });
 }
