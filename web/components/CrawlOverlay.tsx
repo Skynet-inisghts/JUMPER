@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- pixel sprite and the generated card PNG */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
+import SilkWeb from "./SilkWeb";
 import WalletCheck, { type WalletHere } from "./WalletCheck";
 import type { RecentRow } from "./types";
 import { buildChain, graphFromReport, type Bug, type Graph, type NodeState } from "@/lib/chain";
@@ -460,6 +461,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
             <div className="repfull">
               <PriceChart r={r} />
               <DevHistory r={r} />
+              {r.silk && <SilkWeb nodes={r.silk} symbol={r.token.symbol} onWallet={(n) => setWallet({ wallet: n.wallet, symbol: r.token.symbol, roles: n.roles.map((k) => ROLE[k]?.label ?? k), share: n.gone ? null : n.share })} />}
               <TopHolders r={r} onWallet={setWallet}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>

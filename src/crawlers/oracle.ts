@@ -6,7 +6,7 @@ import { isBotRecord } from "./scout.js";
 import { BURN_ADDRESSES } from "../chain/chain.js";
 import { blockTs, devSet, isNonWallet, venues, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, DumpImpact, EarlyBuyer, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  CrawlerName, CrawlerReport, DumpImpact, EarlyBuyer, SilkNode, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
 } from "./types.js";
 
@@ -156,6 +156,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     holders: withOperators(holderRows(tape, c), ops),
     operators: ops,
     early: earlyBuyers(tape, c),
+    silk: silkNodes(tape, c, ops),
     devHistory: devHistory(tape),
     fills: fills(tape, c),
     graph: graph(tape, c),
@@ -467,6 +468,35 @@ const withOperators = (rows: HolderRow[], ops: Operators): HolderRow[] => {
   const of = new Map(ops.groups.flatMap((g) => g.wallets.map((w) => [w, g.id] as const)));
   return rows.map((r) => ({ ...r, op: of.get(r.wallet) ?? null }));
 };
+
+/**
+ * The silk web: the fifty biggest holders and the thirty biggest wallets
+ * that left, each placed on a ring by when it came in (the sniper blocks,
+ * the first minute, ten minutes, the first hour, later) and tied to its
+ * operator.
+ */
+function silkNodes(tape: Tape, c: Crawled, ops: Operators): SilkNode[] {
+  const roleOf = roleReader(tape, c);
+  const supply = tape.launch.totalSupply;
+  const opOf = new Map(ops.groups.flatMap((g) => g.wallets.map((w) => [w, g.id] as const)));
+  const L = tape.launch.launchBlock;
+  const ring = (w: Wallet): SilkNode["ring"] => {
+    const b = (w.firstBuyBlock ?? w.firstBlock) - L;
+    const sec = b * tape.secPerBlock;
+    return b < THRESHOLDS.sniperBlocks ? 0 : sec <= 60 ? 1 : sec <= 600 ? 2 : sec <= 3600 ? 3 : 4;
+  };
+  const node = (w: Wallet, gone: boolean): SilkNode => ({
+    wallet: w.address,
+    share: pctOf(w.balance, supply),
+    peak: pctOf(w.peak, supply),
+    ring: ring(w),
+    roles: roleOf(w).roles,
+    op: opOf.get(w.address) ?? null,
+    gone,
+  });
+  const left = [...c.tracked.exited].sort((a, b) => (a.peak > b.peak ? -1 : a.peak < b.peak ? 1 : 0)).slice(0, 30);
+  return [...c.web.holders.slice(0, 50).map((w) => node(w, false)), ...left.map((w) => node(w, true))];
+}
 
 /** The top fifty holders, each with a few words on who it is. */
 function holderRows(tape: Tape, c: Crawled): HolderRow[] {

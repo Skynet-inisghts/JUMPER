@@ -516,6 +516,21 @@ button.inputchip{all:unset}
 .devhist .dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));border-top:1px solid var(--ln)}
 .devhist .dr{display:grid;grid-template-columns:minmax(0,1.2fr) .8fr .9fr .7fr 1fr;gap:8px;padding:6px 16px;color:var(--dm);text-decoration:none;border-bottom:1px solid rgba(36,27,51,.6)}
 .devhist .dr:hover{background:rgba(180,124,255,.06)}.devhist .dr b{font-weight:400;color:var(--tx);overflow:hidden;text-overflow:ellipsis}
+.silkweb{border:1px solid var(--ln);background:var(--pan);border-radius:5px;margin-bottom:14px;font-size:12px}
+.silkweb .sh{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--ln);color:var(--dm2)}
+.silkweb .sh b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
+.silkweb .sb{display:grid;grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:16px;align-items:center;padding:8px 16px}
+.silkweb svg{width:100%;height:auto;display:block}
+.silkweb .rl{fill:var(--dm2);font-size:10px;font-family:var(--f-mono),monospace}
+.silkweb .hub{fill:var(--tx);font-size:12px;font-family:var(--f-mono),monospace}
+.silkweb .nd.click{cursor:pointer}.silkweb .nd.click:hover circle{stroke:var(--tx);stroke-width:2}
+.silkweb .sl{display:flex;flex-direction:column;gap:8px;color:var(--dm)}
+.silkweb .sl span{display:flex;align-items:center;gap:8px}
+.silkweb .sl i{display:inline-block;width:10px;height:10px;border-radius:50%}
+.silkweb .sl i.hollow{border:1.4px dashed var(--dm);background:none}
+.silkweb .sl i.thread{width:18px;height:3px;border-radius:2px;background:var(--ye)}
+.silkweb .sl em{font-style:normal;color:var(--dm2)}
+@media(max-width:900px){.silkweb .sb{grid-template-columns:1fr}.silkweb .sl{flex-direction:row;flex-wrap:wrap}}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}

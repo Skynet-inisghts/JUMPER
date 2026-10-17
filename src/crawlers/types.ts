@@ -365,6 +365,20 @@ export interface DevLaunches {
   tokens: { token: string; symbol: string | null; block: number; wallets: number; trades: number; lastBlock: number; verdict: { score: number; band: string; at: number } | null }[];
 }
 
+/** One wallet on the silk web: where it sits and what it is. */
+export interface SilkNode {
+  wallet: string;
+  /** % of supply held now, and at its peak. */
+  share: number;
+  peak: number;
+  /** Ring by entry time: 0 the sniper blocks, 1 the first minute, 2 ten minutes, 3 the first hour, 4 later. */
+  ring: 0 | 1 | 2 | 3 | 4;
+  roles: Role[];
+  op: number | null;
+  /** Left: holds nothing now. */
+  gone: boolean;
+}
+
 export interface CrawlerReport {
   name: CrawlerName;
   color: string;
@@ -453,6 +467,8 @@ export interface Report {
   early?: EarlyBuyer[];
   /** The top holders tied into operators (absent on older reports). */
   operators?: Operators;
+  /** The silk web: the top holders and the biggest wallets that left (absent on older reports). */
+  silk?: SilkNode[];
   /** The biggest hand selling into today's liquidity; null when the liquidity is unknown. */
   dump?: DumpImpact | null;
   /** The deployer's other launches and how they went (absent on older reports). */
