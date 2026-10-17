@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { fmt, type Report } from "@/lib/util";
+import type { Report } from "@/lib/util";
 
 /** The line runs from dark purple at launch to light purple at the newest candle. */
 const FROM = [0x3b, 0x16, 0x70];
 const TO = [0xe2, 0xcc, 0xff];
 const mix = (f: number) => "#" + FROM.map((a, i) => Math.round(a + (TO[i] - a) * f).toString(16).padStart(2, "0")).join("");
 
-type Hover = { t: number; p: number; h: number | null } | null;
+type Hover = { t: number; p: number } | null;
 
 /**
  * The token's price over its whole life: the close of each of the report's
@@ -49,16 +49,15 @@ export default function PriceChart({ r }: { r: Report }) {
     if (!el || !usable) return;
     let gone = false;
     let teardown = () => {};
-    void import("lightweight-charts").then(({ createChart, AreaSeries, LineSeries, LineStyle, PriceScaleMode, CrosshairMode }) => {
+    void import("lightweight-charts").then(({ createChart, AreaSeries, LineStyle, PriceScaleMode, CrosshairMode }) => {
       if (gone) return;
       // strictly ascending, unique times; dollars when the crawl read a rate
       const seen = new Set<number>();
-      const pts: { t: number; p: number; h: number | null }[] = [];
-      const hc = r.holderCurve && r.holderCurve.length === raw.length ? r.holderCurve : null;
-      raw.forEach((c, i) => {
+      const pts: { t: number; p: number }[] = [];
+      raw.forEach((c) => {
         if (!(c.c > 0) || seen.has(c.t)) return;
         seen.add(c.t);
-        pts.push({ t: c.t, p: toShown(c.c), h: hc ? hc[i] : null });
+        pts.push({ t: c.t, p: toShown(c.c) });
       });
       pts.sort((a, b) => a.t - b.t);
       if (pts.length < 2) return;
@@ -66,7 +65,6 @@ export default function PriceChart({ r }: { r: Report }) {
       const css = getComputedStyle(document.documentElement);
       const dim = css.getPropertyValue("--dm").trim() || "#7E7490";
       const line = css.getPropertyValue("--ln").trim() || "#241B33";
-      const cyan = css.getPropertyValue("--cy").trim() || "#6ED0FF";
 
       const chart = createChart(el, {
         autoSize: true,
@@ -96,21 +94,6 @@ export default function PriceChart({ r }: { r: Report }) {
       const last = pts.length - 1;
       area.setData(pts.map((x, i) => ({ time: x.t as never, value: x.p, lineColor: mix(i / last) })));
 
-      const holders = hc
-        ? chart.addSeries(LineSeries, {
-            priceScaleId: "holders",
-            color: cyan,
-            lineWidth: 1,
-            lineStyle: LineStyle.Dashed,
-            lastValueVisible: false,
-            priceLineVisible: false,
-            crosshairMarkerVisible: false,
-          })
-        : null;
-      if (holders) {
-        chart.priceScale("holders").applyOptions({ visible: false, scaleMargins: { top: 0.08, bottom: 0.04 } });
-        holders.setData(pts.filter((x) => x.h != null).map((x) => ({ time: x.t as never, value: x.h as number })));
-      }
       chart.timeScale().fitContent();
 
       const byTime = new Map(pts.map((x) => [x.t, x]));
@@ -130,21 +113,21 @@ export default function PriceChart({ r }: { r: Report }) {
   }, [r]);
 
   if (!usable) return null;
-  const lows = raw.map((c) => c.l).filter((x) => x > 0);
-  const lo = Math.min(...lows), hi = Math.max(...raw.map((c) => c.h));
-  const hc = r.holderCurve && r.holderCurve.length === raw.length ? r.holderCurve : null;
-  const hmax = hc ? Math.max(1, ...hc) : 1;
+  // the low is the lowest point since the all-time high, not since launch
+  const hi = Math.max(...raw.map((c) => c.h));
+  const ath = raw.findIndex((c) => c.h === hi);
+  const lows = raw.slice(ath).map((c) => c.l).filter((x) => x > 0);
+  const lo = lows.length ? Math.min(...lows) : hi;
   const day = (t: number) => new Date(t * 1000).toISOString().slice(5, 16).replace("T", " ");
   return (
     <div className="pchart">
       <div className="ph">
         <b>{cap != null ? "market cap" : "price"}</b>
         {hover ? (
-          <span className="phov">{day(hover.t)} UTC · <em>{label(hover.p)}</em>{hover.h != null ? <> · {fmt(hover.h)} holders</> : null}</span>
+          <span className="phov">{day(hover.t)} UTC · <em>{label(hover.p)}</em></span>
         ) : (
-          <span>high {money(hi)} · low {money(lo)} · now {money(raw[raw.length - 1].c)}</span>
+          <span>ATH {money(hi)} · low since ATH {money(lo)} · now {money(raw[raw.length - 1].c)}</span>
         )}
-        {hc && <span className="hl"><i />holders {fmt(hc[hc.length - 1])}{hmax > hc[hc.length - 1] ? `, peak ${fmt(hmax)}` : ""}</span>}
       </div>
       <div className="pcv" ref={box} role="img" aria-label={`$${r.token.symbol} price over its life`} />
       <div className="pf">
