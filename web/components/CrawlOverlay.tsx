@@ -435,7 +435,6 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
         <div className={"step" + (step === "report" ? " on" : "")} id="stepReport">
           <div className="repwrap">
             <div className="repcore" ref={coreRef}>
-              <MarketStrip r={r} />
               <RugWarning r={r} />
               {r.outcome ? (
                 <div className="gradehead">
@@ -482,6 +481,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
               </div>
             </div>
             <div className="repfull">
+              <MarketStrip r={r} />
               <PriceChart r={r} />
               <DevHistory r={r} />
               {r.silk && <SilkWeb nodes={r.silk} symbol={r.token.symbol} onWallet={(n) => setWallet({ wallet: n.wallet, symbol: r.token.symbol, roles: n.roles.map((k) => ROLE[k]?.label ?? k), share: n.gone ? null : n.share })} />}
@@ -701,7 +701,7 @@ function EarlyBuyers({ r, onWallet }: { r: Report; onWallet: (w: WalletHere) => 
   );
 }
 
-/** Price, cap, liquidity, the last day's volume, age, holders, top ten and the deployer, on one line. */
+/** Price, cap, liquidity, the last day's volume, holders, top ten, age and the creator, on one line over the chart. */
 function MarketStrip({ r }: { r: Report }) {
   const m = r.market;
   if (!m) return null;
@@ -721,15 +721,13 @@ function MarketStrip({ r }: { r: Report }) {
   const age = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`);
   const cells: [string, React.ReactNode][] = [
     ["price", price(m.priceUsd)],
-    ["mcap", usd(m.mcapUsd)],
-    [m.liquidityIn === "curve" ? `liq · curve ${Math.round(r.token.curveProgress * 100)}%` : "liq · pool", usd(m.liquidityUsd)],
-    ["vol 24h", <span key="vol">{m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`}<i> · {fmt(m.trades24h)} tx</i></span>],
-    ["age", age(r.token.ageSec)],
+    ["market cap", usd(m.mcapUsd)],
+    ["liquidity", usd(m.liquidityUsd)],
+    ["volume 24h", m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`],
     ["holders", fmt(r.metrics.holders)],
     ["top 10", (m.top10 < 10 ? m.top10.toFixed(1) : Math.round(m.top10)) + "%"],
-    ...(r.dump ? [[r.dump.who === "operator" ? `if op 1 sells (${r.dump.wallets} wallets)` : "if top wallet sells", <span key="dump" className={r.dump.drop >= 30 ? "bad" : r.dump.drop >= 10 ? "mid" : "ok"} title={`${r.dump.share < 1 ? r.dump.share.toFixed(2) : r.dump.share.toFixed(1)}% of supply sold at once into ${r.dump.basis === "curve" ? "the curve" : "the pool (estimate: read as a full-range pool)"}; fees and other trades left out`}>-{Math.round(r.dump.drop)}% price</span>] as [string, React.ReactNode]] : []),
-    ...(r.dump?.overhang ? [["holders up 3x+", <span key="over" className={r.dump.overhang.drop >= 30 ? "bad" : r.dump.overhang.drop >= 10 ? "mid" : "ok"} title={`${r.dump.overhang.wallets} holders up 3x or more on their book hold ${r.dump.overhang.share < 1 ? r.dump.overhang.share.toFixed(2) : r.dump.overhang.share.toFixed(1)}% of supply; all of it sold at once`}>{r.dump.overhang.share < 1 ? r.dump.overhang.share.toFixed(2) : r.dump.overhang.share.toFixed(1)}%<i> · -{Math.round(r.dump.overhang.drop)}% if sold</i></span>] as [string, React.ReactNode]] : []),
-    ["deployer", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
+    ["age", age(r.token.ageSec)],
+    ["creator", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
   ];
   return (
     <div className="mstrip">
@@ -761,24 +759,25 @@ function RugWarning({ r }: { r: Report }) {
 }
 
 /**
- * The token's price over its whole life: the report's candles (curve trades,
- * then pool swaps) on a log scale, so a launch spike and the weeks after both
- * read, with the volume under them. Dollars when the crawl read a rate.
+ * The token's price over its whole life: the close of each of the report's
+ * candles (curve trades, then pool swaps) as one purple line on a log scale,
+ * so a launch spike and the weeks after both read. Dollars when the crawl
+ * read a rate.
  */
 function PriceChart({ r }: { r: Report }) {
   const cs = r.chart ?? [];
   if (cs.length < 2 || !cs.some((c) => c.h !== c.l || c.o !== c.c)) return null;
   const led = r.panels?.ledger;
   const k = led?.priceUsd != null && led.priceQuote ? led.priceUsd / led.priceQuote : null;
-  const W = 1000, H = 150, V = 34, PAD = 4;
+  const W = 1000, H = 170, PAD = 6;
   const lows = cs.map((c) => c.l).filter((x) => x > 0);
   const lo = Math.min(...lows), hi = Math.max(...cs.map((c) => c.h));
   if (!(lo > 0) || !(hi > 0)) return null;
   const L0 = Math.log(lo), L1 = Math.log(hi) === L0 ? L0 + 1 : Math.log(hi);
   const y = (p: number) => PAD + (H - 2 * PAD) * (1 - (Math.log(Math.max(p, lo)) - L0) / (L1 - L0));
   const step = W / cs.length;
-  const bw = Math.max(1.5, step * 0.62);
-  const vmax = Math.max(...cs.map((c) => c.v)) || 1;
+  const xs = cs.map((_, i) => i * step + step / 2);
+  const line = cs.map((c, i) => `${i ? "L" : "M"}${xs[i].toFixed(1)},${y(c.c).toFixed(1)}`).join(" ");
   const money = (p: number) => {
     const x = k != null ? p * k : p;
     const z = x >= 1 ? 2 : Math.min(12, Math.max(0, -Math.floor(Math.log10(x)) - 1) + 3);
@@ -796,21 +795,20 @@ function PriceChart({ r }: { r: Report }) {
         <span>high {money(hi)} · low {money(lo)} · now {money(cs[cs.length - 1].c)}</span>
         {hc && <span className="hl"><i />holders {fmt(hc[hc.length - 1])}{hmax > hc[hc.length - 1] ? `, peak ${fmt(hmax)}` : ""}</span>}
       </div>
-      <svg viewBox={`0 0 ${W} ${H + V}`} preserveAspectRatio="none" role="img" aria-label={`$${r.token.symbol} price over its life`}>
-        {cs.map((c, i) => {
-          const x = i * step + step / 2;
-          const up = c.c >= c.o;
-          const col = up ? "var(--ac2)" : "var(--rd)";
-          const top = y(Math.max(c.o, c.c)), bot = y(Math.min(c.o, c.c));
-          return (
-            <g key={i}>
-              <line x1={x} x2={x} y1={y(c.h)} y2={y(c.l)} stroke={col} strokeWidth="1" vectorEffect="non-scaling-stroke" />
-              <rect x={x - bw / 2} y={top} width={bw} height={Math.max(1, bot - top)} fill={col} />
-              {c.v > 0 && <rect x={x - bw / 2} y={H + V - (V - 6) * (c.v / vmax)} width={bw} height={(V - 6) * (c.v / vmax)} fill={col} opacity="0.35" />}
-            </g>
-          );
-        })}
-        {hc && <path d={hpath} fill="none" stroke="var(--cy)" strokeWidth="1.5" strokeOpacity="0.8" vectorEffect="non-scaling-stroke" />}
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`$${r.token.symbol} price over its life`}>
+        <defs>
+          <linearGradient id="pline" x1="0" x2={W} y1="0" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stopColor="#3B1670" />
+            <stop offset="1" stopColor="#E2CCFF" />
+          </linearGradient>
+          <linearGradient id="pfill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#B47CFF" stopOpacity="0.32" />
+            <stop offset="1" stopColor="#3B1670" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={`${line} L${xs[xs.length - 1].toFixed(1)},${H} L${xs[0].toFixed(1)},${H} Z`} fill="url(#pfill)" />
+        <path d={line} fill="none" stroke="url(#pline)" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+        {hc && <path d={hpath} fill="none" stroke="var(--cy)" strokeWidth="1.2" strokeOpacity="0.55" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />}
       </svg>
       <div className="pf">
         <span>{day(cs[0].t)} UTC launch</span>
