@@ -592,7 +592,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
   for (const h of rows) for (const k of h.roles ?? []) counts.set(k, (counts.get(k) ?? 0) + 1);
   const worst = (h: Report["holders"][number]) => (h.roles ?? []).some((x) => x === "dev" || x === "insider" || x === "sniper") ? " bad" : (h.roles ?? []).includes("smart") ? " smart" : "";
   return (
-    <div className="tophold">
+    <div className="tophold hold8">
       <div className="th">
         <div>
           <b>top {rows.length} holders</b>
@@ -604,7 +604,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
         </div>
         <div className="btns">{children}</div>
       </div>
-      <div className="thead"><span>#</span><span>wallet</span><span>who</span><span>share</span><span>held</span><span>value</span><span>pnl</span></div>
+      <div className="thead"><span>#</span><span>wallet</span><span>who</span><span>share</span><span>held</span><span>status</span><span>value</span><span>pnl</span></div>
       {rows.map((h, i) => (
         <a key={h.wallet} className={"tr" + worst(h)} href={`https://robinhoodchain.blockscout.com/address/${h.wallet}`} target="_blank" rel="noreferrer">
           <span className="n">{i + 1}</span>
@@ -615,6 +615,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
           </span>
           <span className="v">{h.share < 1 ? h.share.toFixed(2) : h.share.toFixed(1)}%</span>
           <span className="v d">{h.heldSec != null ? age(h.heldSec) : ""}</span>
+          <ExitCell h={h} age={age} />
           <span className="v d">{h.valueUsd != null ? "$" + fmt(h.valueUsd) : ""}</span>
           <span className={"v " + (h.pnlPct == null ? "d" : h.pnlPct >= 0 ? "g" : "rd")}>{h.pnlPct != null ? `${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</span>
         </a>
@@ -765,5 +766,23 @@ function PriceChart({ r }: { r: Report }) {
         <span>now</span>
       </div>
     </div>
+  );
+}
+
+/** What a holder did with its tokens: holding, or how much it sold, moved and burned, and its last sale. */
+function ExitCell({ h, age }: { h: Report["holders"][number]; age: (s: number) => string }) {
+  const e = h.exit;
+  if (!e) return <span className="v d" />;
+  const r = (x: number) => Math.round(x);
+  const parts: [string, string][] = [];
+  if (e.sold >= 1) parts.push([`sold ${r(e.sold)}%`, "rd"]);
+  if (e.moved >= 1) parts.push([`moved ${r(e.moved)}%`, "y"]);
+  if (e.burned >= 1) parts.push([`burned ${r(e.burned)}%`, "d"]);
+  const last = h.lastSellSec != null ? `last sell ${age(h.lastSellSec)} ago` : "";
+  return (
+    <span className="v xs" title={last}>
+      {parts.length ? parts.map(([t, c]) => <i key={t} className={c}>{t}</i>) : <i className="g">holding</i>}
+      {last && <u>{last}</u>}
+    </span>
   );
 }
