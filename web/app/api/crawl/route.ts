@@ -148,7 +148,7 @@ export async function POST(request: Request) {
         .then((report) => send("report", report))
         .catch((error: unknown) => {
           const message = error instanceof CrawlTooLong
-            ? `$${error.symbol} has a long history and this is its first crawl: JUMPER is reading all of it now, once. Crawl it again in a few minutes and it answers in seconds.`
+            ? `$${error.symbol} has more history than one web crawl can read. JUMPER keeps reading it in the background; crawl it again in a few minutes, or run it locally: pnpm jumper ${error.token}`
             : error instanceof CrawlError
             ? error.message
             : "the chain read failed part way; try again in a moment";

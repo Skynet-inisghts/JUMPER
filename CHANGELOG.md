@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1 · 2026-10-17
+
+- A token with a long history no longer stops its first crawl with "crawl it again in a few minutes": the site reads the whole history in the same request, with live progress, and answers with the report. Only a history that does not fit the function at all still asks to come back.
+
 ## 0.5.0 · 2026-10-11
 
 - A crawl on the site answers inside 20 seconds. Logs are read in pages sized to their density, each page parsed as it lands.

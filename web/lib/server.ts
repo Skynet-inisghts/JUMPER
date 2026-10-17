@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import type { Address } from "viem";
 import { loadEnv } from "@engine/env.js";
-import { crawl, type CrawlEvent } from "@engine/crawl.js";
+import { crawl, CrawlTooLong, warmLogs, type CrawlEvent } from "@engine/crawl.js";
 import { coalesce, reportTtlMs, TtlCache } from "@engine/web.js";
 import type { Report } from "@engine/crawlers/types.js";
 
@@ -39,11 +39,16 @@ const runs = shared.runs;
 
 /**
  * A crawl answers inside 20 seconds: logs must be in by 15 s, KNOT gets
- * what is left. A token whose history does not fit is read on after the
- * answer (see the crawl route) into the log cache, and its next crawl is quick.
+ * what is left. A token whose history does not fit is read on in the same
+ * request, into the log cache, and crawled again from it: the caller waits
+ * longer and still gets a report. Only a history that does not fit the
+ * function at all ends in an error; the crawl route reads on after it.
  */
 const CRAWL_BUDGET_MS = 15_000;
 const CRAWL_FINISH_MS = 19_000;
+const LONG_READ_MS = 220_000;
+const LONG_BUDGET_MS = 30_000;
+const LONG_FINISH_MS = 36_000;
 
 /**
  * Start a crawl for `token` or join the one already running. A listener
@@ -62,7 +67,7 @@ export function crawlShared(token: Address, listener?: Listener): { promise: Pro
       listeners,
       promise: coalesce(`crawl:${key}`, async () => {
         try {
-          const { report } = await crawl(token, (e) => {
+          const emit = (e: CrawlEvent) => {
             for (const l of listeners) {
               try {
                 l(e);
@@ -70,7 +75,16 @@ export function crawlShared(token: Address, listener?: Listener): { promise: Pro
                 /* a closed stream must not break the crawl */
               }
             }
-          }, { budgetMs: CRAWL_BUDGET_MS, finishMs: CRAWL_FINISH_MS });
+          };
+          let report: Report;
+          try {
+            ({ report } = await crawl(token, emit, { budgetMs: CRAWL_BUDGET_MS, finishMs: CRAWL_FINISH_MS }));
+          } catch (error) {
+            if (!(error instanceof CrawlTooLong)) throw error;
+            emit({ type: "stage", crawler: "WEAVER", state: "running", detail: `$${error.symbol} has a long history, reading all of it once` });
+            await warmLogs(token, (done, total, n) => emit({ type: "progress", crawler: "WEAVER", done, total, detail: `${n} transfers` }), LONG_READ_MS);
+            ({ report } = await crawl(token, emit, { budgetMs: LONG_BUDGET_MS, finishMs: LONG_FINISH_MS }));
+          }
           reportCache.set(key, report, reportTtlMs(report.token.ageSec));
           return report;
         } finally {
