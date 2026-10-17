@@ -55,7 +55,12 @@ const rows = [];
 let skipped = 0;
 for (const [i, token] of list.entries()) {
   try {
-    const { tape } = await crawl(token);
+    // fundings are dropped below, so KNOT is not asked; a token that will not read in two minutes is skipped
+    let timer;
+    const { tape } = await Promise.race([
+      crawl(token, undefined, { knotBudgetMs: 1 }),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("no answer in two minutes")), 120_000); }),
+    ]).finally(() => clearTimeout(timer));
     const age = tape.now - tape.launch.launchedAt;
     if (age < MIN_AGE_SEC) { skipped++; continue; }
     const cutBlock = tape.launch.launchBlock + Math.round(CUT_SEC / tape.secPerBlock);
@@ -90,6 +95,8 @@ for (const [i, token] of list.entries()) {
     console.log(`${i + 1}/${list.length} ${token} failed: ${String(e.message ?? e).slice(0, 80)}`);
   }
 }
+// a crawl left running past its timeout must not hold the process open
+setTimeout(() => process.exit(0), 5_000).unref();
 
 const by = (band) => rows.filter((r) => r.band === band);
 const stat = (xs) => ({
