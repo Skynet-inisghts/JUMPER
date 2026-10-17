@@ -677,8 +677,8 @@ function MarketStrip({ r }: { r: Report }) {
   const cells: [string, React.ReactNode][] = [
     ["price", price(m.priceUsd)],
     ["mcap", usd(m.mcapUsd)],
-    [m.liquidityIn === "curve" ? `liquidity · curve ${Math.round(r.token.curveProgress * 100)}%` : "liquidity · pool", usd(m.liquidityUsd)],
-    ["vol 24h", <span key="vol">{m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`}<i> · {fmt(m.trades24h)} trades</i></span>],
+    [m.liquidityIn === "curve" ? `liq · curve ${Math.round(r.token.curveProgress * 100)}%` : "liq · pool", usd(m.liquidityUsd)],
+    ["vol 24h", <span key="vol">{m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`}<i> · {fmt(m.trades24h)} tx</i></span>],
     ["age", age(r.token.ageSec)],
     ["holders", fmt(r.metrics.holders)],
     ["top 10", (m.top10 < 10 ? m.top10.toFixed(1) : Math.round(m.top10)) + "%"],
