@@ -5,6 +5,7 @@ import { resolveInput } from "@engine/chain/resolve.js";
 import { recordCrawl, indexConfigured } from "@engine/chain/history.js";
 import { inBackground } from "@engine/chain/rpc.js";
 import { clientIp, RateLimiter } from "@engine/web.js";
+import { blockedMessage } from "@engine/blocked.js";
 import { cachedReport, crawlShared } from "@/lib/server";
 
 export const runtime = "nodejs";
@@ -19,6 +20,7 @@ export const maxDuration = 300;
  *   event: progress   { crawler, done, total, detail? }
  *   event: report     the full Report
  *   event: error      { message, candidates? }
+ *   event: blocked    { message }  a token the site does not crawl
  *
  * A cached report answers at once. Identical concurrent crawls share one
  * run; a late joiner sees events from the moment it joined.
@@ -61,6 +63,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "pass a token contract address or a $TICKER" }, { status: 400 });
   }
 
+  const early = blockedMessage(target);
+  if (early) return once([["blocked", { message: early }]]);
+
   // a cached address never costs a chain read, so it skips the bucket
   const quick = /^0x[0-9a-fA-F]{40}$/.test(target) ? cachedReport(target) : undefined;
   if (quick) return once([["resolved", { token: quick.token.address }], ["report", quick]]);
@@ -80,6 +85,9 @@ export async function POST(request: Request) {
   } catch {
     return once([["error", { message: "the lookup failed; try again in a moment, or paste the contract address" }]]);
   }
+
+  const blocked = blockedMessage(token);
+  if (blocked) return once([["blocked", { message: blocked }]]);
 
   const hit = cachedReport(token);
   if (hit) return once([["resolved", { token }], ["report", hit]]);

@@ -11,7 +11,7 @@ import type { CheckpointLabel } from "@engine/crawlers/types.js";
 type Step = "input" | "run" | "report";
 type Pass = { state: "queued" | "running" | "done"; pct: number };
 type Feed = { id: number; c: string; m: string; v: string; cls: string };
-type Failure = { message: string; candidates?: { token: string; symbol: string; name: string }[] };
+type Failure = { message: string; blocked?: boolean; candidates?: { token: string; symbol: string; name: string }[] };
 
 const PASSES: [string, string][] = [
   ["WEAVER", "mapping transfers"], ["TRACKER", "marking exits"], ["SNARE", "scanning first blocks"],
@@ -215,6 +215,9 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           setReport(r);
           setCmd(<>&gt; walk <b>{r.token.address.slice(0, 10) + "…" + r.token.address.slice(-8)}</b> --depth full · done</>);
           window.setTimeout(() => { if (!ac.signal.aborted) setStep("report"); }, 1300);
+        } else if (event === "blocked") {
+          finished = true;
+          toInput({ message: (data as { message: string }).message, blocked: true });
         } else if (event === "error") {
           finished = true;
           const e = data as Failure;
@@ -359,7 +362,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
             />
             <button className="btn" type="submit">Run a crawl</button>
           </form>
-          {failure && (
+          {failure?.blocked && <div className="inblock" role="status">{failure.message}</div>}
+          {failure && !failure.blocked && (
             <div className="inerr" role="alert">
               <b>crawl stopped</b> · {failure.message}
               {failure.candidates && failure.candidates.length > 0 && (
