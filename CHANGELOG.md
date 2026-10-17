@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.4 · 2026-10-18
+
+- Token logos load again on share cards: pons moved its image gateway, and the old address answered 404 for every logo. Logos are read through the gateway the pons site uses now, then the old one, then a public IPFS gateway.
+
 ## 0.5.3 · 2026-10-18
 
 - The site does not crawl $JUMPER itself (0xce45…7d7a): asking for it answers with one line instead of a report, and no share card is drawn for it.
