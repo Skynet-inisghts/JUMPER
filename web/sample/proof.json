@@ -1,21 +1,21 @@
 {
  "cutMin": 120,
- "generatedAt": "2026-10-17T19:28:05.708Z",
- "tested": 155,
- "skipped": 45,
+ "generatedAt": "2026-10-17T20:56:07.903Z",
+ "tested": 158,
+ "skipped": 42,
  "bands": {
   "TORN": {
-   "n": 98,
+   "n": 99,
    "fell90": 0,
    "reached2x": 12
   },
   "PATCHED": {
-   "n": 50,
+   "n": 51,
    "fell90": 4,
    "reached2x": 10
   },
   "TAUT": {
-   "n": 7,
+   "n": 8,
    "fell90": 0,
    "reached2x": 2
   }
@@ -35,12 +35,21 @@
     "0% sniped · 28 holders"
    ],
    "holdersAtCut": 28,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 34.8673,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.120036827341871e-9,
    "peakAfter": 4.1455968225359e-8,
-   "priceNow": 2.394517965332812e-8,
+   "priceNow": 2.5030218888313468e-8,
    "peakX": 10.06,
-   "changeNow": 481.2,
-   "checkedAt": 1792264754
+   "changeNow": 507.5,
+   "checkedAt": 1792270171
   },
   {
    "token": "0x92bffc0ca8d18ed0971dc94957c15e05e6e6f223",
@@ -55,52 +64,21 @@
     "0% sniped · 34 holders"
    ],
    "holdersAtCut": 34,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 29.2,
+    "hold": 40.5388,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.642056525689131e-9,
    "peakAfter": 4.310629422699023e-8,
-   "priceNow": 8.371948112694713e-9,
+   "priceNow": 8.886135843099734e-9,
    "peakX": 9.29,
-   "changeNow": 80.3,
-   "checkedAt": 1792264706
-  },
-  {
-   "token": "0xc7852f765097439f2eaeba64001d8309b83023e6",
-   "symbol": "KUMIO",
-   "launchedAt": 1792080734,
-   "score": 41,
-   "band": "PATCHED",
-   "verdict": "HANDLE WITH CARE",
-   "facts": [
-    "46% still holding · 54% already gone",
-    "smart money unread · dev kept it",
-    "0% sniped · 73 holders"
-   ],
-   "holdersAtCut": 73,
-   "priceAtCut": 5.889501142081612e-9,
-   "peakAfter": 3.749338753764922e-8,
-   "priceNow": 6.604802549982725e-9,
-   "peakX": 6.37,
-   "changeNow": 12.1,
-   "checkedAt": 1792264729
-  },
-  {
-   "token": "0x16c93795477fab5730a00889e042d5815be90bfc",
-   "symbol": "FETCHN",
-   "launchedAt": 1792086506,
-   "score": 48,
-   "band": "PATCHED",
-   "verdict": "HANDLE WITH CARE",
-   "facts": [
-    "30% still holding · 29% already gone",
-    "smart money unread · dev dumped it",
-    "0% sniped · 33 holders"
-   ],
-   "holdersAtCut": 33,
-   "priceAtCut": 3.4924771222228625e-9,
-   "peakAfter": 1.917839644179407e-8,
-   "priceNow": 1.015462016283298e-8,
-   "peakX": 5.49,
-   "changeNow": 190.8,
-   "checkedAt": 1792264910
+   "changeNow": 91.4,
+   "checkedAt": 1792270155
   },
   {
    "token": "0xa01ff10774cfe53c3fbc1d7d124c42e19f6afcbd",
@@ -115,12 +93,79 @@
     "0% sniped · 58 holders"
    ],
    "holdersAtCut": 58,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 55,
+    "hold": 54.5406,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 8.31662733784334e-9,
-   "peakAfter": 3.935399261102791e-8,
-   "priceNow": 3.584827592898846e-8,
-   "peakX": 4.73,
-   "changeNow": 331,
-   "checkedAt": 1792264747
+   "peakAfter": 6.687931942326152e-8,
+   "priceNow": 6.088838281029659e-8,
+   "peakX": 8.04,
+   "changeNow": 632.1,
+   "checkedAt": 1792270169
+  },
+  {
+   "token": "0xc7852f765097439f2eaeba64001d8309b83023e6",
+   "symbol": "KUMIO",
+   "launchedAt": 1792080734,
+   "score": 41,
+   "band": "PATCHED",
+   "verdict": "HANDLE WITH CARE",
+   "facts": [
+    "46% still holding · 54% already gone",
+    "smart money unread · dev kept it",
+    "0% sniped · 73 holders"
+   ],
+   "holdersAtCut": 73,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 45.8132,
+    "devState": "clean",
+    "exitPressure": 6.2756
+   },
+   "priceAtCut": 5.889501142081612e-9,
+   "peakAfter": 3.749338753764922e-8,
+   "priceNow": 7.263484172053314e-9,
+   "peakX": 6.37,
+   "changeNow": 23.3,
+   "checkedAt": 1792270162
+  },
+  {
+   "token": "0x16c93795477fab5730a00889e042d5815be90bfc",
+   "symbol": "FETCHN",
+   "launchedAt": 1792086506,
+   "score": 48,
+   "band": "PATCHED",
+   "verdict": "HANDLE WITH CARE",
+   "facts": [
+    "30% still holding · 29% already gone",
+    "smart money unread · dev dumped it",
+    "0% sniped · 33 holders"
+   ],
+   "holdersAtCut": 33,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 50,
+    "hold": 30.334,
+    "devState": "dumped",
+    "exitPressure": 0.0975
+   },
+   "priceAtCut": 3.4924771222228625e-9,
+   "peakAfter": 1.917839644179407e-8,
+   "priceNow": 9.969481106622368e-9,
+   "peakX": 5.49,
+   "changeNow": 185.5,
+   "checkedAt": 1792270243
   },
   {
    "token": "0xfec62b03a3f7366508aa200c500e6b76fac99a61",
@@ -135,12 +180,21 @@
     "0% sniped · 31 holders"
    ],
    "holdersAtCut": 31,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 62.5,
+    "hold": 50.2011,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 6.964046778008647e-9,
    "peakAfter": 2.8770778318384017e-8,
    "priceNow": 1.1019196496952087e-8,
    "peakX": 4.13,
    "changeNow": 58.2,
-   "checkedAt": 1792264915
+   "checkedAt": 1792270245
   },
   {
    "token": "0x5af95dbbd35ec1882d11d1d639b48aebac477501",
@@ -155,12 +209,21 @@
     "10% sniped · 87 holders"
    ],
    "holdersAtCut": 87,
+   "at": {
+    "sniperSupply": 9.9935,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 56.4475,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 2.7926624060561077e-8,
    "peakAfter": 1.1113330209266865e-7,
-   "priceNow": 8.326569096032182e-9,
+   "priceNow": 9.907139572489725e-9,
    "peakX": 3.98,
-   "changeNow": -70.2,
-   "checkedAt": 1792264840
+   "changeNow": -64.5,
+   "checkedAt": 1792270203
   },
   {
    "token": "0xab2c3719b8daec68d76af9ce8a684d7a6061cf8f",
@@ -175,12 +238,21 @@
     "0% sniped · 98 holders"
    ],
    "holdersAtCut": 98,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 46.9382,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 5.802958361100499e-9,
    "peakAfter": 2.108632653603083e-8,
-   "priceNow": 5.8313441493708124e-9,
+   "priceNow": 5.506994122889222e-9,
    "peakX": 3.63,
-   "changeNow": 0.5,
-   "checkedAt": 1792264737
+   "changeNow": -5.1,
+   "checkedAt": 1792270166
   },
   {
    "token": "0xde97752448fd7d958caa7749dae91a6fe14a3133",
@@ -195,12 +267,21 @@
     "39% sniped · 130 holders"
    ],
    "holdersAtCut": 130,
+   "at": {
+    "sniperSupply": 38.683,
+    "sniperHeld": 4.4817,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 52.423,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 8.520023009657011e-9,
    "peakAfter": 2.3262789538798227e-8,
-   "priceNow": 4.783737061036442e-9,
+   "priceNow": 4.73581051884537e-9,
    "peakX": 2.73,
-   "changeNow": -43.9,
-   "checkedAt": 1792264720
+   "changeNow": -44.4,
+   "checkedAt": 1792270159
   },
   {
    "token": "0x7e517e779b85895894becad80c9bb69b4cb1c4d6",
@@ -215,12 +296,21 @@
     "0% sniped · 48 holders"
    ],
    "holdersAtCut": 48,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 39.3733,
+    "devState": "dumped",
+    "exitPressure": 2.3566
+   },
    "priceAtCut": 5.105305748393122e-9,
    "peakAfter": 1.3338732861189538e-8,
-   "priceNow": 4.918106206075822e-9,
+   "priceNow": 4.541803911115658e-9,
    "peakX": 2.61,
-   "changeNow": -3.7,
-   "checkedAt": 1792265016
+   "changeNow": -11,
+   "checkedAt": 1792270399
   },
   {
    "token": "0xb2d1fa50508550b3488c0e9860d1f08937a29145",
@@ -235,12 +325,21 @@
     "0% sniped · 915 holders"
    ],
    "holdersAtCut": 915,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 77.8935,
+    "devState": "sold half",
+    "exitPressure": 1.3754
+   },
    "priceAtCut": 2.466753281418742e-7,
    "peakAfter": 6.246985018187632e-7,
-   "priceNow": 3.845969971137695e-7,
+   "priceNow": 4.405803985968715e-7,
    "peakX": 2.53,
-   "changeNow": 55.9,
-   "checkedAt": 1792264658
+   "changeNow": 78.6,
+   "checkedAt": 1792270114
   },
   {
    "token": "0x98dcc6f9b8298ae1a225b8df1519e7565d45672d",
@@ -255,12 +354,21 @@
     "28% sniped · 85 holders"
    ],
    "holdersAtCut": 85,
+   "at": {
+    "sniperSupply": 27.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 75.9,
+    "hold": 48.9741,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 7.042301519076267e-9,
    "peakAfter": 1.419817130708303e-8,
-   "priceNow": 8.963918279926163e-9,
+   "priceNow": 1.0841818034019477e-8,
    "peakX": 2.02,
-   "changeNow": 27.3,
-   "checkedAt": 1792264859
+   "changeNow": 54,
+   "checkedAt": 1792270216
   }
  ],
  "rows": [
@@ -277,12 +385,21 @@
     "0% sniped · 915 holders"
    ],
    "holdersAtCut": 915,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 77.8935,
+    "devState": "sold half",
+    "exitPressure": 1.3754
+   },
    "priceAtCut": 2.466753281418742e-7,
    "peakAfter": 6.246985018187632e-7,
-   "priceNow": 3.845969971137695e-7,
+   "priceNow": 4.405803985968715e-7,
    "peakX": 2.53,
-   "changeNow": 55.9,
-   "checkedAt": 1792264658
+   "changeNow": 78.6,
+   "checkedAt": 1792270114
   },
   {
    "token": "0xf125a5ba63bd93f524e901dadd7fba887910a662",
@@ -297,12 +414,21 @@
     "40% sniped · 382 holders"
    ],
    "holdersAtCut": 382,
+   "at": {
+    "sniperSupply": 40,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 22.0043,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.1510290691301685e-9,
    "peakAfter": 3.149706991343473e-9,
    "priceNow": 1.6750764649168756e-9,
    "peakX": 1,
    "changeNow": -46.8,
-   "checkedAt": 1792264661
+   "checkedAt": 1792270117
   },
   {
    "token": "0x595bfc38d7989e1e204319125a7e5b510ecbab79",
@@ -317,12 +443,21 @@
     "13% sniped · 350 holders"
    ],
    "holdersAtCut": 350,
+   "at": {
+    "sniperSupply": 12.6705,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 48.0248,
+    "devState": "clean",
+    "exitPressure": 1.2884
+   },
    "priceAtCut": 9.682223967380864e-9,
    "peakAfter": 1.3543339532113145e-8,
-   "priceNow": 2.005217124881125e-9,
+   "priceNow": 2.0077398053797514e-9,
    "peakX": 1.4,
    "changeNow": -79.3,
-   "checkedAt": 1792264664
+   "checkedAt": 1792270119
   },
   {
    "token": "0xebf6750ad6151ad20da39cacd32daf57caa9e6ba",
@@ -337,12 +472,21 @@
     "0% sniped · 364 holders"
    ],
    "holdersAtCut": 364,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 22.6,
+    "hold": 55.5538,
+    "devState": "dumped",
+    "exitPressure": 6.4994
+   },
    "priceAtCut": 1.0652553291929124e-8,
    "peakAfter": 1.0651729443771875e-8,
-   "priceNow": 1.1805037983945038e-9,
+   "priceNow": 1.196685438948505e-9,
    "peakX": 1,
-   "changeNow": -88.9,
-   "checkedAt": 1792264668
+   "changeNow": -88.8,
+   "checkedAt": 1792270121
   },
   {
    "token": "0x9182f4791dd6ac83323a935760c5cfe2ad25361b",
@@ -357,12 +501,21 @@
     "0% sniped · 426 holders"
    ],
    "holdersAtCut": 426,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 14.7,
+    "hold": 72.0769,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.931185593912397e-8,
    "peakAfter": 4.927489063709653e-8,
-   "priceNow": 1.4961550130986747e-8,
+   "priceNow": 1.7566650618966794e-8,
    "peakX": 1,
-   "changeNow": -69.7,
-   "checkedAt": 1792264670
+   "changeNow": -64.4,
+   "checkedAt": 1792270123
   },
   {
    "token": "0x01b0998c27bbf1e2a2e09c74336b0e7a25bdee95",
@@ -377,12 +530,21 @@
     "7% sniped · 362 holders"
    ],
    "holdersAtCut": 362,
+   "at": {
+    "sniperSupply": 7.2555,
+    "sniperHeld": 2.3457,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 59.3571,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 0.00001987153245886543,
    "peakAfter": 0.000026829849263103557,
-   "priceNow": 0.0000049564481741866904,
+   "priceNow": 0.00000493915797553409,
    "peakX": 1.35,
    "changeNow": -75.1,
-   "checkedAt": 1792264672
+   "checkedAt": 1792270125
   },
   {
    "token": "0xb39619059eff1f992e157d32ff3e21407ca3233a",
@@ -397,12 +559,50 @@
     "0% sniped · 473 holders"
    ],
    "holdersAtCut": 473,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 67.808,
+    "devState": "dumped",
+    "exitPressure": 4.0206
+   },
    "priceAtCut": 3.6106574954874386e-8,
    "peakAfter": 6.344468792173364e-8,
-   "priceNow": 3.8831944706593166e-8,
+   "priceNow": 4.288288973902397e-8,
    "peakX": 1.76,
-   "changeNow": 7.5,
-   "checkedAt": 1792264675
+   "changeNow": 18.8,
+   "checkedAt": 1792270128
+  },
+  {
+   "token": "0x2eef2a627ac024cb9f545f6193b1940f0416a1de",
+   "symbol": "COVENANT",
+   "launchedAt": 1792240461,
+   "score": 16,
+   "band": "TORN",
+   "verdict": "DO NOT TOUCH",
+   "facts": [
+    "67% still holding · 33% already gone",
+    "smart money unread · dev dumped it",
+    "0% sniped · 497 holders"
+   ],
+   "holdersAtCut": 497,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 6,
+    "hold": 66.6537,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
+   "priceAtCut": 2.8199577467639543e-8,
+   "peakAfter": 3.9023043177057145e-8,
+   "priceNow": 8.808389377661439e-9,
+   "peakX": 1.38,
+   "changeNow": -68.8,
+   "checkedAt": 1792270129
   },
   {
    "token": "0xab4767ce2790ea966821808f51ac2cfa144c2581",
@@ -417,12 +617,21 @@
     "0% sniped · 244 holders"
    ],
    "holdersAtCut": 244,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 55.6211,
+    "devState": "clean",
+    "exitPressure": 5.4185
+   },
    "priceAtCut": 9.447426182483419e-9,
    "peakAfter": 1.3427268237221757e-8,
-   "priceNow": 9.157106615919508e-9,
+   "priceNow": 1.0120555411876539e-8,
    "peakX": 1.42,
-   "changeNow": -3.1,
-   "checkedAt": 1792264679
+   "changeNow": 7.1,
+   "checkedAt": 1792270131
   },
   {
    "token": "0x7a0aaf2f65b0857954ce8f4bdea86b6ce1e99c97",
@@ -437,12 +646,21 @@
     "0.0% sniped · 482 holders"
    ],
    "holdersAtCut": 482,
+   "at": {
+    "sniperSupply": 0.0282,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 45.143,
+    "devState": "clean",
+    "exitPressure": 1.9245
+   },
    "priceAtCut": 7.669689074624776e-9,
    "peakAfter": 9.773760468622426e-9,
    "priceNow": 1.903700214564082e-9,
    "peakX": 1.27,
    "changeNow": -75.2,
-   "checkedAt": 1792264681
+   "checkedAt": 1792270133
   },
   {
    "token": "0x48d343cae84ab737c46ce63cb74c926609eb03bb",
@@ -457,12 +675,21 @@
     "71% sniped · 343 holders"
    ],
    "holdersAtCut": 343,
+   "at": {
+    "sniperSupply": 71.4285,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 81.4067,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.5771233615717474e-7,
    "peakAfter": 5.090428912875805e-7,
-   "priceNow": 2.4651150595174873e-7,
+   "priceNow": 2.244939610731099e-7,
    "peakX": 1.11,
-   "changeNow": -46.1,
-   "checkedAt": 1792264683
+   "changeNow": -51,
+   "checkedAt": 1792270135
   },
   {
    "token": "0x83acaf21f4115724b41e158ae69df45f36627e63",
@@ -477,12 +704,21 @@
     "0% sniped · 178 holders"
    ],
    "holdersAtCut": 178,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 11.1,
+    "hold": 20.8513,
+    "devState": "clean",
+    "exitPressure": 1.3845
+   },
    "priceAtCut": 1.967091802460393e-9,
    "peakAfter": 2.3471979917731608e-9,
-   "priceNow": 1.1285219202237584e-9,
+   "priceNow": 1.0782958922344561e-9,
    "peakX": 1.19,
-   "changeNow": -42.6,
-   "checkedAt": 1792264685
+   "changeNow": -45.2,
+   "checkedAt": 1792270137
   },
   {
    "token": "0xc2deb73396ad4c35b376cb433b628256f67eed15",
@@ -497,12 +733,21 @@
     "32% sniped · 353 holders"
    ],
    "holdersAtCut": 353,
+   "at": {
+    "sniperSupply": 32.4935,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 22.7,
+    "hold": 60.8001,
+    "devState": "clean",
+    "exitPressure": 11.2224
+   },
    "priceAtCut": 0.00002141069335736641,
    "peakAfter": 0.00003655168038020345,
-   "priceNow": 0.000004805656174601958,
+   "priceNow": 0.000004769648532592857,
    "peakX": 1.71,
-   "changeNow": -77.6,
-   "checkedAt": 1792264689
+   "changeNow": -77.7,
+   "checkedAt": 1792270139
   },
   {
    "token": "0xfcc86d9c23ffb9f27258534ea316c096f1af51b9",
@@ -517,12 +762,21 @@
     "0% sniped · 20 holders"
    ],
    "holdersAtCut": 20,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 18.4707,
+    "devState": "dumped",
+    "exitPressure": 0.2934
+   },
    "priceAtCut": 2.4525193241248544e-9,
    "peakAfter": 6.01467253075136e-8,
-   "priceNow": 1.6144630989255653e-8,
+   "priceNow": 1.610511147680551e-8,
    "peakX": 24.52,
-   "changeNow": 558.3,
-   "checkedAt": 1792264692
+   "changeNow": 556.7,
+   "checkedAt": 1792270141
   },
   {
    "token": "0x50d26490f7915983bedba927361fb0142efa1214",
@@ -537,12 +791,21 @@
     "0% sniped · 298 holders"
    ],
    "holdersAtCut": 298,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 25,
+    "hold": 68.6686,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 2.4571940454958086e-8,
    "peakAfter": 2.488980108757308e-8,
-   "priceNow": 3.3425407547394113e-9,
+   "priceNow": 3.028718891526649e-9,
    "peakX": 1.01,
-   "changeNow": -86.4,
-   "checkedAt": 1792264695
+   "changeNow": -87.7,
+   "checkedAt": 1792270144
   },
   {
    "token": "0x3e4316bb685020ef46706674b53b868275095f96",
@@ -557,12 +820,21 @@
     "0% sniped · 31 holders"
    ],
    "holdersAtCut": 31,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 30.5846,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.3858422953269174e-9,
    "peakAfter": 5.083081257749914e-9,
    "priceNow": 1.6558065354135645e-9,
    "peakX": 1.5,
    "changeNow": -51.1,
-   "checkedAt": 1792264698
+   "checkedAt": 1792270147
   },
   {
    "token": "0x7f891bd7feab9feb4f72ff5af69a473fef40fed6",
@@ -577,12 +849,21 @@
     "0% sniped · 4 holders"
    ],
    "holdersAtCut": 4,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.013,
+    "devState": "clean",
+    "exitPressure": 0.0069
+   },
    "priceAtCut": 1.6469861563091761e-9,
    "peakAfter": 1.6467874772120055e-9,
    "priceNow": 1.6467874772120055e-9,
    "peakX": 1,
    "changeNow": 0,
-   "checkedAt": 1792264700
+   "checkedAt": 1792270149
   },
   {
    "token": "0xe42d702d6a3d5b335e7032bd331758f3a2ae13a6",
@@ -597,12 +878,21 @@
     "0% sniped · 12 holders"
    ],
    "holdersAtCut": 12,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.6528,
+    "devState": "dumped",
+    "exitPressure": 0.0325
+   },
    "priceAtCut": 1.6852779652683266e-9,
    "peakAfter": 1.685046894827761e-9,
    "priceNow": 1.6778576681416329e-9,
    "peakX": 1,
    "changeNow": -0.4,
-   "checkedAt": 1792264702
+   "checkedAt": 1792270150
   },
   {
    "token": "0x4f79216e148dbc513f088c5591a3a9b91f565dfe",
@@ -617,12 +907,21 @@
     "0% sniped · 93 holders"
    ],
    "holdersAtCut": 93,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 12.5501,
+    "devState": "dumped",
+    "exitPressure": 2.7255
+   },
    "priceAtCut": 1.40769769012587e-9,
    "peakAfter": 1.4054458970020103e-9,
-   "priceNow": 1.2660599287739948e-9,
+   "priceNow": 1.2656706171346481e-9,
    "peakX": 1,
    "changeNow": -10.1,
-   "checkedAt": 1792264704
+   "checkedAt": 1792270153
   },
   {
    "token": "0x92bffc0ca8d18ed0971dc94957c15e05e6e6f223",
@@ -637,12 +936,21 @@
     "0% sniped · 34 holders"
    ],
    "holdersAtCut": 34,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 29.2,
+    "hold": 40.5388,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.642056525689131e-9,
    "peakAfter": 4.310629422699023e-8,
-   "priceNow": 8.371948112694713e-9,
+   "priceNow": 8.886135843099734e-9,
    "peakX": 9.29,
-   "changeNow": 80.3,
-   "checkedAt": 1792264706
+   "changeNow": 91.4,
+   "checkedAt": 1792270155
   },
   {
    "token": "0x160b29692f83a2f76d4fee8f04d05f9fdc9aca96",
@@ -657,12 +965,21 @@
     "0% sniped · 77 holders"
    ],
    "holdersAtCut": 77,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 10.5,
+    "hold": 42.4605,
+    "devState": "dumped",
+    "exitPressure": 0.2803
+   },
    "priceAtCut": 5.381982236521621e-9,
    "peakAfter": 2.2310795518163414e-8,
-   "priceNow": 1.7516272307647067e-9,
+   "priceNow": 1.6993310563097667e-9,
    "peakX": 4.15,
-   "changeNow": -67.5,
-   "checkedAt": 1792264713
+   "changeNow": -68.4,
+   "checkedAt": 1792270157
   },
   {
    "token": "0xde97752448fd7d958caa7749dae91a6fe14a3133",
@@ -677,12 +994,21 @@
     "39% sniped · 130 holders"
    ],
    "holdersAtCut": 130,
+   "at": {
+    "sniperSupply": 38.683,
+    "sniperHeld": 4.4817,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 52.423,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 8.520023009657011e-9,
    "peakAfter": 2.3262789538798227e-8,
-   "priceNow": 4.783737061036442e-9,
+   "priceNow": 4.73581051884537e-9,
    "peakX": 2.73,
-   "changeNow": -43.9,
-   "checkedAt": 1792264720
+   "changeNow": -44.4,
+   "checkedAt": 1792270159
   },
   {
    "token": "0x27f715f132140d0d73a603f22f757278bec7acf5",
@@ -697,12 +1023,21 @@
     "54% sniped · 140 holders"
    ],
    "holdersAtCut": 140,
+   "at": {
+    "sniperSupply": 53.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 20.9094,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.922305928951153e-9,
    "peakAfter": 2.0578322085892834e-9,
    "priceNow": 1.2775769874357782e-9,
    "peakX": 1.07,
    "changeNow": -33.5,
-   "checkedAt": 1792264726
+   "checkedAt": 1792270161
   },
   {
    "token": "0xc7852f765097439f2eaeba64001d8309b83023e6",
@@ -717,12 +1052,21 @@
     "0% sniped · 73 holders"
    ],
    "holdersAtCut": 73,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 45.8132,
+    "devState": "clean",
+    "exitPressure": 6.2756
+   },
    "priceAtCut": 5.889501142081612e-9,
    "peakAfter": 3.749338753764922e-8,
-   "priceNow": 6.604802549982725e-9,
+   "priceNow": 7.263484172053314e-9,
    "peakX": 6.37,
-   "changeNow": 12.1,
-   "checkedAt": 1792264729
+   "changeNow": 23.3,
+   "checkedAt": 1792270162
   },
   {
    "token": "0xcf9aaca9b71b383046b01090c88317e593e032f3",
@@ -737,12 +1081,21 @@
     "32% sniped · 246 holders"
    ],
    "holdersAtCut": 246,
+   "at": {
+    "sniperSupply": 32,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 37.9,
+    "hold": 69.1562,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.9209969027408002e-8,
    "peakAfter": 3.539060048514523e-8,
-   "priceNow": 2.264971215993452e-8,
+   "priceNow": 2.0855208609888012e-8,
    "peakX": 1.84,
-   "changeNow": 17.9,
-   "checkedAt": 1792264734
+   "changeNow": 8.6,
+   "checkedAt": 1792270164
   },
   {
    "token": "0xab2c3719b8daec68d76af9ce8a684d7a6061cf8f",
@@ -757,12 +1110,21 @@
     "0% sniped · 98 holders"
    ],
    "holdersAtCut": 98,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 46.9382,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 5.802958361100499e-9,
    "peakAfter": 2.108632653603083e-8,
-   "priceNow": 5.8313441493708124e-9,
+   "priceNow": 5.506994122889222e-9,
    "peakX": 3.63,
-   "changeNow": 0.5,
-   "checkedAt": 1792264737
+   "changeNow": -5.1,
+   "checkedAt": 1792270166
   },
   {
    "token": "0x73f626b24cdf1c41c0a218d1c8d20f0226b77a30",
@@ -777,12 +1139,21 @@
     "10% sniped · 122 holders"
    ],
    "holdersAtCut": 122,
+   "at": {
+    "sniperSupply": 9.5077,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 25,
+    "hold": 34.7573,
+    "devState": "clean",
+    "exitPressure": 14.4121
+   },
    "priceAtCut": 2.7997651764269585e-8,
    "peakAfter": 5.6545790975263956e-8,
    "priceNow": 1.3490217460537564e-8,
    "peakX": 2.02,
    "changeNow": -51.8,
-   "checkedAt": 1792264742
+   "checkedAt": 1792270168
   },
   {
    "token": "0xa01ff10774cfe53c3fbc1d7d124c42e19f6afcbd",
@@ -797,12 +1168,21 @@
     "0% sniped · 58 holders"
    ],
    "holdersAtCut": 58,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 55,
+    "hold": 54.5406,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 8.31662733784334e-9,
-   "peakAfter": 3.935399261102791e-8,
-   "priceNow": 3.584827592898846e-8,
-   "peakX": 4.73,
-   "changeNow": 331,
-   "checkedAt": 1792264747
+   "peakAfter": 6.687931942326152e-8,
+   "priceNow": 6.088838281029659e-8,
+   "peakX": 8.04,
+   "changeNow": 632.1,
+   "checkedAt": 1792270169
   },
   {
    "token": "0x9a7c661be578e50927268fb770146d701b3368e7",
@@ -817,12 +1197,21 @@
     "0% sniped · 28 holders"
    ],
    "holdersAtCut": 28,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 34.8673,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.120036827341871e-9,
    "peakAfter": 4.1455968225359e-8,
-   "priceNow": 2.394517965332812e-8,
+   "priceNow": 2.5030218888313468e-8,
    "peakX": 10.06,
-   "changeNow": 481.2,
-   "checkedAt": 1792264754
+   "changeNow": 507.5,
+   "checkedAt": 1792270171
   },
   {
    "token": "0xaea52ba94b4bbe7cd5167e14f40f508585ec9308",
@@ -837,12 +1226,21 @@
     "33% sniped · 29 holders"
    ],
    "holdersAtCut": 29,
+   "at": {
+    "sniperSupply": 33,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 1.2,
+    "hold": 7.008,
+    "devState": "dumped",
+    "exitPressure": 4.4039
+   },
    "priceAtCut": 1.317271492927184e-9,
    "peakAfter": 1.3071422247941325e-9,
    "priceNow": 1.0915608931543355e-9,
    "peakX": 0.99,
    "changeNow": -17.1,
-   "checkedAt": 1792264759
+   "checkedAt": 1792270173
   },
   {
    "token": "0xc3bfa141d15116f5bfee65b0a74130ba3f755889",
@@ -857,12 +1255,21 @@
     "0% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 7.1,
+    "hold": 0.233,
+    "devState": "dumped",
+    "exitPressure": 57.5271
+   },
    "priceAtCut": 1.6542160849491312e-9,
    "peakAfter": 1.7182417259499332e-9,
    "priceNow": 1.646777066768361e-9,
    "peakX": 1.04,
    "changeNow": -0.4,
-   "checkedAt": 1792264763
+   "checkedAt": 1792270175
   },
   {
    "token": "0xfee0613d27a49079aefc140a1a08f2383877e4f0",
@@ -877,12 +1284,21 @@
     "6% sniped · 96 holders"
    ],
    "holdersAtCut": 96,
+   "at": {
+    "sniperSupply": 5.912,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 2.1,
+    "hold": 11.8914,
+    "devState": "clean",
+    "exitPressure": 5.8795
+   },
    "priceAtCut": 0.0000026082138228198104,
    "peakAfter": 0.0000027405192236757784,
    "priceNow": 0.000002430206973915715,
    "peakX": 1.05,
    "changeNow": -6.8,
-   "checkedAt": 1792264767
+   "checkedAt": 1792270176
   },
   {
    "token": "0x917949d9c987df639318bd78893770be0ea3497c",
@@ -897,12 +1313,21 @@
     "35% sniped · 182 holders"
    ],
    "holdersAtCut": 182,
+   "at": {
+    "sniperSupply": 35.0765,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 66.1993,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.4734687757143017e-8,
    "peakAfter": 1.8339579341089622e-8,
-   "priceNow": 1.4108699507526892e-9,
+   "priceNow": 1.3411601331791327e-9,
    "peakX": 1.24,
-   "changeNow": -90.4,
-   "checkedAt": 1792264772
+   "changeNow": -90.9,
+   "checkedAt": 1792270178
   },
   {
    "token": "0x8ea252aa4ec8bf9e2b0ff6e7c067cc878d5e615f",
@@ -917,12 +1342,21 @@
     "0% sniped · 193 holders"
    ],
    "holdersAtCut": 193,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 70,
+    "hold": 63.654,
+    "devState": "dumped",
+    "exitPressure": 10.5415
+   },
    "priceAtCut": 7.894967050164846e-8,
    "peakAfter": 7.939690872630879e-8,
    "priceNow": 8.001184511611284e-9,
    "peakX": 1.01,
    "changeNow": -89.9,
-   "checkedAt": 1792264783
+   "checkedAt": 1792270181
   },
   {
    "token": "0x0d00ee54328f00b9d05cabaae0af4967ffd2de24",
@@ -937,12 +1371,21 @@
     "0% sniped · 265 holders"
    ],
    "holdersAtCut": 265,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 36.8811,
+    "devState": "sold half",
+    "exitPressure": 10.2811
+   },
    "priceAtCut": 4.300956389608686e-9,
    "peakAfter": 6.001448281468479e-9,
    "priceNow": 1.6765571683105157e-9,
    "peakX": 1.4,
    "changeNow": -61,
-   "checkedAt": 1792264786
+   "checkedAt": 1792270182
   },
   {
    "token": "0x32d166e5cf80ab58b75573db9d137b6b03b0d744",
@@ -957,12 +1400,21 @@
     "0% sniped · 6 holders"
    ],
    "holdersAtCut": 6,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.1875,
+    "devState": "clean",
+    "exitPressure": 0.0151
+   },
    "priceAtCut": 1.6528529814043895e-9,
    "peakAfter": 1.6522789734965724e-9,
    "priceNow": 1.650457766363505e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792264790
+   "checkedAt": 1792270183
   },
   {
    "token": "0xf466c7dfba16f148b28cca7deded331db200c8eb",
@@ -977,12 +1429,21 @@
     "0% sniped · 3 holders"
    ],
    "holdersAtCut": 3,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.0263,
+    "devState": "dumped",
+    "exitPressure": 0.002
+   },
    "priceAtCut": 1.6977697761997923e-9,
    "peakAfter": 2.671430179061816e-9,
    "priceNow": 1.7602175225268365e-9,
    "peakX": 1.57,
    "changeNow": 3.7,
-   "checkedAt": 1792264793
+   "checkedAt": 1792270185
   },
   {
    "token": "0x109a16070892f35ef0272a3ec872c2f1a3690e76",
@@ -997,12 +1458,21 @@
     "0% sniped · 9 holders"
    ],
    "holdersAtCut": 9,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.6583,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.685715190528608e-9,
    "peakAfter": 1.6852103831656258e-9,
    "priceNow": 1.6665246007557448e-9,
    "peakX": 1,
    "changeNow": -1.1,
-   "checkedAt": 1792264797
+   "checkedAt": 1792270186
   },
   {
    "token": "0x7a367f39f06c12715e50a5fd2d2f84aef39a668a",
@@ -1017,12 +1487,21 @@
     "0% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.2601,
+    "devState": "dumped",
+    "exitPressure": 0.0354
+   },
    "priceAtCut": 1.673329717010438e-9,
    "peakAfter": 1.7066719183611893e-9,
    "priceNow": 1.6695345714804157e-9,
    "peakX": 1.02,
    "changeNow": -0.2,
-   "checkedAt": 1792264802
+   "checkedAt": 1792270187
   },
   {
    "token": "0x93fad9fb6f4ba6a4dd6d0b5d89bfca8ce5d4dfe2",
@@ -1037,12 +1516,21 @@
     "0% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 50,
+    "hold": 0.0494,
+    "devState": "dumped",
+    "exitPressure": 0.1815
+   },
    "priceAtCut": 1.6671118284188715e-9,
    "peakAfter": 1.6645252052159604e-9,
    "priceNow": 1.6641928318473131e-9,
    "peakX": 1,
    "changeNow": -0.2,
-   "checkedAt": 1792264809
+   "checkedAt": 1792270190
   },
   {
    "token": "0x795d941c4aa2d64d269a0e58fa428e6f38df6d70",
@@ -1057,12 +1545,21 @@
     "0% sniped · 10 holders"
    ],
    "holdersAtCut": 10,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 83.3,
+    "hold": 0.1889,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6725103223562757e-9,
    "peakAfter": 1.6688044511272843e-9,
    "priceNow": 1.6688044511272843e-9,
    "peakX": 1,
    "changeNow": -0.2,
-   "checkedAt": 1792264813
+   "checkedAt": 1792270191
   },
   {
    "token": "0xadad3754ffa1ee4a0083d90f9b9a6645f707b52e",
@@ -1077,12 +1574,21 @@
     "0% sniped · 7 holders"
    ],
    "holdersAtCut": 7,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.1323,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6681778864337266e-9,
    "peakAfter": 1.7035850096785409e-9,
    "priceNow": 1.6666399893605473e-9,
    "peakX": 1.02,
    "changeNow": -0.1,
-   "checkedAt": 1792264818
+   "checkedAt": 1792270193
   },
   {
    "token": "0x377c377f8315a547bf067e5955b78fe2366ed938",
@@ -1097,12 +1603,21 @@
     "0% sniped · 155 holders"
    ],
    "holdersAtCut": 155,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 53.3801,
+    "devState": "dumped",
+    "exitPressure": 8.6575
+   },
    "priceAtCut": 8.049251959280004e-9,
    "peakAfter": 1.6668395428428796e-8,
-   "priceNow": 1.0353369177024475e-8,
+   "priceNow": 9.954057134150502e-9,
    "peakX": 2.07,
-   "changeNow": 28.6,
-   "checkedAt": 1792264821
+   "changeNow": 23.7,
+   "checkedAt": 1792270195
   },
   {
    "token": "0xc6a0e1e270a9510eda062d57247bae83d761d8db",
@@ -1117,12 +1632,21 @@
     "0% sniped · 5 holders"
    ],
    "holdersAtCut": 5,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0659,
+    "devState": "dumped",
+    "exitPressure": 0.0293
+   },
    "priceAtCut": 1.665942470152322e-9,
    "peakAfter": 1.665169461933211e-9,
    "priceNow": 1.6647551879084877e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792264828
+   "checkedAt": 1792270197
   },
   {
    "token": "0x03fa6a700e2a34f2f2acdd9a868e4f42c76f04a7",
@@ -1137,12 +1661,21 @@
     "0% sniped · 61 holders"
    ],
    "holdersAtCut": 61,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 6.2928,
+    "devState": "clean",
+    "exitPressure": 3.6752
+   },
    "priceAtCut": 1.1713561288809805e-9,
    "peakAfter": 1.1535258221473098e-9,
    "priceNow": 1.0776026296457949e-9,
    "peakX": 0.98,
    "changeNow": -8,
-   "checkedAt": 1792264831
+   "checkedAt": 1792270199
   },
   {
    "token": "0x9c406d5a473525ec3e4eba3f263bca22a1fb40ff",
@@ -1157,12 +1690,21 @@
     "0% sniped · 26 holders"
    ],
    "holdersAtCut": 26,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 4.872,
+    "devState": "dumped",
+    "exitPressure": 12.4904
+   },
    "priceAtCut": 1.8932557353854793e-9,
    "peakAfter": 2.1578809899827546e-9,
    "priceNow": 1.6933562048716613e-9,
    "peakX": 1.14,
    "changeNow": -10.6,
-   "checkedAt": 1792264834
+   "checkedAt": 1792270200
   },
   {
    "token": "0x5af95dbbd35ec1882d11d1d639b48aebac477501",
@@ -1177,12 +1719,21 @@
     "10% sniped · 87 holders"
    ],
    "holdersAtCut": 87,
+   "at": {
+    "sniperSupply": 9.9935,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 56.4475,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 2.7926624060561077e-8,
    "peakAfter": 1.1113330209266865e-7,
-   "priceNow": 8.326569096032182e-9,
+   "priceNow": 9.907139572489725e-9,
    "peakX": 3.98,
-   "changeNow": -70.2,
-   "checkedAt": 1792264840
+   "changeNow": -64.5,
+   "checkedAt": 1792270203
   },
   {
    "token": "0x55710d9322da540f661b9e68f5aa9609dd45f947",
@@ -1197,12 +1748,21 @@
     "0% sniped · 180 holders"
    ],
    "holdersAtCut": 180,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 51.0335,
+    "devState": "dumped",
+    "exitPressure": 5.8702
+   },
    "priceAtCut": 6.908319563701146e-8,
    "peakAfter": 7.237514381682258e-8,
    "priceNow": 2.292226939924852e-8,
    "peakX": 1.05,
    "changeNow": -66.8,
-   "checkedAt": 1792264844
+   "checkedAt": 1792270205
   },
   {
    "token": "0x8f965893abcc3fb4b707de15ed171857e736c87c",
@@ -1217,12 +1777,21 @@
     "10% sniped · 7 holders"
    ],
    "holdersAtCut": 7,
+   "at": {
+    "sniperSupply": 9.9504,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.2254,
+    "devState": "clean",
+    "exitPressure": 38.2452
+   },
    "priceAtCut": 1.6763358686572659e-9,
    "peakAfter": 1.6707615850953326e-9,
    "priceNow": 1.6701190152675502e-9,
    "peakX": 1,
    "changeNow": -0.4,
-   "checkedAt": 1792264850
+   "checkedAt": 1792270210
   },
   {
    "token": "0x0050817fb32ff172063eab96aca040e00b140668",
@@ -1237,12 +1806,21 @@
     "0% sniped · 168 holders"
    ],
    "holdersAtCut": 168,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 20,
+    "hold": 64.5258,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.687100001503938e-8,
    "peakAfter": 1.7375169506925994e-8,
-   "priceNow": 1.266335477755589e-8,
+   "priceNow": 7.349235660125944e-9,
    "peakX": 1.03,
-   "changeNow": -24.9,
-   "checkedAt": 1792264854
+   "changeNow": -56.4,
+   "checkedAt": 1792270211
   },
   {
    "token": "0x3cc612a47dfe576e5a705776134585c51541ddac",
@@ -1257,12 +1835,21 @@
     "0% sniped · 89 holders"
    ],
    "holdersAtCut": 89,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 25.5627,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.142499313075933e-9,
    "peakAfter": 5.755013854994796e-9,
-   "priceNow": 1.9190053847850373e-9,
+   "priceNow": 1.9036609031190287e-9,
    "peakX": 1.83,
-   "changeNow": -38.9,
-   "checkedAt": 1792264856
+   "changeNow": -39.4,
+   "checkedAt": 1792270214
   },
   {
    "token": "0x98dcc6f9b8298ae1a225b8df1519e7565d45672d",
@@ -1277,12 +1864,21 @@
     "28% sniped · 85 holders"
    ],
    "holdersAtCut": 85,
+   "at": {
+    "sniperSupply": 27.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 75.9,
+    "hold": 48.9741,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 7.042301519076267e-9,
    "peakAfter": 1.419817130708303e-8,
-   "priceNow": 8.963918279926163e-9,
+   "priceNow": 1.0841818034019477e-8,
    "peakX": 2.02,
-   "changeNow": 27.3,
-   "checkedAt": 1792264859
+   "changeNow": 54,
+   "checkedAt": 1792270216
   },
   {
    "token": "0x6930a54c1d13d1286cfc80c7387126521d17e154",
@@ -1297,12 +1893,21 @@
     "0% sniped · 5 holders"
    ],
    "holdersAtCut": 5,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0328,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6648178225832109e-9,
    "peakAfter": 1.664069140500862e-9,
    "priceNow": 1.664069140500862e-9,
    "peakX": 1,
    "changeNow": 0,
-   "checkedAt": 1792264864
+   "checkedAt": 1792270218
   },
   {
    "token": "0x01948fc0924ca425faead6d4f5bfbc39328f72c8",
@@ -1317,12 +1922,21 @@
     "0% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.096,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.650095529311594e-9,
    "peakAfter": 1.6325604824826917e-9,
    "priceNow": 1.630992265417209e-9,
    "peakX": 0.99,
    "changeNow": -1.2,
-   "checkedAt": 1792264867
+   "checkedAt": 1792270220
   },
   {
    "token": "0x4fd0b459746934b1a07c3a4ad7c75bc4ccdf6b69",
@@ -1337,12 +1951,21 @@
     "0% sniped · 33 holders"
    ],
    "holdersAtCut": 33,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 40,
+    "hold": 9.823,
+    "devState": "clean",
+    "exitPressure": 1.9532
+   },
    "priceAtCut": 0.000058955165170156,
    "peakAfter": 0.00005984051598534316,
    "priceNow": 0.00005370856094165819,
    "peakX": 1.02,
    "changeNow": -8.9,
-   "checkedAt": 1792264871
+   "checkedAt": 1792270221
   },
   {
    "token": "0x9f69a7ea14871c2b3ce90d977a5d145955ea3a69",
@@ -1357,12 +1980,21 @@
     "0% sniped · 15 holders"
    ],
    "holdersAtCut": 15,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 2.8701,
+    "devState": "clean",
+    "exitPressure": 0.2732
+   },
    "priceAtCut": 0.000002088902869798684,
    "peakAfter": 0.000002299031944419517,
    "priceNow": 0.000002140203256517841,
    "peakX": 1.1,
    "changeNow": 2.5,
-   "checkedAt": 1792264875
+   "checkedAt": 1792270223
   },
   {
    "token": "0x53863fd5721f4aa2ce643c4daeba5edc4c99a662",
@@ -1377,12 +2009,21 @@
     "0% sniped · 4 holders"
    ],
    "holdersAtCut": 4,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0192,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.664143380546665e-9,
    "peakAfter": 1.6636090670015112e-9,
    "priceNow": 1.6632891955360368e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792264879
+   "checkedAt": 1792270224
   },
   {
    "token": "0x84ca497aac4d25df60b924d1d00696df9ca11c0a",
@@ -1397,12 +2038,21 @@
     "0% sniped · 85 holders"
    ],
    "holdersAtCut": 85,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 50,
+    "hold": 44.1049,
+    "devState": "dumped",
+    "exitPressure": 6.4918
+   },
    "priceAtCut": 5.519982891843478e-9,
    "peakAfter": 1.2747730488394371e-8,
-   "priceNow": 7.934259782126736e-9,
+   "priceNow": 7.562704286046058e-9,
    "peakX": 2.31,
-   "changeNow": 43.7,
-   "checkedAt": 1792264882
+   "changeNow": 37,
+   "checkedAt": 1792270226
   },
   {
    "token": "0x8cb14356b1e8634babe11c9eb5d3ee31ce4e4706",
@@ -1417,12 +2067,21 @@
     "50% sniped · 107 holders"
    ],
    "holdersAtCut": 107,
+   "at": {
+    "sniperSupply": 50,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 16.7,
+    "hold": 46.7438,
+    "devState": "clean",
+    "exitPressure": 10.6959
+   },
    "priceAtCut": 7.087268191517808e-9,
    "peakAfter": 1.0297248770724329e-8,
    "priceNow": 2.0324862399904983e-9,
    "peakX": 1.45,
    "changeNow": -71.3,
-   "checkedAt": 1792264886
+   "checkedAt": 1792270229
   },
   {
    "token": "0x6bfd5020f5c188f68db36df97b94acf159f1ed25",
@@ -1437,12 +2096,21 @@
     "0% sniped · 25 holders"
    ],
    "holdersAtCut": 25,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0302,
+    "devState": "dumped",
+    "exitPressure": 0.0416
+   },
    "priceAtCut": 1.614451012395762e-9,
    "peakAfter": 1.6136001755926606e-9,
    "priceNow": 1.6134209466685376e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792264890
+   "checkedAt": 1792270232
   },
   {
    "token": "0x4e74319e1d6ea5a95e9bee4d08456bc9a89a41ca",
@@ -1457,12 +2125,21 @@
     "0% sniped · 58 holders"
    ],
    "holdersAtCut": 58,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 4.8,
+    "hold": 32.498,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.888211779203673e-9,
    "peakAfter": 4.813279389851784e-9,
-   "priceNow": 2.4387382626932967e-9,
+   "priceNow": 1.981206921158164e-9,
    "peakX": 1.24,
-   "changeNow": -37.3,
-   "checkedAt": 1792264900
+   "changeNow": -49,
+   "checkedAt": 1792270237
   },
   {
    "token": "0x16c93795477fab5730a00889e042d5815be90bfc",
@@ -1477,12 +2154,21 @@
     "0% sniped · 33 holders"
    ],
    "holdersAtCut": 33,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 50,
+    "hold": 30.334,
+    "devState": "dumped",
+    "exitPressure": 0.0975
+   },
    "priceAtCut": 3.4924771222228625e-9,
    "peakAfter": 1.917839644179407e-8,
-   "priceNow": 1.015462016283298e-8,
+   "priceNow": 9.969481106622368e-9,
    "peakX": 5.49,
-   "changeNow": 190.8,
-   "checkedAt": 1792264910
+   "changeNow": 185.5,
+   "checkedAt": 1792270243
   },
   {
    "token": "0xfec62b03a3f7366508aa200c500e6b76fac99a61",
@@ -1497,12 +2183,21 @@
     "0% sniped · 31 holders"
    ],
    "holdersAtCut": 31,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 62.5,
+    "hold": 50.2011,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 6.964046778008647e-9,
    "peakAfter": 2.8770778318384017e-8,
    "priceNow": 1.1019196496952087e-8,
    "peakX": 4.13,
    "changeNow": 58.2,
-   "checkedAt": 1792264915
+   "checkedAt": 1792270245
   },
   {
    "token": "0xa694c90d513c17df0823d221eb7b1c94f8925fcf",
@@ -1517,12 +2212,21 @@
     "4% sniped · 80 holders"
    ],
    "holdersAtCut": 80,
+   "at": {
+    "sniperSupply": 4.1454,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 26.7,
+    "hold": 60.226,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.0312508603476172e-8,
    "peakAfter": 1.286491443582842e-8,
-   "priceNow": 5.527381087674439e-9,
+   "priceNow": 5.536445493921254e-9,
    "peakX": 1.25,
-   "changeNow": -46.4,
-   "checkedAt": 1792264919
+   "changeNow": -46.3,
+   "checkedAt": 1792270246
   },
   {
    "token": "0x838803650f643852f99ddc403f09fa98dffbfaec",
@@ -1537,12 +2241,21 @@
     "0% sniped · 156 holders"
    ],
    "holdersAtCut": 156,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 100,
+    "hold": 30.2133,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.5053499595980753e-9,
    "peakAfter": 3.475544435156196e-9,
    "priceNow": 2.411299001954517e-9,
    "peakX": 0.99,
    "changeNow": -31.2,
-   "checkedAt": 1792264930
+   "checkedAt": 1792270251
   },
   {
    "token": "0xab357a0b1ff21fc37e871554f371e55907676370",
@@ -1557,12 +2270,21 @@
     "0% sniped · 46 holders"
    ],
    "holdersAtCut": 46,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 7.6037,
+    "devState": "dumped",
+    "exitPressure": 13.7543
+   },
    "priceAtCut": 2.077293984209184e-9,
    "peakAfter": 2.068217840718602e-9,
-   "priceNow": 1.810872871036787e-9,
+   "priceNow": 1.8057442440908596e-9,
    "peakX": 1,
-   "changeNow": -12.8,
-   "checkedAt": 1792264934
+   "changeNow": -13.1,
+   "checkedAt": 1792270252
   },
   {
    "token": "0x89d8d68cd6e347885b67a73638b66ae4bbf74954",
@@ -1577,18 +2299,27 @@
     "0% sniped · 11 holders"
    ],
    "holdersAtCut": 11,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.2723,
+    "devState": "dumped",
+    "exitPressure": 0.1156
+   },
    "priceAtCut": 1.6728810761956942e-9,
    "peakAfter": 1.6722832090642085e-9,
    "priceNow": 1.6721515258374887e-9,
    "peakX": 1,
    "changeNow": 0,
-   "checkedAt": 1792264937
+   "checkedAt": 1792270254
   },
   {
    "token": "0x9a02ee3c610f8cf76b9d42ccfc418fc424761b26",
    "symbol": "MAXX",
    "launchedAt": 1792205259,
-   "score": 37,
+   "score": 36,
    "band": "PATCHED",
    "verdict": "HANDLE WITH CARE",
    "facts": [
@@ -1597,12 +2328,21 @@
     "0% sniped · 86 holders"
    ],
    "holdersAtCut": 86,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 16.7,
+    "hold": 53.327,
+    "devState": "sold half",
+    "exitPressure": 5.7529
+   },
    "priceAtCut": 8.886032149557019e-9,
    "peakAfter": 1.7075873337906502e-8,
-   "priceNow": 6.404551636582667e-9,
+   "priceNow": 6.403019101442377e-9,
    "peakX": 1.92,
    "changeNow": -27.9,
-   "checkedAt": 1792264938
+   "checkedAt": 1792270256
   },
   {
    "token": "0xa60f4f4a99853d8fdbd80d0371a3268453bda2f4",
@@ -1617,12 +2357,50 @@
     "0% sniped · 19 holders"
    ],
    "holdersAtCut": 19,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.9633,
+    "devState": "clean",
+    "exitPressure": 7.606
+   },
    "priceAtCut": 1.663453163704632e-9,
    "peakAfter": 3.577636721292484e-9,
    "priceNow": 1.6777109065833351e-9,
    "peakX": 2.15,
    "changeNow": 0.9,
-   "checkedAt": 1792264945
+   "checkedAt": 1792270261
+  },
+  {
+   "token": "0x850a77234616c540b4b2379047ff9803b6c71951",
+   "symbol": "Kavantissa",
+   "launchedAt": 1792239954,
+   "score": 70,
+   "band": "TAUT",
+   "verdict": "SAFE TO WALK IN",
+   "facts": [
+    "4% still holding · 96% already gone",
+    "smart money unread · dev dumped it",
+    "0% sniped · 4 holders"
+   ],
+   "holdersAtCut": 4,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 3.9687,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
+   "priceAtCut": 1.8297792338008088e-9,
+   "peakAfter": 1.8035245945581037e-9,
+   "priceNow": 1.8035245945581037e-9,
+   "peakX": 0.99,
+   "changeNow": -1.4,
+   "checkedAt": 1792270263
   },
   {
    "token": "0x6c9bedc26365685c68248298ca080ef6984b6195",
@@ -1637,12 +2415,21 @@
     "70% sniped · 79 holders"
    ],
    "holdersAtCut": 79,
+   "at": {
+    "sniperSupply": 70.4285,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 68.5133,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6993657409234988e-8,
    "peakAfter": 1.59893322563492e-8,
    "priceNow": 1.038355283180544e-9,
    "peakX": 0.94,
    "changeNow": -93.9,
-   "checkedAt": 1792264949
+   "checkedAt": 1792270266
   },
   {
    "token": "0x6179bf59e9b595a09671ef6ff8e0a3f92e2af179",
@@ -1657,12 +2444,21 @@
     "0% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0435,
+    "devState": "dumped",
+    "exitPressure": 0.0021
+   },
    "priceAtCut": 1.656276206333664e-9,
    "peakAfter": 1.6555274713789486e-9,
    "priceNow": 1.6555274713789486e-9,
    "peakX": 1,
    "changeNow": 0,
-   "checkedAt": 1792264953
+   "checkedAt": 1792270270
   },
   {
    "token": "0xcf595c67a50c423cd663e90f47922c4651f91cd6",
@@ -1677,12 +2473,21 @@
     "11% sniped · 48 holders"
    ],
    "holdersAtCut": 48,
+   "at": {
+    "sniperSupply": 10.9595,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 35.2425,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.053907634743415e-9,
    "peakAfter": 7.32134543831345e-9,
-   "priceNow": 2.572227952653432e-9,
+   "priceNow": 2.546239541878661e-9,
    "peakX": 1.81,
-   "changeNow": -36.5,
-   "checkedAt": 1792264955
+   "changeNow": -37.2,
+   "checkedAt": 1792270343
   },
   {
    "token": "0x34d284c459bf1023ec21a9a73c27437fd1d1d534",
@@ -1697,12 +2502,21 @@
     "0% sniped · 24 holders"
    ],
    "holdersAtCut": 24,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.3666,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6315679338451043e-9,
    "peakAfter": 1.6211974995917826e-9,
    "priceNow": 1.6211974995917826e-9,
    "peakX": 0.99,
    "changeNow": -0.6,
-   "checkedAt": 1792264960
+   "checkedAt": 1792270354
   },
   {
    "token": "0xc3d0bfb2bc55661063839d9e222c8a16e5834cad",
@@ -1717,12 +2531,21 @@
     "0% sniped · 100 holders"
    ],
    "holdersAtCut": 100,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 50,
+    "hold": 60.4052,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.1693368605536587e-8,
    "peakAfter": 1.76937197008133e-8,
-   "priceNow": 1.0044759782283672e-8,
+   "priceNow": 9.687425343260177e-9,
    "peakX": 1.51,
-   "changeNow": -14.1,
-   "checkedAt": 1792264963
+   "changeNow": -17.2,
+   "checkedAt": 1792270361
   },
   {
    "token": "0xf02b3bcd8ef33ccbcf29c4fea1bfc1f0345f800b",
@@ -1737,12 +2560,21 @@
     "0% sniped · 43 holders"
    ],
    "holdersAtCut": 43,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 22.9403,
+    "devState": "dumped",
+    "exitPressure": 5.6564
+   },
    "priceAtCut": 2.7645021659510693e-9,
    "peakAfter": 2.7443225100342433e-9,
    "priceNow": 1.6932497272411572e-9,
    "peakX": 0.99,
    "changeNow": -38.8,
-   "checkedAt": 1792264967
+   "checkedAt": 1792270364
   },
   {
    "token": "0xdfd5f253c7396c7e66923af16269f2700ec05e0d",
@@ -1757,12 +2589,21 @@
     "0% sniped · 23 holders"
    ],
    "holdersAtCut": 23,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 35.3,
+    "hold": 22.1295,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 2.8649443074931793e-9,
    "peakAfter": 1.3327580234391419e-8,
-   "priceNow": 5.431257046418088e-9,
+   "priceNow": 4.877238331700042e-9,
    "peakX": 4.65,
-   "changeNow": 89.6,
-   "checkedAt": 1792264971
+   "changeNow": 70.2,
+   "checkedAt": 1792270366
   },
   {
    "token": "0xe0e2795595ff2284854154600f9a47046cff876a",
@@ -1777,12 +2618,21 @@
     "0% sniped · 85 holders"
    ],
    "holdersAtCut": 85,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 50.2963,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 0.0003247102807144074,
    "peakAfter": 0.0004939024645024089,
-   "priceNow": 0.000265084991023397,
+   "priceNow": 0.00018420349036671327,
    "peakX": 1.52,
-   "changeNow": -18.4,
-   "checkedAt": 1792264977
+   "changeNow": -43.3,
+   "checkedAt": 1792270375
   },
   {
    "token": "0xbbc699de2d3d8d97396de6708b7dd5b1bf0fb6ef",
@@ -1797,12 +2647,21 @@
     "0% sniped · 53 holders"
    ],
    "holdersAtCut": 53,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 55,
+    "hold": 30.1753,
+    "devState": "dumped",
+    "exitPressure": 10.5704
+   },
    "priceAtCut": 3.7391063292854945e-9,
    "peakAfter": 4.124726778589375e-9,
    "priceNow": 1.7362856040326168e-9,
    "peakX": 1.1,
    "changeNow": -53.6,
-   "checkedAt": 1792264979
+   "checkedAt": 1792270377
   },
   {
    "token": "0x72c11afca4c6a30e01fadce6526cc35d857f4f20",
@@ -1817,12 +2676,21 @@
     "0% sniped · 44 holders"
    ],
    "holdersAtCut": 44,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 55,
+    "hold": 29.5685,
+    "devState": "dumped",
+    "exitPressure": 17.0538
+   },
    "priceAtCut": 3.623376788791675e-9,
    "peakAfter": 7.552926676133035e-9,
-   "priceNow": 3.3041304089446956e-9,
+   "priceNow": 3.24929618626372e-9,
    "peakX": 2.08,
-   "changeNow": -8.8,
-   "checkedAt": 1792264984
+   "changeNow": -10.3,
+   "checkedAt": 1792270380
   },
   {
    "token": "0x2de43da52c41a700e0c21722b35b0a17cf4f62ae",
@@ -1837,12 +2705,21 @@
     "0% sniped · 57 holders"
    ],
    "holdersAtCut": 57,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 28.671,
+    "devState": "dumped",
+    "exitPressure": 2.8993
+   },
    "priceAtCut": 3.310663654904039e-9,
    "peakAfter": 5.936381962139441e-9,
-   "priceNow": 2.330673712666564e-9,
+   "priceNow": 2.1540858005894475e-9,
    "peakX": 1.79,
-   "changeNow": -29.6,
-   "checkedAt": 1792264988
+   "changeNow": -34.9,
+   "checkedAt": 1792270382
   },
   {
    "token": "0xc32b62f0b55b15013440b4a6121452910d4053e8",
@@ -1857,12 +2734,21 @@
     "7% sniped · 0 holders"
    ],
    "holdersAtCut": 0,
+   "at": {
+    "sniperSupply": 6.7686,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6796224298494406e-9,
    "peakAfter": 1.7146182881083392e-8,
    "priceNow": 1.7285191291199994e-9,
    "peakX": 10.21,
    "changeNow": 2.9,
-   "checkedAt": 1792264991
+   "checkedAt": 1792270383
   },
   {
    "token": "0x087d3b822694ea61f6a839c676dfa16d61ad4501",
@@ -1877,12 +2763,21 @@
     "0% sniped · 10 holders"
    ],
    "holdersAtCut": 10,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.2022,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6367849630536406e-9,
    "peakAfter": 1.6360098172090633e-9,
    "priceNow": 1.6341777525143612e-9,
    "peakX": 1,
    "changeNow": -0.2,
-   "checkedAt": 1792264993
+   "checkedAt": 1792270384
   },
   {
    "token": "0x839beb7d5032b4dd2ebdc7b17c1286dcd97ad144",
@@ -1897,12 +2792,21 @@
     "0% sniped · 48 holders"
    ],
    "holdersAtCut": 48,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 34.8,
+    "hold": 37.5231,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.414024508823009e-9,
    "peakAfter": 9.40298963400622e-9,
    "priceNow": 3.828522532108095e-9,
    "peakX": 2.13,
    "changeNow": -13.3,
-   "checkedAt": 1792264999
+   "checkedAt": 1792270391
   },
   {
    "token": "0xb7048a612d2395b899750df57280b0feb8a721d4",
@@ -1917,12 +2821,21 @@
     "45% sniped · 69 holders"
    ],
    "holdersAtCut": 69,
+   "at": {
+    "sniperSupply": 44.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 60,
+    "hold": 49.4644,
+    "devState": "dumped",
+    "exitPressure": 0.0754
+   },
    "priceAtCut": 6.382207413082685e-9,
    "peakAfter": 6.886274504097535e-9,
    "priceNow": 1.705409092241335e-9,
    "peakX": 1.08,
    "changeNow": -73.3,
-   "checkedAt": 1792265003
+   "checkedAt": 1792270392
   },
   {
    "token": "0x5648ad4d9328e480ef1abc4e1281b81e67be9bd7",
@@ -1937,12 +2850,21 @@
     "0% sniped · 129 holders"
    ],
    "holdersAtCut": 129,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 5.5297,
+    "firstMinuteKept": 50.7,
+    "hold": 68.6712,
+    "devState": "sold half",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.764700095435942e-8,
    "peakAfter": 1.7677773351099436e-8,
    "priceNow": 1.7336881814839556e-9,
    "peakX": 1,
    "changeNow": -90.2,
-   "checkedAt": 1792265005
+   "checkedAt": 1792270393
   },
   {
    "token": "0x062faca051f3567a3d27019ea4e219b004983042",
@@ -1957,12 +2879,21 @@
     "0% sniped · 56 holders"
    ],
    "holdersAtCut": 56,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 10,
+    "hold": 20.2389,
+    "devState": "dumped",
+    "exitPressure": 33.4876
+   },
    "priceAtCut": 2.762803970064517e-9,
    "peakAfter": 2.6886633820198086e-9,
    "priceNow": 1.8341841523668192e-9,
    "peakX": 0.97,
    "changeNow": -33.6,
-   "checkedAt": 1792265008
+   "checkedAt": 1792270395
   },
   {
    "token": "0xcfa3df77c08f0e84c3cf35115ff0cd01526a7b32",
@@ -1977,12 +2908,21 @@
     "0% sniped · 51 holders"
    ],
    "holdersAtCut": 51,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 35,
+    "hold": 30.5667,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.615709760037968e-9,
    "peakAfter": 5.575375528558808e-9,
    "priceNow": 2.1333385777316444e-9,
    "peakX": 1.54,
    "changeNow": -41,
-   "checkedAt": 1792265009
+   "checkedAt": 1792270396
   },
   {
    "token": "0x351e3ee4d6a0eeb1986826cc2f673373516b9b80",
@@ -1997,12 +2937,21 @@
     "0% sniped · 53 holders"
    ],
    "holdersAtCut": 53,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 4.8,
+    "hold": 26.4848,
+    "devState": "dumped",
+    "exitPressure": 9.1671
+   },
    "priceAtCut": 3.3000235215914904e-9,
    "peakAfter": 6.169666779667064e-9,
-   "priceNow": 4.9431121512621115e-9,
+   "priceNow": 5.566992650118782e-9,
    "peakX": 1.87,
-   "changeNow": 49.8,
-   "checkedAt": 1792265012
+   "changeNow": 68.7,
+   "checkedAt": 1792270397
   },
   {
    "token": "0x7e517e779b85895894becad80c9bb69b4cb1c4d6",
@@ -2017,12 +2966,21 @@
     "0% sniped · 48 holders"
    ],
    "holdersAtCut": 48,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 39.3733,
+    "devState": "dumped",
+    "exitPressure": 2.3566
+   },
    "priceAtCut": 5.105305748393122e-9,
    "peakAfter": 1.3338732861189538e-8,
-   "priceNow": 4.918106206075822e-9,
+   "priceNow": 4.541803911115658e-9,
    "peakX": 2.61,
-   "changeNow": -3.7,
-   "checkedAt": 1792265016
+   "changeNow": -11,
+   "checkedAt": 1792270399
   },
   {
    "token": "0x26230f1636e5a1a515ffc36889f84fde818de1f7",
@@ -2037,12 +2995,21 @@
     "0% sniped · 1 holders"
    ],
    "holdersAtCut": 1,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6651855505656591e-9,
    "peakAfter": 1.699035047597883e-9,
    "priceNow": 1.699035047597883e-9,
    "peakX": 1.02,
    "changeNow": 2,
-   "checkedAt": 1792265020
+   "checkedAt": 1792270400
   },
   {
    "token": "0x5057f97bd33f77aee06499ce2682b7f65324dbef",
@@ -2057,12 +3024,21 @@
     "13% sniped · 39 holders"
    ],
    "holdersAtCut": 39,
+   "at": {
+    "sniperSupply": 13.1813,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 7.1,
+    "hold": 0.0473,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6649868353114361e-9,
    "peakAfter": 1.6641075918557447e-9,
    "priceNow": 1.6633132640158537e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792265023
+   "checkedAt": 1792270402
   },
   {
    "token": "0xe8c859fe777d8e1a732a455e7920751be77d4852",
@@ -2077,18 +3053,27 @@
     "0% sniped · 137 holders"
    ],
    "holdersAtCut": 137,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 2.3699,
+    "firstMinuteKept": 66.3,
+    "hold": 68.2645,
+    "devState": "sold half",
+    "exitPressure": 0.024
+   },
    "priceAtCut": 1.718212367627307e-8,
    "peakAfter": 1.7234759351869935e-8,
    "priceNow": 1.6303656694204326e-9,
    "peakX": 1,
    "changeNow": -90.5,
-   "checkedAt": 1792265025
+   "checkedAt": 1792270407
   },
   {
    "token": "0xa43e02dd47dc3f96f7b646bdb9c9761fbaf40f84",
    "symbol": "TOAST",
    "launchedAt": 1792089555,
-   "score": 5,
+   "score": 4,
    "band": "TORN",
    "verdict": "DO NOT TOUCH",
    "facts": [
@@ -2097,12 +3082,21 @@
     "0% sniped · 19 holders"
    ],
    "holdersAtCut": 19,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 10,
+    "hold": 16.028,
+    "devState": "dumped",
+    "exitPressure": 6.5884
+   },
    "priceAtCut": 1.3868873143600306e-8,
    "peakAfter": 1.2858066968269085e-8,
    "priceNow": 9.603108268412556e-9,
    "peakX": 0.93,
    "changeNow": -30.8,
-   "checkedAt": 1792265028
+   "checkedAt": 1792270413
   },
   {
    "token": "0x6332af1fa9faae162836b5be3ca6c96e6ab1cc89",
@@ -2117,12 +3111,21 @@
     "27% sniped · 4 holders"
    ],
    "holdersAtCut": 4,
+   "at": {
+    "sniperSupply": 26.8355,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 60,
+    "hold": 0.1319,
+    "devState": "dumped",
+    "exitPressure": 0.0272
+   },
    "priceAtCut": 1.6596287093370412e-9,
    "peakAfter": 1.659162724975376e-9,
    "priceNow": 1.6571350725104608e-9,
    "peakX": 1,
    "changeNow": -0.2,
-   "checkedAt": 1792265032
+   "checkedAt": 1792270418
   },
   {
    "token": "0xa6ab508148f07fadc8829d4b37413d5f5ba5b414",
@@ -2137,12 +3140,21 @@
     "5% sniped · 76 holders"
    ],
    "holdersAtCut": 76,
+   "at": {
+    "sniperSupply": 5.0207,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 20,
+    "hold": 42.6242,
+    "devState": "dumped",
+    "exitPressure": 7.0065
+   },
    "priceAtCut": 5.160313944931157e-9,
    "peakAfter": 5.567398727812341e-9,
-   "priceNow": 2.9958598904004672e-9,
+   "priceNow": 3.149635346192759e-9,
    "peakX": 1.08,
-   "changeNow": -41.9,
-   "checkedAt": 1792265037
+   "changeNow": -39,
+   "checkedAt": 1792270420
   },
   {
    "token": "0xe31e720d3b86cbfe958f5428ad59f2d8409c6d21",
@@ -2157,12 +3169,21 @@
     "0.1% sniped · 35 holders"
    ],
    "holdersAtCut": 35,
+   "at": {
+    "sniperSupply": 0.1,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 10,
+    "hold": 10.2152,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 2.1278080856091775e-9,
    "peakAfter": 2.7835469636152157e-9,
    "priceNow": 1.6860216896631526e-9,
    "peakX": 1.31,
    "changeNow": -20.8,
-   "checkedAt": 1792265040
+   "checkedAt": 1792270423
   },
   {
    "token": "0x0c524a93094ba705dfcc973712ac20e0d525841f",
@@ -2177,12 +3198,21 @@
     "40% sniped · 29 holders"
    ],
    "holdersAtCut": 29,
+   "at": {
+    "sniperSupply": 40.38,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.1614,
+    "devState": "dumped",
+    "exitPressure": 0.1117
+   },
    "priceAtCut": 1.6191328319513221e-9,
    "peakAfter": 1.7572872330746637e-9,
    "priceNow": 1.6181679466622212e-9,
    "peakX": 1.09,
    "changeNow": -0.1,
-   "checkedAt": 1792265042
+   "checkedAt": 1792270425
   },
   {
    "token": "0xfeb498432a75579c5e87bb67a8b49554fb0d8892",
@@ -2197,12 +3227,21 @@
     "0% sniped · 101 holders"
    ],
    "holdersAtCut": 101,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 7.1,
+    "hold": 53.2318,
+    "devState": "dumped",
+    "exitPressure": 1.2734
+   },
    "priceAtCut": 7.918280724806962e-9,
    "peakAfter": 8.999855401753361e-9,
-   "priceNow": 2.4019087963471357e-9,
+   "priceNow": 2.2431787015972387e-9,
    "peakX": 1.14,
-   "changeNow": -69.7,
-   "checkedAt": 1792265046
+   "changeNow": -71.7,
+   "checkedAt": 1792270427
   },
   {
    "token": "0x5804beee8368132d32ad4b8818ce86eba9c4bd37",
@@ -2217,12 +3256,21 @@
     "0% sniped · 77 holders"
    ],
    "holdersAtCut": 77,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 56.2126,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 9.541968624197301e-9,
    "peakAfter": 9.757675049414184e-9,
-   "priceNow": 8.268265370459184e-9,
+   "priceNow": 8.542919979011836e-9,
    "peakX": 1.02,
-   "changeNow": -13.3,
-   "checkedAt": 1792265052
+   "changeNow": -10.5,
+   "checkedAt": 1792270430
   },
   {
    "token": "0x9814e69d45a602b0541ec4a61941e076458c12af",
@@ -2237,12 +3285,21 @@
     "0% sniped · 46 holders"
    ],
    "holdersAtCut": 46,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 10.6348,
+    "devState": "dumped",
+    "exitPressure": 48.7231
+   },
    "priceAtCut": 2.0085859980973377e-9,
    "peakAfter": 2.5078357179814517e-9,
-   "priceNow": 2.2246140105700533e-9,
+   "priceNow": 2.418436998949415e-9,
    "peakX": 1.25,
-   "changeNow": 10.8,
-   "checkedAt": 1792265056
+   "changeNow": 20.4,
+   "checkedAt": 1792270432
   },
   {
    "token": "0x301b854142a966ca465f722445f8d2289ba0c6e7",
@@ -2257,12 +3314,21 @@
     "3% sniped · 32 holders"
    ],
    "holdersAtCut": 32,
+   "at": {
+    "sniperSupply": 3.3768,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 29.4212,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 0.0000042983068911197185,
    "peakAfter": 0.000004295351488124142,
    "priceNow": 0.0000038405664819226365,
    "peakX": 1,
    "changeNow": -10.6,
-   "checkedAt": 1792265063
+   "checkedAt": 1792270435
   },
   {
    "token": "0xeface639fa6b9ca553c707942c6247fb6fc9d5d5",
@@ -2277,12 +3343,21 @@
     "0% sniped · 5 holders"
    ],
    "holdersAtCut": 5,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.1996,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6362666012641683e-9,
    "peakAfter": 1.7394763258393397e-9,
    "priceNow": 1.6366732749822352e-9,
    "peakX": 1.06,
    "changeNow": 0,
-   "checkedAt": 1792265065
+   "checkedAt": 1792270437
   },
   {
    "token": "0xc648a307bb7ad5166e0d05cbbfa5f5d252d737bb",
@@ -2297,12 +3372,21 @@
     "33% sniped · 11 holders"
    ],
    "holdersAtCut": 11,
+   "at": {
+    "sniperSupply": 33.0343,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.1288,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.0201528939047353e-9,
    "peakAfter": 1.0218700704770696e-9,
    "priceNow": 1.0189619293618424e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792265070
+   "checkedAt": 1792270440
   },
   {
    "token": "0xc0ed62a2f681fe05f4a8d34a55b0cbef28d0d50f",
@@ -2317,12 +3401,21 @@
     "0% sniped · 40 holders"
    ],
    "holdersAtCut": 40,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 7.7,
+    "hold": 20.4053,
+    "devState": "dumped",
+    "exitPressure": 32.0336
+   },
    "priceAtCut": 2.5737369043302724e-9,
    "peakAfter": 2.7491133813687825e-9,
    "priceNow": 1.8284466288335696e-9,
    "peakX": 1.07,
    "changeNow": -29,
-   "checkedAt": 1792265072
+   "checkedAt": 1792270442
   },
   {
    "token": "0xa5d24c17515e4878cad8b513a1ba84a82f6aeb51",
@@ -2337,12 +3430,21 @@
     "12% sniped · 42 holders"
    ],
    "holdersAtCut": 42,
+   "at": {
+    "sniperSupply": 12.0364,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 16,
+    "hold": 16.2216,
+    "devState": "dumped",
+    "exitPressure": 11.7133
+   },
    "priceAtCut": 2.443185820743358e-9,
    "peakAfter": 2.4930495549260753e-9,
    "priceNow": 1.7226151415156909e-9,
    "peakX": 1.02,
    "changeNow": -29.5,
-   "checkedAt": 1792265078
+   "checkedAt": 1792270443
   },
   {
    "token": "0xcd4194ca934890eb41381b5748f30aea4e4d8952",
@@ -2357,12 +3459,21 @@
     "0% sniped · 18 holders"
    ],
    "holdersAtCut": 18,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 40,
+    "hold": 2.9161,
+    "devState": "dumped",
+    "exitPressure": 17.3596
+   },
    "priceAtCut": 0.000003365387011605162,
    "peakAfter": 0.0000035037149366341075,
    "priceNow": 0.000003363534647397704,
    "peakX": 1.04,
    "changeNow": -0.1,
-   "checkedAt": 1792265083
+   "checkedAt": 1792270446
   },
   {
    "token": "0x703d496d966a705c427d7f8076f610478e8700dc",
@@ -2377,12 +3488,21 @@
     "0% sniped · 60 holders"
    ],
    "holdersAtCut": 60,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 20,
+    "hold": 41.858,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 5.641113526297812e-9,
    "peakAfter": 5.992655544723431e-9,
    "priceNow": 1.8595697907453815e-9,
    "peakX": 1.06,
    "changeNow": -67,
-   "checkedAt": 1792265086
+   "checkedAt": 1792270448
   },
   {
    "token": "0x85d2c2ffecc98950636e000e980a4e068abf6bae",
@@ -2397,12 +3517,21 @@
     "0% sniped · 97 holders"
    ],
    "holdersAtCut": 97,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 40,
+    "hold": 39.8027,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.706393248197631e-9,
    "peakAfter": 5.805041662229373e-9,
    "priceNow": 2.5946080159460046e-9,
    "peakX": 1.23,
    "changeNow": -44.9,
-   "checkedAt": 1792265089
+   "checkedAt": 1792270450
   },
   {
    "token": "0xb38fa0dfbd44af9b1cbb55d6e74a45797d9a75b8",
@@ -2417,12 +3546,21 @@
     "0% sniped · 32 holders"
    ],
    "holdersAtCut": 32,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 45,
+    "hold": 23.3457,
+    "devState": "dumped",
+    "exitPressure": 6.1491
+   },
    "priceAtCut": 2.9620688759614266e-9,
    "peakAfter": 5.245802072800422e-9,
    "priceNow": 2.4305688052742982e-9,
    "peakX": 1.77,
    "changeNow": -17.9,
-   "checkedAt": 1792265093
+   "checkedAt": 1792270452
   },
   {
    "token": "0x38ddf72d078d448372e9a99a206c050b43f7a51d",
@@ -2437,12 +3575,21 @@
     "0% sniped · 22 holders"
    ],
    "holdersAtCut": 22,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 6.5,
+    "hold": 3.3298,
+    "devState": "dumped",
+    "exitPressure": 20.7199
+   },
    "priceAtCut": 0.0000036366895763013114,
    "peakAfter": 0.0000035487665688817898,
    "priceNow": 0.000003297553734148944,
    "peakX": 0.98,
    "changeNow": -9.3,
-   "checkedAt": 1792265101
+   "checkedAt": 1792270455
   },
   {
    "token": "0x22ad3b2a5d3924c9e813fcc1a537f24fed6a17d7",
@@ -2457,12 +3604,21 @@
     "0% sniped · 66 holders"
    ],
    "holdersAtCut": 66,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 65.2,
+    "hold": 34.5734,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 4.0819749689344124e-9,
    "peakAfter": 5.523056842562834e-9,
    "priceNow": 3.731380914406591e-9,
    "peakX": 1.35,
    "changeNow": -8.6,
-   "checkedAt": 1792265105
+   "checkedAt": 1792270458
   },
   {
    "token": "0xecacc6931e1f8a2f573fa41070e2f369492ce932",
@@ -2477,12 +3633,21 @@
     "24% sniped · 30 holders"
    ],
    "holdersAtCut": 30,
+   "at": {
+    "sniperSupply": 23.8059,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 40,
+    "hold": 17.7075,
+    "devState": "clean",
+    "exitPressure": 0.6808
+   },
    "priceAtCut": 0.0000022478280861795493,
    "peakAfter": 0.000002317973045061285,
    "priceNow": 0.0000016085847019305646,
    "peakX": 1.03,
    "changeNow": -28.4,
-   "checkedAt": 1792265111
+   "checkedAt": 1792270459
   },
   {
    "token": "0xe58e7d21914e4be9e89fefcad6ba71a15a04abfe",
@@ -2497,12 +3662,21 @@
     "0% sniped · 24 holders"
    ],
    "holdersAtCut": 24,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 4.3981,
+    "devState": "dumped",
+    "exitPressure": 13.9816
+   },
    "priceAtCut": 1.8064411674420663e-8,
    "peakAfter": 1.801957035041749e-8,
    "priceNow": 1.7231304875375214e-8,
    "peakX": 1,
    "changeNow": -4.6,
-   "checkedAt": 1792265115
+   "checkedAt": 1792270463
   },
   {
    "token": "0xd2d95d86ca06e445f9377de6b49e559f1bfab390",
@@ -2517,12 +3691,21 @@
     "38% sniped · 4 holders"
    ],
    "holdersAtCut": 4,
+   "at": {
+    "sniperSupply": 37.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 1.8,
+    "hold": 0.0259,
+    "devState": "dumped",
+    "exitPressure": 34.8921
+   },
    "priceAtCut": 4.378559283640395e-9,
    "peakAfter": 4.569003825554589e-9,
    "priceNow": 4.403742570712785e-9,
    "peakX": 1.04,
    "changeNow": 0.6,
-   "checkedAt": 1792265118
+   "checkedAt": 1792270466
   },
   {
    "token": "0x9f25ada233d2d4afe80fc050fd29f5bcebd9263a",
@@ -2537,12 +3720,21 @@
     "15% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 14.5952,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.1975,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6729770455504334e-9,
    "peakAfter": 1.6664919537714842e-9,
    "priceNow": 1.6664919537714842e-9,
    "peakX": 1,
    "changeNow": -0.4,
-   "checkedAt": 1792265120
+   "checkedAt": 1792270467
   },
   {
    "token": "0x0b2ae6f02bb6c551a3957f13463f6caa2fb02195",
@@ -2557,12 +3749,21 @@
     "17% sniped · 40 holders"
    ],
    "holdersAtCut": 40,
+   "at": {
+    "sniperSupply": 17.3985,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 27.378,
+    "devState": "dumped",
+    "exitPressure": 7.102
+   },
    "priceAtCut": 3.1534302783636667e-9,
    "peakAfter": 3.10305436888666e-9,
    "priceNow": 1.6739462560790184e-9,
    "peakX": 0.98,
    "changeNow": -46.9,
-   "checkedAt": 1792265122
+   "checkedAt": 1792270468
   },
   {
    "token": "0xb9730e485d89348b652fbb70e69188076293758e",
@@ -2577,12 +3778,21 @@
     "0% sniped · 36 holders"
    ],
    "holdersAtCut": 36,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 45,
+    "hold": 30.7239,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.719768503874844e-9,
    "peakAfter": 6.966699778401433e-9,
-   "priceNow": 3.3063183663958547e-9,
+   "priceNow": 3.2698484350222015e-9,
    "peakX": 1.87,
-   "changeNow": -11.1,
-   "checkedAt": 1792265126
+   "changeNow": -12.1,
+   "checkedAt": 1792270470
   },
   {
    "token": "0x8365376a925f322353a1f541c96331cf3a067bf2",
@@ -2597,12 +3807,21 @@
     "34% sniped · 14 holders"
    ],
    "holdersAtCut": 14,
+   "at": {
+    "sniperSupply": 34.4569,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 7.7,
+    "hold": 3.1407,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 0.0000034835892126124953,
    "peakAfter": 0.0000034111915891178536,
    "priceNow": 0.000003355250332693881,
    "peakX": 0.98,
    "changeNow": -3.7,
-   "checkedAt": 1792265130
+   "checkedAt": 1792270471
   },
   {
    "token": "0x73a5ae5a691326a439b058beffba89a321227e69",
@@ -2617,12 +3836,21 @@
     "0% sniped · 26 holders"
    ],
    "holdersAtCut": 26,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 3.0993,
+    "devState": "dumped",
+    "exitPressure": 28.2305
+   },
    "priceAtCut": 2.176450265476952e-9,
    "peakAfter": 2.2405405106919608e-9,
    "priceNow": 2.105102708006273e-9,
    "peakX": 1.03,
    "changeNow": -3.3,
-   "checkedAt": 1792265135
+   "checkedAt": 1792270474
   },
   {
    "token": "0x510b40d346857e2f9847817a0cf129cac8b18a9d",
@@ -2637,12 +3865,21 @@
     "0% sniped · 21 holders"
    ],
    "holdersAtCut": 21,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 36.8,
+    "hold": 29.6548,
+    "devState": "sold half",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.4961155514526362e-9,
    "peakAfter": 9.19258591719868e-9,
    "priceNow": 1.965087723711892e-9,
    "peakX": 2.63,
    "changeNow": -43.8,
-   "checkedAt": 1792265137
+   "checkedAt": 1792270476
   },
   {
    "token": "0xa524e289ad1e8b5b1d973fcc49787b8bce23b285",
@@ -2657,12 +3894,21 @@
     "38% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 38.0029,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0582,
+    "devState": "dumped",
+    "exitPressure": 0.0172
+   },
    "priceAtCut": 1.6149785129128052e-9,
    "peakAfter": 1.6146542730929282e-9,
    "priceNow": 1.6146542730929282e-9,
    "peakX": 1,
    "changeNow": 0,
-   "checkedAt": 1792265141
+   "checkedAt": 1792270477
   },
   {
    "token": "0xf51807212cdcb6aa020f687d007d3deef1189058",
@@ -2677,12 +3923,21 @@
     "0% sniped · 28 holders"
    ],
    "holdersAtCut": 28,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 13.0882,
+    "devState": "clean",
+    "exitPressure": 25.2817
+   },
    "priceAtCut": 2.1660062681778843e-9,
    "peakAfter": 2.2663006323451923e-9,
-   "priceNow": 2.2663006323451923e-9,
+   "priceNow": 2.0665986716607685e-9,
    "peakX": 1.05,
-   "changeNow": 4.6,
-   "checkedAt": 1792265143
+   "changeNow": -4.6,
+   "checkedAt": 1792270479
   },
   {
    "token": "0x731fa6713e3a6d12190fdb7cfa66dd0b00ebd30e",
@@ -2697,12 +3952,21 @@
     "0% sniped · 30 holders"
    ],
    "holdersAtCut": 30,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 20,
+    "hold": 1.471,
+    "devState": "dumped",
+    "exitPressure": 3.3274
+   },
    "priceAtCut": 1.6909223745634047e-9,
    "peakAfter": 1.7858702883399033e-9,
    "priceNow": 1.6517570605039054e-9,
    "peakX": 1.06,
    "changeNow": -2.3,
-   "checkedAt": 1792265147
+   "checkedAt": 1792270481
   },
   {
    "token": "0x41165d8da1adca8a60134f0379107179ee955f27",
@@ -2717,12 +3981,21 @@
     "0% sniped · 26 holders"
    ],
    "holdersAtCut": 26,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 19.216,
+    "devState": "clean",
+    "exitPressure": 1.6088
+   },
    "priceAtCut": 2.628568139024488e-9,
    "peakAfter": 4.396972541290924e-9,
-   "priceNow": 3.212272238804391e-9,
+   "priceNow": 3.3409663456038067e-9,
    "peakX": 1.67,
-   "changeNow": 22.2,
-   "checkedAt": 1792265152
+   "changeNow": 27.1,
+   "checkedAt": 1792270482
   },
   {
    "token": "0x0519ee9bb0423b29e86a0a0c1c7853b5685debf4",
@@ -2737,12 +4010,21 @@
     "52% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 52.1164,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 14.3,
+    "hold": 0.0999,
+    "devState": "dumped",
+    "exitPressure": 0.019
+   },
    "priceAtCut": 1.7534398697894713e-9,
    "peakAfter": 1.7555660491171228e-9,
    "priceNow": 1.615970183997997e-9,
    "peakX": 1,
    "changeNow": -7.8,
-   "checkedAt": 1792265155
+   "checkedAt": 1792270484
   },
   {
    "token": "0x4bde3ef166955ac48f9d91afad5b153a018cdd52",
@@ -2757,12 +4039,21 @@
     "0% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0061,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6467567392330457e-9,
    "peakAfter": 1.7220123742060343e-9,
    "priceNow": 1.6523072237586858e-9,
    "peakX": 1.05,
    "changeNow": 0.3,
-   "checkedAt": 1792265157
+   "checkedAt": 1792270486
   },
   {
    "token": "0x9246421d0f1b3cab70bb4a5bbe09667fb7808ad8",
@@ -2777,12 +4068,21 @@
     "0% sniped · 15 holders"
    ],
    "holdersAtCut": 15,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 21.1,
+    "hold": 5.3553,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.8427837585657802e-8,
    "peakAfter": 2.7010200966732317e-8,
    "priceNow": 1.7016487817732914e-8,
    "peakX": 1.47,
    "changeNow": -7.7,
-   "checkedAt": 1792265160
+   "checkedAt": 1792270487
   },
   {
    "token": "0xc345d3a317b4e8fba402f5b47af20c86ae910f31",
@@ -2797,12 +4097,21 @@
     "0% sniped · 17 holders"
    ],
    "holdersAtCut": 17,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 8.796,
+    "devState": "dumped",
+    "exitPressure": 14.2678
+   },
    "priceAtCut": 2.0410750585497477e-9,
    "peakAfter": 2.3983828644911094e-9,
    "priceNow": 1.6933030447625764e-9,
    "peakX": 1.18,
    "changeNow": -17,
-   "checkedAt": 1792265165
+   "checkedAt": 1792270490
   },
   {
    "token": "0x638179ae33dfd6106a45d9fa4bb292c5a7c6084d",
@@ -2817,18 +4126,27 @@
     "20% sniped · 15 holders"
    ],
    "holdersAtCut": 15,
+   "at": {
+    "sniperSupply": 19.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 4.1,
+    "hold": 6.7783,
+    "devState": "clean",
+    "exitPressure": 0.4682
+   },
    "priceAtCut": 1.875252729890051e-9,
    "peakAfter": 1.8748876572661423e-9,
    "priceNow": 1.656895064444111e-9,
    "peakX": 1,
    "changeNow": -11.6,
-   "checkedAt": 1792265168
+   "checkedAt": 1792270492
   },
   {
    "token": "0x5925ef6535d4e0fcccd6d9d15ef4a9fb45aac8e1",
    "symbol": "MANFRED",
    "launchedAt": 1792072932,
-   "score": 30,
+   "score": 29,
    "band": "TORN",
    "verdict": "DO NOT TOUCH",
    "facts": [
@@ -2837,12 +4155,21 @@
     "0% sniped · 14 holders"
    ],
    "holdersAtCut": 14,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 6.7,
+    "hold": 11.3879,
+    "devState": "sold half",
+    "exitPressure": 0
+   },
    "priceAtCut": 0.000004029573135737778,
    "peakAfter": 0.000004284970779938849,
    "priceNow": 0.000003167837840836041,
    "peakX": 1.06,
    "changeNow": -21.4,
-   "checkedAt": 1792265175
+   "checkedAt": 1792270496
   },
   {
    "token": "0x892b68f22c0c3ed26d02e459fd4763d2a8a78715",
@@ -2857,12 +4184,21 @@
     "0% sniped · 29 holders"
    ],
    "holdersAtCut": 29,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 8.3,
+    "hold": 2.1909,
+    "devState": "dumped",
+    "exitPressure": 0.5644
+   },
    "priceAtCut": 1.7848262221489654e-9,
    "peakAfter": 1.8871712305561786e-9,
    "priceNow": 1.7750175951360882e-9,
    "peakX": 1.06,
    "changeNow": -0.5,
-   "checkedAt": 1792265181
+   "checkedAt": 1792270499
   },
   {
    "token": "0x24b74a5577609314e2a17e11f17844b348b364ac",
@@ -2877,12 +4213,21 @@
     "0% sniped · 43 holders"
    ],
    "holdersAtCut": 43,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 29.0627,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.342531877501317e-9,
    "peakAfter": 3.811618698924715e-9,
    "priceNow": 1.901010838124106e-9,
    "peakX": 1.14,
    "changeNow": -43.1,
-   "checkedAt": 1792265185
+   "checkedAt": 1792270500
   },
   {
    "token": "0x9ece0c296ac5a961aec99b23a12010bdb8d75a30",
@@ -2897,12 +4242,21 @@
     "0% sniped · 34 holders"
    ],
    "holdersAtCut": 34,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 55.6,
+    "hold": 2.6536,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.7210414505979274e-9,
    "peakAfter": 1.7195260740472504e-9,
    "priceNow": 1.6571755819120741e-9,
    "peakX": 1,
    "changeNow": -3.7,
-   "checkedAt": 1792265187
+   "checkedAt": 1792270502
   },
   {
    "token": "0xf5258e0dd0ff69f71c0eca9882e9d973fa639f53",
@@ -2917,12 +4271,21 @@
     "3% sniped · 31 holders"
    ],
    "holdersAtCut": 31,
+   "at": {
+    "sniperSupply": 2.7301,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 30,
+    "hold": 26.8478,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 3.2953891794100703e-9,
    "peakAfter": 3.865687753730189e-9,
    "priceNow": 1.7582364819579797e-9,
    "peakX": 1.17,
    "changeNow": -46.6,
-   "checkedAt": 1792265193
+   "checkedAt": 1792270505
   },
   {
    "token": "0x5152e6b69bcce19f5a34875af30ca11853ce1bbd",
@@ -2937,12 +4300,21 @@
     "0% sniped · 3 holders"
    ],
    "holdersAtCut": 3,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0421,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 2.4044127921668503e-9,
    "peakAfter": 1.655580249685179e-9,
    "priceNow": 1.655580249685179e-9,
    "peakX": 0.69,
    "changeNow": -31.1,
-   "checkedAt": 1792265195
+   "checkedAt": 1792270507
   },
   {
    "token": "0xef813082e82496d9bf49ae070b9436f72c9f56fb",
@@ -2957,12 +4329,21 @@
     "13% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 13.0088,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0043,
+    "devState": "clean",
+    "exitPressure": 0.0292
+   },
    "priceAtCut": 1.6638329404874014e-9,
    "peakAfter": 1.6971941307956119e-9,
    "priceNow": 1.6634199675927873e-9,
    "peakX": 1.02,
    "changeNow": 0,
-   "checkedAt": 1792265198
+   "checkedAt": 1792270508
   },
   {
    "token": "0xeb06c606d32fa95151d0323653258f5cdfec0dde",
@@ -2977,12 +4358,21 @@
     "6% sniped · 85 holders"
    ],
    "holdersAtCut": 85,
+   "at": {
+    "sniperSupply": 5.6932,
+    "sniperHeld": 5.6932,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 51.6677,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 7.1626537009364195e-9,
    "peakAfter": 1.0533202712643523e-8,
    "priceNow": 1.7137105908885725e-9,
    "peakX": 1.47,
    "changeNow": -76.1,
-   "checkedAt": 1792265200
+   "checkedAt": 1792270509
   },
   {
    "token": "0xfebabd7f48a2ce7e34e61abb677ad1404e46c6a2",
@@ -2997,12 +4387,21 @@
     "38% sniped · 1 holders"
    ],
    "holdersAtCut": 1,
+   "at": {
+    "sniperSupply": 38.4522,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.5944,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6331937761166057e-9,
    "peakAfter": 1.7502668213755673e-9,
    "priceNow": 1.612883621875574e-9,
    "peakX": 1.07,
    "changeNow": -1.2,
-   "checkedAt": 1792265202
+   "checkedAt": 1792270511
   },
   {
    "token": "0x719866d831824de73c05567d0cd7d0c6068a664e",
@@ -3017,12 +4416,21 @@
     "49% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 48.7808,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 1.7,
+    "hold": 0.0316,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6197191343313947e-9,
    "peakAfter": 1.6136441058568493e-9,
    "priceNow": 1.6136441058568493e-9,
    "peakX": 1,
    "changeNow": -0.4,
-   "checkedAt": 1792265204
+   "checkedAt": 1792270513
   },
   {
    "token": "0x818af8dd4463fba5bc5ad0cbd882aedb17beddcf",
@@ -3037,12 +4445,21 @@
     "0% sniped · 48 holders"
    ],
    "holdersAtCut": 48,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 20,
+    "hold": 37.9782,
+    "devState": "dumped",
+    "exitPressure": 4.4429
+   },
    "priceAtCut": 4.2777376674122e-9,
    "peakAfter": 1.0222278714457107e-8,
    "priceNow": 2.161601916632651e-9,
    "peakX": 2.39,
    "changeNow": -49.5,
-   "checkedAt": 1792265208
+   "checkedAt": 1792270514
   },
   {
    "token": "0x4389d2b71055d31f613747488f7003c8a88daf50",
@@ -3057,12 +4474,21 @@
     "0% sniped · 33 holders"
    ],
    "holdersAtCut": 33,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 10,
+    "hold": 17.1355,
+    "devState": "dumped",
+    "exitPressure": 22.5818
+   },
    "priceAtCut": 2.5462992775786065e-9,
    "peakAfter": 2.4819994720066e-9,
    "priceNow": 1.7075026619719825e-9,
    "peakX": 0.97,
    "changeNow": -32.9,
-   "checkedAt": 1792265214
+   "checkedAt": 1792270517
   },
   {
    "token": "0x479165ef6b034e8cbf4286ae7b9bb0d583d3e42e",
@@ -3077,12 +4503,21 @@
     "12% sniped · 11 holders"
    ],
    "holdersAtCut": 11,
+   "at": {
+    "sniperSupply": 11.6888,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 5,
+    "hold": 9.364,
+    "devState": "dumped",
+    "exitPressure": 11.04
+   },
    "priceAtCut": 2.012586984314657e-9,
    "peakAfter": 1.9833472048667917e-9,
    "priceNow": 1.6388412213906856e-9,
    "peakX": 0.99,
    "changeNow": -18.6,
-   "checkedAt": 1792265216
+   "checkedAt": 1792270519
   },
   {
    "token": "0xebff5f641c07835e7d4e6fd06bb1c46b112e8c12",
@@ -3097,12 +4532,21 @@
     "0% sniped · 47 holders"
    ],
    "holdersAtCut": 47,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 52.6149,
+    "devState": "clean",
+    "exitPressure": 1.4471
+   },
    "priceAtCut": 0.0003588509911337224,
    "peakAfter": 0.0004329652021103143,
-   "priceNow": 0.00010867577450098093,
+   "priceNow": 0.00008902108629647204,
    "peakX": 1.21,
-   "changeNow": -69.7,
-   "checkedAt": 1792265218
+   "changeNow": -75.2,
+   "checkedAt": 1792270521
   },
   {
    "token": "0x02ab5c5c05d01ec0964124a25f83a4538d2b8871",
@@ -3117,12 +4561,21 @@
     "0% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.0018,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6655936466726908e-9,
    "peakAfter": 1.6632504153713353e-9,
    "priceNow": 1.6632504153713353e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792265226
+   "checkedAt": 1792270525
   },
   {
    "token": "0xdc3370207f9214a8b1fea6e8bff3f1e49ba3c0bf",
@@ -3137,12 +4590,21 @@
     "0% sniped · 7 holders"
    ],
    "holdersAtCut": 7,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0631,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.650772156367762e-9,
    "peakAfter": 1.7192084304800255e-9,
    "priceNow": 1.6492610802826896e-9,
    "peakX": 1.04,
    "changeNow": -0.1,
-   "checkedAt": 1792265229
+   "checkedAt": 1792270526
   },
   {
    "token": "0x4737b07bf30d8976f00c92fc130a2e879c1ebac0",
@@ -3157,12 +4619,21 @@
     "0% sniped · 39 holders"
    ],
    "holdersAtCut": 39,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 10,
+    "hold": 27.8537,
+    "devState": "dumped",
+    "exitPressure": 6.0236
+   },
    "priceAtCut": 3.1926210943659715e-9,
    "peakAfter": 5.0218973226753025e-9,
    "priceNow": 1.653667979008868e-9,
    "peakX": 1.57,
    "changeNow": -48.2,
-   "checkedAt": 1792265231
+   "checkedAt": 1792270527
   },
   {
    "token": "0x4a0ea4da213a9371213c4d4c1229c4ee414744e3",
@@ -3177,12 +4648,21 @@
     "0% sniped · 3 holders"
    ],
    "holdersAtCut": 3,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.0532,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6352018651199402e-9,
    "peakAfter": 1.634700004187135e-9,
    "priceNow": 1.6338368948987381e-9,
    "peakX": 1,
    "changeNow": -0.1,
-   "checkedAt": 1792265239
+   "checkedAt": 1792270534
   },
   {
    "token": "0xa5734f563fa1f3b5f1fbfa3e9fa4521c1b323c29",
@@ -3197,12 +4677,21 @@
     "0% sniped · 16 holders"
    ],
    "holdersAtCut": 16,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 4.887,
+    "devState": "dumped",
+    "exitPressure": 0.2185
+   },
    "priceAtCut": 1.8017169125691555e-9,
    "peakAfter": 1.7997319785389071e-9,
    "priceNow": 1.7381321900086104e-9,
    "peakX": 1,
    "changeNow": -3.5,
-   "checkedAt": 1792265240
+   "checkedAt": 1792270535
   },
   {
    "token": "0x0082d457ed014d3a65d6810c789bf1b220b2d286",
@@ -3217,12 +4706,21 @@
     "15% sniped · 5 holders"
    ],
    "holdersAtCut": 5,
+   "at": {
+    "sniperSupply": 14.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0298,
+    "devState": "dumped",
+    "exitPressure": 0.6916
+   },
    "priceAtCut": 1.6789619419246693e-9,
    "peakAfter": 1.734217249981176e-9,
    "priceNow": 1.665423488953733e-9,
    "peakX": 1.03,
    "changeNow": -0.8,
-   "checkedAt": 1792265243
+   "checkedAt": 1792270536
   },
   {
    "token": "0xddca41056c3966fc4b6de2bb2da74b3023648a62",
@@ -3237,12 +4735,21 @@
     "69% sniped · 4 holders"
    ],
    "holdersAtCut": 4,
+   "at": {
+    "sniperSupply": 68.5,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 0.0035,
+    "devState": "clean",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6633487855054511e-9,
    "peakAfter": 1.697306767946472e-9,
    "priceNow": 1.6637015123451293e-9,
    "peakX": 1.02,
    "changeNow": 0,
-   "checkedAt": 1792265245
+   "checkedAt": 1792270538
   },
   {
    "token": "0x5c8949b0a360a0b0d25327280df51115ddf5480e",
@@ -3257,12 +4764,21 @@
     "39% sniped · 7 holders"
    ],
    "holdersAtCut": 7,
+   "at": {
+    "sniperSupply": 38.8727,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 0,
+    "hold": 1.8957,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.678299562578083e-9,
    "peakAfter": 1.818363516266987e-9,
    "priceNow": 1.674788862919413e-9,
    "peakX": 1.08,
    "changeNow": -0.2,
-   "checkedAt": 1792265247
+   "checkedAt": 1792270539
   },
   {
    "token": "0xd30c61f7726c6cedbc06b9f1e8cf896b4f637987",
@@ -3277,12 +4793,21 @@
     "0% sniped · 11 holders"
    ],
    "holdersAtCut": 11,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 15,
+    "hold": 2.5594,
+    "devState": "dumped",
+    "exitPressure": 0.0136
+   },
    "priceAtCut": 1.7201594289208744e-9,
    "peakAfter": 1.7096754421162227e-9,
    "priceNow": 1.662027581515648e-9,
    "peakX": 0.99,
    "changeNow": -3.4,
-   "checkedAt": 1792265250
+   "checkedAt": 1792270543
   },
   {
    "token": "0xc398c00784b69ffe581f5b9239027a27493745af",
@@ -3297,12 +4822,21 @@
     "39% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 39.4817,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 2.4145,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.8291328052001234e-9,
    "peakAfter": 1.6547848323354143e-9,
    "priceNow": 1.6153978325045526e-9,
    "peakX": 0.9,
    "changeNow": -11.7,
-   "checkedAt": 1792265261
+   "checkedAt": 1792270551
   },
   {
    "token": "0x4c27a1165ad0fe75d4990c4bd6e606028aeb3477",
@@ -3317,12 +4851,21 @@
     "0% sniped · 51 holders"
    ],
    "holdersAtCut": 51,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 40,
+    "hold": 46.0274,
+    "devState": "dumped",
+    "exitPressure": 2.4884
+   },
    "priceAtCut": 5.939927824855392e-9,
    "peakAfter": 6.255772949852469e-9,
    "priceNow": 2.2679198274481338e-9,
    "peakX": 1.05,
    "changeNow": -61.8,
-   "checkedAt": 1792265270
+   "checkedAt": 1792270557
   },
   {
    "token": "0x8dd8ebf046800bd6211f66ebdf0fdb93bd3962d0",
@@ -3337,12 +4880,21 @@
     "0% sniped · 2 holders"
    ],
    "holdersAtCut": 2,
+   "at": {
+    "sniperSupply": 0,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.86,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.7620808827966623e-9,
    "peakAfter": 1.6579419026234293e-9,
    "priceNow": 1.6579419026234293e-9,
    "peakX": 0.94,
    "changeNow": -5.9,
-   "checkedAt": 1792265273
+   "checkedAt": 1792270559
   },
   {
    "token": "0x1fd4d86a8b25609bf7d80bf160abe7cba1ef4f74",
@@ -3357,12 +4909,50 @@
     "46% sniped · 8 holders"
    ],
    "holdersAtCut": 8,
+   "at": {
+    "sniperSupply": 45.7446,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": null,
+    "hold": 0.3821,
+    "devState": "dumped",
+    "exitPressure": 0
+   },
    "priceAtCut": 1.6252528588000365e-9,
    "peakAfter": 1.761369835017404e-9,
    "priceNow": 1.6212434264859232e-9,
    "peakX": 1.08,
    "changeNow": -0.2,
-   "checkedAt": 1792265277
+   "checkedAt": 1792270562
+  },
+  {
+   "token": "0xf5d514875912fe9205f69d7f2afb5a02802ddd9f",
+   "symbol": "dog",
+   "launchedAt": 1792240246,
+   "score": 66,
+   "band": "PATCHED",
+   "verdict": "HANDLE WITH CARE",
+   "facts": [
+    "48% still holding · 52% already gone",
+    "smart money unread · dev kept it",
+    "50% sniped · 57 holders"
+   ],
+   "holdersAtCut": 57,
+   "at": {
+    "sniperSupply": 49.9999,
+    "sniperHeld": 0,
+    "bundleSupply": 0,
+    "firstMinuteKept": 50,
+    "hold": 48.1065,
+    "devState": "clean",
+    "exitPressure": 0
+   },
+   "priceAtCut": 6.1308100608660996e-9,
+   "peakAfter": 7.178724723137976e-9,
+   "priceNow": 6.69106293584254e-9,
+   "peakX": 1.17,
+   "changeNow": 9.1,
+   "checkedAt": 1792270566
   }
  ]
 }

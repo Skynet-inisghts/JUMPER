@@ -567,6 +567,14 @@ button.inputchip{all:unset}
 @media(max-width:760px){.leaderspage .lead .ph{display:none}.leaderspage .lead .pr{grid-template-columns:30px 1fr 1fr 1fr}.leaderspage .lead .pr span:nth-child(5),.leaderspage .lead .pr span:nth-child(6),.leaderspage .lead .pr span:nth-child(7){display:none}}
 .inerr b.wait{color:var(--ye)}
 .linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--ac);text-decoration:underline;cursor:pointer}
+.similar{border:1px solid var(--ln);background:var(--pan);border-radius:5px;margin-top:14px;padding:10px 16px;font-size:12px}
+.similar .smh{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:baseline;color:var(--dm)}
+.similar .smh b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
+.similar .smh .more{margin-left:auto;color:var(--dm2);text-decoration:none;border-bottom:1px dotted var(--dm2)}
+.similar .sml{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.similar .sml a{border:1px solid var(--ln2);border-radius:3px;padding:1px 7px;color:var(--tx);text-decoration:none;font-size:11px}
+.similar .sml a i{font-style:normal;color:var(--dm)}.similar .sml a.rd i{color:var(--rd)}.similar .sml a.g i{color:var(--ac2)}
+.similar .rd{color:var(--rd)}.similar .g{color:var(--ac2)}.similar .d{color:var(--dm)}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}

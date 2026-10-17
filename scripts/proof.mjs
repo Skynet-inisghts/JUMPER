@@ -85,6 +85,11 @@ for (const [i, token] of list.entries()) {
       verdict: r.verdict,
       facts: r.facts,
       holdersAtCut: r.metrics.holders,
+      // what the token looked like at the cut, for "similar past tokens"
+      at: {
+        sniperSupply: r.metrics.sniperSupply, sniperHeld: r.metrics.sniperHeld, bundleSupply: r.metrics.bundleSupply,
+        firstMinuteKept: r.metrics.firstMinuteKept, hold: r.metrics.hold, devState: r.metrics.devState, exitPressure: r.metrics.exitPressure,
+      },
       priceAtCut: p0,
       peakAfter: peak,
       priceNow: now,

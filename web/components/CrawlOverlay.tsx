@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- pixel sprite and the generated card PNG */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
+import Similar from "./Similar";
 import SilkWeb from "./SilkWeb";
 import WalletCheck, { type WalletHere } from "./WalletCheck";
 import type { RecentRow } from "./types";
@@ -461,6 +462,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                 <div className="gradenote">0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in. it measures the past, it does not predict. not financial advice.</div>
               </div>}
               <Quads r={r} />
+              <Similar r={r} />
             </div>
             <div className="repside">
               <div className="shareprev" style={side ? { width: side, height: side } : undefined} onClick={() => onCard(cardSrc, cardLabel)}>
