@@ -758,11 +758,16 @@ function PriceChart({ r }: { r: Report }) {
     return (k != null ? "$" : "") + x.toFixed(z) + (k != null ? "" : " " + r.token.pairSymbol);
   };
   const day = (t: number) => new Date(t * 1000).toISOString().slice(5, 16).replace("T", " ");
+  // holders on their own scale, from zero, drawn over the candles
+  const hc = r.holderCurve && r.holderCurve.length === cs.length ? r.holderCurve : null;
+  const hmax = hc ? Math.max(1, ...hc) : 1;
+  const hpath = hc ? hc.map((n, i) => `${i ? "L" : "M"}${(i * step + step / 2).toFixed(1)},${(PAD + (H - 2 * PAD) * (1 - n / hmax)).toFixed(1)}`).join(" ") : "";
   return (
     <div className="pchart">
       <div className="ph">
         <b>price</b>
         <span>high {money(hi)} · low {money(lo)} · now {money(cs[cs.length - 1].c)}</span>
+        {hc && <span className="hl"><i />holders {fmt(hc[hc.length - 1])}{hmax > hc[hc.length - 1] ? `, peak ${fmt(hmax)}` : ""}</span>}
       </div>
       <svg viewBox={`0 0 ${W} ${H + V}`} preserveAspectRatio="none" role="img" aria-label={`$${r.token.symbol} price over its life`}>
         {cs.map((c, i) => {
@@ -778,6 +783,7 @@ function PriceChart({ r }: { r: Report }) {
             </g>
           );
         })}
+        {hc && <path d={hpath} fill="none" stroke="var(--cy)" strokeWidth="1.5" strokeOpacity="0.8" vectorEffect="non-scaling-stroke" />}
       </svg>
       <div className="pf">
         <span>{day(cs[0].t)} UTC launch</span>

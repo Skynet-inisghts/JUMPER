@@ -4,7 +4,7 @@ import { SCORE, THRESHOLDS } from "../score/config.js";
 import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { BURN_ADDRESSES } from "../chain/chain.js";
-import { blockTs, devSet, venues, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
+import { blockTs, devSet, isNonWallet, venues, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
   CrawlerName, CrawlerReport, DumpImpact, EarlyBuyer, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
@@ -151,6 +151,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     chart: candles,
     rug: rugCheck(tape, c, candles),
     sellingNow: sellingNow(tape, c),
+    holderCurve: holderCurve(tape, c),
     panels: panels(tape, c, parts),
     holders: withOperators(holderRows(tape, c), ops),
     operators: ops,
@@ -688,6 +689,42 @@ function crawlerReports(tape: Tape, c: Crawled, m: Metrics): CrawlerReport[] {
 }
 
 /** 64 candles across the token's life; empty buckets carry the last close. */
+/**
+ * How many wallets held the token at the end of each candle: the transfer
+ * log replayed in order, venues, routers and burns left out. Same 64 steps
+ * over the token's life as the chart.
+ */
+function holderCurve(tape: Tape, c: Crawled): number[] {
+  const N = 64;
+  const from = tape.launch.launchBlock;
+  const size = Math.max(N, tape.headBlock - from + 1) / N;
+  const skip = new Set([...venues(tape), ...c.web.routers]);
+  const isWallet = (a: string) => !isNonWallet(a, skip, tape.launch.token);
+  const bal = new Map<string, bigint>();
+  let holders = 0;
+  const move = (a: string, d: bigint) => {
+    const was = bal.get(a) ?? 0n;
+    const now = was + d;
+    if (was <= 0n && now > 0n) holders++;
+    else if (was > 0n && now <= 0n) holders--;
+    bal.set(a, now);
+  };
+  const ts = [...tape.transfers].sort((x, y) => x.block - y.block || x.logIndex - y.logIndex);
+  const out: number[] = [];
+  let k = 0;
+  for (let i = 0; i < N; i++) {
+    const end = from + (i + 1) * size;
+    while (k < ts.length && ts[k].block < end) {
+      const t = ts[k++];
+      const f = lc(t.from), to = lc(t.to);
+      if (isWallet(f)) move(f, -t.value);
+      if (isWallet(to)) move(to, t.value);
+    }
+    out.push(holders);
+  }
+  return out;
+}
+
 function chart(tape: Tape, c: Crawled): Report["chart"] {
   const qd = 10 ** tape.launch.pairDecimals;
   const toWhole = 1e18 / qd;
