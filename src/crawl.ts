@@ -214,8 +214,8 @@ function within<T, F>(work: Promise<T>, deadline: number, fallback: F): Promise<
   return Promise.race([work, late]).finally(() => clearTimeout(timer));
 }
 
-/** One warming step: a few minutes of reading at most, for the busiest tokens. */
-const WARM_WINDOW_BLOCKS = 4_000_000;
+/** One warming step, kept as soon as it is read: a busy token's window is under a minute. */
+const WARM_WINDOW_BLOCKS = 1_000_000;
 
 const pendingSaves = new Set<Promise<void>>();
 

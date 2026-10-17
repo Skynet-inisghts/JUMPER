@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.2 · 2026-10-17
+
+- Every minute the site reads the logs of the five busiest Pons tokens of the last hour into the cache, so a first crawl on a token people are trading reads only its newest blocks.
+- A long history warms in windows of a million blocks, each kept as soon as it is read, and resumes on the next run.
+
 ## 0.5.1 · 2026-10-17
 
 - A token with a long history no longer stops its first crawl with "crawl it again in a few minutes": the site reads the whole history in the same request, with live progress, and answers with the report. Only a history that does not fit the function at all still asks to come back.

@@ -19,6 +19,7 @@
  *   GET  /pulse                             counters and recently crawled tokens
  *   GET  /latest                            the newest full report
  *   GET  /logs?token=  PUT /logs?token=     a token's cached logs (see src/cache.ts)
+ *   GET  /active                            the Pons tokens busiest in the last hour
  */
 
 export interface WalletHistory {
@@ -93,6 +94,9 @@ export async function readHistory(wallets: string[], exclude: string): Promise<{
   }));
   return { tip, wallets: out };
 }
+
+/** The Pons tokens with the most trades in the last hour, busiest first. */
+export const readActive = async (): Promise<string[]> => (await call<{ tokens: string[] }>("/active", undefined, 10_000)).tokens;
 
 export const readBooks = (token: string, curve: string): Promise<TokenBooks> => call<TokenBooks>("/positions", { token, curve });
 

@@ -60,7 +60,7 @@ pnpm jumper doctor                  # check every source the crawl reads
 
 The first crawl of a token reads its whole transfer log from the public RPC: seconds for a young token, minutes for a month-old one with a million transfers. The logs are then kept, in `JUMPER_CACHE_DIR` or in the wallet index, and every crawl after that reads only the blocks since the last one.
 
-On the site a crawl answers inside 20 seconds. A token whose history is too long for that on its first crawl is read in full in the same request, up to about four minutes, and still gets its report; its next crawl takes seconds.
+On the site a crawl answers inside 20 seconds. A token whose history is too long for that on its first crawl is read in full in the same request, up to about four minutes, and still gets its report; its next crawl takes seconds. A cron on the site keeps the five busiest Pons tokens of the last hour warm every minute, so the tokens people are trading answer from the cache on their first crawl.
 
 <p align="center"><img src="assets/readme/terminal.svg" width="100%" alt="jumper in a terminal: the text report for $TWAIN" /></p>
 
