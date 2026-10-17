@@ -275,6 +275,8 @@ export interface HolderRow {
   exit?: { sold: number; moved: number; burned: number };
   /** Seconds since its last sale, null when it never sold. */
   lastSellSec?: number | null;
+  /** The operator this wallet belongs to, when it is tied to another top holder (absent on older reports). */
+  op?: number | null;
 }
 
 export interface EarlyBuyer {
@@ -325,6 +327,14 @@ export interface Market {
   trades24h: number;
   /** % of supply the ten biggest holders have. */
   top10: number;
+}
+
+/** Top holders tied together: one hand behind several wallets. */
+export interface Operators {
+  /** Top holders looked at, and how many hands they come to. */
+  wallets: number;
+  hands: number;
+  groups: { id: number; wallets: string[]; share: number; ties: ("transfer" | "funder" | "same block")[] }[];
 }
 
 export interface CrawlerReport {
@@ -411,6 +421,8 @@ export interface Report {
   rug?: Rug | null;
   /** The first twenty buyers, in order (absent on reports from before 0.6). */
   early?: EarlyBuyer[];
+  /** The top holders tied into operators (absent on older reports). */
+  operators?: Operators;
   fills: Fill[];
   /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
   chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];

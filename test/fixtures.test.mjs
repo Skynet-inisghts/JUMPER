@@ -105,3 +105,15 @@ test("supply handed out instead of bought gets no score: NO VERDICT", () => {
   const r = crawlTape(tape);
   assert.equal(r.outcome?.kind, "no verdict", JSON.stringify(r.outcome));
 });
+
+test("two top holders that passed tokens between them are one operator", () => {
+  const tape = fixture("twain");
+  const before = crawlTape(tape);
+  assert.equal(before.operators.hands, before.operators.wallets);
+  const [a, b] = before.holders;
+  tape.transfers.push({ from: a.wallet, to: b.wallet, value: 1n, block: tape.headBlock, logIndex: 99_999 });
+  const r = crawlTape(tape);
+  assert.equal(r.operators.hands, r.operators.wallets - 1);
+  assert.deepEqual(r.operators.groups[0].ties, ["transfer"]);
+  assert.equal(r.holders.find((h) => h.wallet === a.wallet).op, r.holders.find((h) => h.wallet === b.wallet).op);
+});

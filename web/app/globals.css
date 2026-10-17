@@ -465,6 +465,8 @@ button.inputchip{all:unset}
 .tophold .tr .v.xs i+i{font-size:11px}
 .tophold .tr .v.xs .g{color:var(--ac2)}.tophold .tr .v.xs .rd{color:var(--rd)}.tophold .tr .v.xs .y{color:var(--ye)}.tophold .tr .v.xs .d{color:var(--dm)}
 .tophold .tr .v.xs u{text-decoration:none;font-size:10px;color:var(--dm2)}
+.tophold .th .sum.ops{margin-right:10px}
+.role.op{color:var(--bg);background:var(--ye);border-color:var(--ye)}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}
