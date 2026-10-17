@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.3 · 2026-10-18
+
+- The site does not crawl $JUMPER itself (0xce45…7d7a): asking for it answers with one line instead of a report, and no share card is drawn for it.
+
 ## 0.5.2 · 2026-10-17
 
 - Every minute the site reads the logs of the five busiest Pons tokens of the last hour into the cache, so a first crawl on a token people are trading reads only its newest blocks.
