@@ -702,6 +702,7 @@ function MarketStrip({ r }: { r: Report }) {
     ["holders", fmt(r.metrics.holders)],
     ["top 10", (m.top10 < 10 ? m.top10.toFixed(1) : Math.round(m.top10)) + "%"],
     ...(r.dump ? [[r.dump.who === "operator" ? `if op 1 sells (${r.dump.wallets} wallets)` : "if top wallet sells", <span key="dump" className={r.dump.drop >= 30 ? "bad" : r.dump.drop >= 10 ? "mid" : "ok"} title={`${r.dump.share < 1 ? r.dump.share.toFixed(2) : r.dump.share.toFixed(1)}% of supply sold at once into ${r.dump.basis === "curve" ? "the curve" : "the pool (estimate: read as a full-range pool)"}; fees and other trades left out`}>-{Math.round(r.dump.drop)}% price</span>] as [string, React.ReactNode]] : []),
+    ...(r.dump?.overhang ? [["holders up 3x+", <span key="over" className={r.dump.overhang.drop >= 30 ? "bad" : r.dump.overhang.drop >= 10 ? "mid" : "ok"} title={`${r.dump.overhang.wallets} holders up 3x or more on their book hold ${r.dump.overhang.share < 1 ? r.dump.overhang.share.toFixed(2) : r.dump.overhang.share.toFixed(1)}% of supply; all of it sold at once`}>{r.dump.overhang.share < 1 ? r.dump.overhang.share.toFixed(2) : r.dump.overhang.share.toFixed(1)}%<i> · -{Math.round(r.dump.overhang.drop)}% if sold</i></span>] as [string, React.ReactNode]] : []),
     ["deployer", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
   ];
   return (

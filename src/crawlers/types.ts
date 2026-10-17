@@ -327,6 +327,8 @@ export interface DumpImpact {
   drop: number;
   /** The curve's own reserves, or the pool's liquidity read as a full-range pool. */
   basis: "curve" | "pool estimate";
+  /** Holders up 3x or more on their book: how many, how much they hold, and what selling it all would do. */
+  overhang?: { wallets: number; share: number; drop: number } | null;
 }
 
 /** The market strip at the top of the report, in dollars where a rate was read. */

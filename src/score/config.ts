@@ -29,6 +29,8 @@ export const SCORE = {
 } as const;
 
 export const THRESHOLDS = {
+  /** The profit overhang: holders up this % or more (200 = 3x) on their book. */
+  overhangPnlPct: 200,
   /** The report warns "probably rugged" when the price is this far (%) below its peak. */
   rugDrawdownPct: 80,
   /** ...and calls it a rug, not a collapse, when the dev dumped or at least this % of the selling since the peak (flippers left out) came from the dev, insiders, snipers, bundles, transfers or the first minute. */

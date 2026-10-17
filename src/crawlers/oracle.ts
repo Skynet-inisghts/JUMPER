@@ -434,14 +434,18 @@ function dumpImpact(tape: Tape, c: Crawled, ops: Operators, mkt: Market): DumpIm
     basis = "pool estimate";
   }
   if (!tokenReserve || tokenReserve <= 0) return null;
-  const sold = Number(held) / 1e18;
-  const left = tokenReserve / (tokenReserve + sold);
+  const R = tokenReserve;
+  const drop = (tokens: bigint) => { const left = R / (R + Number(tokens) / 1e18); return Math.round((1 - left * left) * 1000) / 10; };
+  // the overhang: holders sitting on 3x or more, who have a reason to sell
+  const inProfit = c.web.holders.filter((h) => (c.books.books.get(h.address)?.pnlPct ?? -Infinity) >= THRESHOLDS.overhangPnlPct);
+  const profitHeld = inProfit.reduce((a, h) => a + h.balance, 0n);
   return {
     who: useOp ? "operator" : "wallet",
     wallets: useOp ? g!.wallets.length : 1,
     share: pctOf(held, supply),
-    drop: Math.round((1 - left * left) * 1000) / 10,
+    drop: drop(held),
     basis,
+    overhang: inProfit.length ? { wallets: inProfit.length, share: pctOf(profitHeld, supply), drop: drop(profitHeld) } : null,
   };
 }
 
