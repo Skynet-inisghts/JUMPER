@@ -1,6 +1,6 @@
 {
   "name": "jumper",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Crawler terminal for Pons v2 tokens on Robinhood Chain. It can jump over any token.",
   "private": true,
   "type": "module",
