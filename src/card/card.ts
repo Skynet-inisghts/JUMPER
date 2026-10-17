@@ -64,7 +64,8 @@ const rgba = (hex: string, a: number) => {
 export async function renderCard(r: Report, options: CardOptions = {}): Promise<Buffer> {
   registerFonts();
   const band = bandOf(r.score);
-  const ACC = band.color;
+  // no score given (too early, an airdrop): the card says so in grey, no tick on the bar
+  const ACC = r.outcome ? "#7E7490" : band.color;
   const W = 1080;
   const H = 1080;
   const M = 72;
@@ -138,7 +139,7 @@ export async function renderCard(r: Report, options: CardOptions = {}): Promise<
   ctx.stroke();
 
   // ---- header right: score with glow, scale key under it
-  const scoreText = String(r.score);
+  const scoreText = r.outcome ? "N/A" : String(r.score);
   ctx.textBaseline = "alphabetic";
   ctx.font = "176px Tiny5";
   const sw = ctx.measureText(scoreText).width;
@@ -160,7 +161,7 @@ export async function renderCard(r: Report, options: CardOptions = {}): Promise<
     const label = b.band;
     const lw = ctx.measureText(label).width;
     kx -= lw;
-    ctx.fillStyle = b.band === band.band ? b.color : "#4A4259";
+    ctx.fillStyle = b.band === band.band && !r.outcome ? b.color : "#4A4259";
     ctx.fillText(label, kx, keyY);
     kx -= 28;
     if (b !== BANDS[0]) {
@@ -197,7 +198,7 @@ export async function renderCard(r: Report, options: CardOptions = {}): Promise<
   }
   const mx = M + (bw * Math.max(0, Math.min(100, r.score))) / 100;
   ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(mx - 3, by - 12, 6, 36);
+  if (!r.outcome) ctx.fillRect(mx - 3, by - 12, 6, 36);
   ctx.font = "400 20px JBMono";
   ctx.fillStyle = "#4A4259";
   ctx.textBaseline = "top";
@@ -217,10 +218,12 @@ export async function renderCard(r: Report, options: CardOptions = {}): Promise<
 
   // ---- verdict plate
   const py = ty + 26;
+  const verdict = r.outcome ? r.outcome.kind.toUpperCase() : r.verdict;
   ctx.font = "400 22px JBMono";
-  const sublineW = ctx.measureText(`${r.band} · ${r.subline}`).width;
+  const subline = r.outcome ? capLine(r.outcome.why.split(":")[0], ctx, W - 2 * M - 360) : `${r.band} · ${r.subline}`;
+  const sublineW = ctx.measureText(subline).width;
   ctx.font = "44px Tiny5";
-  const plateW = Math.min(W - 2 * M - 300, Math.max(520, sublineW + 64, ctx.measureText(r.verdict).width + 64));
+  const plateW = Math.min(W - 2 * M - 300, Math.max(520, sublineW + 64, ctx.measureText(verdict).width + 64));
   ctx.fillStyle = rgba(ACC, 0.1);
   ctx.fillRect(M, py, plateW, 108);
   ctx.strokeStyle = ACC;
@@ -229,10 +232,10 @@ export async function renderCard(r: Report, options: CardOptions = {}): Promise<
   ctx.fillStyle = ACC;
   ctx.fillRect(M, py, 8, 108);
   ctx.font = "44px Tiny5";
-  ctx.fillText(r.verdict, M + 32, py + 16);
+  ctx.fillText(verdict, M + 32, py + 16);
   ctx.font = "400 22px JBMono";
   ctx.fillStyle = DIM;
-  ctx.fillText(`${r.band} · ${r.subline}`, M + 32, py + 70);
+  ctx.fillText(subline, M + 32, py + 70);
 
   // ---- the mascot, bottom right, glowing in the band colour
   const cells = await mascotCells();

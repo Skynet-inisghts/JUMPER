@@ -71,3 +71,37 @@ test("the room's material: candles over the token's life and a panel per crawler
   assert.equal(r.panels.tracker.exitsByBucket.reduce((a, b) => a + b, 0), Number(r.crawlers[1].stats[0].split(" ")[0].replace(/\s/g, "")));
   assert.equal(r.panels.sieve.clean + r.panels.sieve.dust + r.panels.sieve.transferOnly + r.panels.sieve.virgins >= r.metrics.holders, true);
 });
+
+test("a token with fewer than ten holders gets no score: TOO EARLY", () => {
+  // $TWAIN cut to its launch block: the dev and the snipers of block +0 only
+  const tape = fixture("twain");
+  const cut = tape.launch.launchBlock;
+  tape.transfers = tape.transfers.filter((t) => t.block <= cut);
+  tape.trades = tape.trades.filter((t) => t.block <= cut);
+  tape.swaps = (tape.swaps ?? []).filter((s) => s.block <= cut);
+  const r = crawlTape(tape);
+  assert.ok(r.metrics.holders < 10, `holders ${r.metrics.holders}`);
+  assert.equal(r.outcome?.kind, "too early");
+});
+
+test("supply handed out instead of bought gets no score: NO VERDICT", () => {
+  // the top holders of $TWAIN send everything they hold to 25 new wallets,
+  // so a third of the held supply sits with wallets that never bought
+  const tape = fixture("twain");
+  assert.equal(crawlTape(tape).outcome, null);
+  const r0 = crawlTape(tape);
+  const head = tape.headBlock;
+  let logIndex = 10_000;
+  let moved = 0;
+  for (const h of r0.holders.filter((x) => !x.roles.includes("dev"))) {
+    if (moved >= 34) break;
+    const bal = tape.transfers.reduce((a, t) => a + (t.to.toLowerCase() === h.wallet ? t.value : 0n) - (t.from.toLowerCase() === h.wallet ? t.value : 0n), 0n);
+    const part = bal / 25n;
+    for (let i = 0; i < 25; i++) {
+      tape.transfers.push({ from: h.wallet, to: `0x${(0xd00d0000 + logIndex).toString(16).padStart(40, "0")}`, value: part, block: head, logIndex: logIndex++ });
+    }
+    moved += h.share;
+  }
+  const r = crawlTape(tape);
+  assert.equal(r.outcome?.kind, "no verdict", JSON.stringify(r.outcome));
+});
