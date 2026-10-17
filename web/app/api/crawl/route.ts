@@ -149,11 +149,11 @@ export async function POST(request: Request) {
         .then((report) => send("report", report))
         .catch((error: unknown) => {
           const message = error instanceof CrawlTooLong
-            ? `$${error.symbol} has more history than one web crawl can read. JUMPER keeps reading it in the background; crawl it again in a few minutes, or run it locally: pnpm jumper ${error.token}`
+            ? `$${error.symbol} has more history than one web crawl can read. JUMPER keeps reading it in the background and crawls it again by itself when it is in.`
             : error instanceof CrawlError
             ? error.message
             : "the chain read failed part way; try again in a moment";
-          send("error", { message });
+          send("error", { message, retryInSec: error instanceof CrawlTooLong ? (error.etaSec ?? 180) : undefined });
         })
         .finally(() => {
           const wasOpen = open;

@@ -39,7 +39,7 @@ export async function GET(request: Request) {
     if (left < 5_000) break;
     const t = Date.now();
     // live crawls on this instance go first
-    const transfers = await inBackground(() => warmLogs(token as Address, undefined, Math.min(left, PER_TOKEN_MS))).catch(() => -1);
+    const transfers = await inBackground(() => warmLogs(token as Address, undefined, Math.min(left, PER_TOKEN_MS))).then((w) => w.transfers, () => -1);
     warmed.push({ token, transfers, ms: Date.now() - t });
   }
   // one line per run in the function logs: what was warmed and how long it took

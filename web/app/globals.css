@@ -565,6 +565,8 @@ button.inputchip{all:unset}
 .ltabs button.on{color:var(--tx);border-color:var(--ac)}
 .leaderspage .wrap>.ptable:last-child{margin-bottom:60px}
 @media(max-width:760px){.leaderspage .lead .ph{display:none}.leaderspage .lead .pr{grid-template-columns:30px 1fr 1fr 1fr}.leaderspage .lead .pr span:nth-child(5),.leaderspage .lead .pr span:nth-child(6),.leaderspage .lead .pr span:nth-child(7){display:none}}
+.inerr b.wait{color:var(--ye)}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--ac);text-decoration:underline;cursor:pointer}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}
