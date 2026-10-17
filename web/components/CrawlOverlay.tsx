@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- pixel sprite and the generated card PNG */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
+import WalletCheck, { type WalletHere } from "./WalletCheck";
 import type { RecentRow } from "./types";
 import { buildChain, graphFromReport, type Bug, type Graph, type NodeState } from "@/lib/chain";
 import { createCrawlRoom } from "@/lib/crawlroom";
@@ -66,6 +67,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
   const [passes, setPasses] = useState<Pass[]>(() => PASSES.map(() => ({ state: "queued", pct: 0 })));
   const [feed, setFeed] = useState<Feed[]>([]);
   const [report, setReport] = useState<Report | null>(null);
+  const [wallet, setWallet] = useState<WalletHere | null>(null);
+  const closeWallet = useCallback(() => setWallet(null), []);
   const [kv, setKv] = useState({ n: "0", e: "0" });
   const [cardState, setCardState] = useState<"loading" | "ok" | "error">("loading");
 
@@ -456,11 +459,11 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
             </div>
             <div className="repfull">
               <PriceChart r={r} />
-              <TopHolders r={r}>
+              <TopHolders r={r} onWallet={setWallet}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
               </TopHolders>
-              <EarlyBuyers r={r} />
+              <EarlyBuyers r={r} onWallet={setWallet} />
               <div className="repmeta">
                 block <b>{fmt(r.provenance.block)}</b> · observed <b>{r.provenance.observedAt.slice(0, 16).replace("T", " ")} UTC</b> · <b>{(r.provenance.ms / 1000).toFixed(1)}s</b> · sources <b>{r.provenance.sources.join(", ")}</b>
                 {r.provenance.partial && <> · <b style={{ color: "var(--ye)" }}>partial: some log ranges could not be read</b></>}
@@ -470,6 +473,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           </div>
         </div>
       )}
+      {wallet && <WalletCheck here={wallet} onClose={closeWallet} />}
     </div>
   );
 }
@@ -585,7 +589,7 @@ const ROLE: Record<string, { label: string; cls: string }> = {
   router: { label: "via router", cls: "d" }, transfer: { label: "transfer in", cls: "y" },
 };
 
-function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) {
+function TopHolders({ r, children, onWallet }: { r: Report; children?: React.ReactNode; onWallet: (w: WalletHere) => void }) {
   const rows = r.holders;
   const age = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`);
   const counts = new Map<string, number>();
@@ -614,7 +618,9 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
       </div>
       <div className="thead"><span>#</span><span>wallet</span><span>who</span><span>share</span><span>held</span><span>status</span><span>value</span><span>pnl</span></div>
       {rows.map((h, i) => (
-        <a key={h.wallet} className={"tr" + worst(h)} href={`https://robinhoodchain.blockscout.com/address/${h.wallet}`} target="_blank" rel="noreferrer">
+        <div key={h.wallet} className={"tr" + worst(h)} role="button" tabIndex={0} title="wallet check"
+          onClick={() => onWallet({ wallet: h.wallet, symbol: r.token.symbol, roles: (h.roles ?? []).map((k) => ROLE[k]?.label ?? k), who: h.who, share: h.share })}
+          onKeyDown={(e) => { if (e.key === "Enter") onWallet({ wallet: h.wallet, symbol: r.token.symbol, roles: (h.roles ?? []).map((k) => ROLE[k]?.label ?? k), who: h.who, share: h.share }); }}>
           <span className="n">{i + 1}</span>
           <span className="w">{short(h.wallet)}</span>
           <span className="who">
@@ -627,7 +633,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
           <ExitCell h={h} age={age} />
           <span className="v d">{h.valueUsd != null ? "$" + fmt(h.valueUsd) : ""}</span>
           <span className={"v " + (h.pnlPct == null ? "d" : h.pnlPct >= 0 ? "g" : "rd")}>{h.pnlPct != null ? `${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</span>
-        </a>
+        </div>
       ))}
     </div>
   );
@@ -636,7 +642,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
 /** The first twenty buyers: how soon they came in, how much they took, what they did since. */
 const STATUS: Record<string, string> = { holding: "g", added: "g", "partly sold": "y", sold: "rd", moved: "y" };
 
-function EarlyBuyers({ r }: { r: Report }) {
+function EarlyBuyers({ r, onWallet }: { r: Report; onWallet: (w: WalletHere) => void }) {
   const rows = r.early;
   if (!rows?.length) return null;
   const after = (s: number, b: number) => (s < 60 ? `${s}s` : s < 3600 ? `${Math.round(s / 60)}m` : `${Math.round(s / 3600)}h`) + ` · ${fmt(b)} blk`;
@@ -652,7 +658,9 @@ function EarlyBuyers({ r }: { r: Report }) {
       </div>
       <div className="thead"><span>#</span><span>wallet</span><span>who</span><span>after launch</span><span>at buy</span><span>now</span><span>status</span></div>
       {rows.map((e, i) => (
-        <a key={e.wallet} className={"tr" + (e.roles.some((x) => x === "dev" || x === "insider" || x === "sniper") ? " bad" : e.roles.includes("smart") ? " smart" : "")} href={`https://robinhoodchain.blockscout.com/address/${e.wallet}`} target="_blank" rel="noreferrer">
+        <div key={e.wallet} className={"tr" + (e.roles.some((x) => x === "dev" || x === "insider" || x === "sniper") ? " bad" : e.roles.includes("smart") ? " smart" : "")} role="button" tabIndex={0} title="wallet check"
+          onClick={() => onWallet({ wallet: e.wallet, symbol: r.token.symbol, roles: e.roles.map((k) => ROLE[k]?.label ?? k) })}
+          onKeyDown={(ev) => { if (ev.key === "Enter") onWallet({ wallet: e.wallet, symbol: r.token.symbol, roles: e.roles.map((k) => ROLE[k]?.label ?? k) }); }}>
           <span className="n">{i + 1}</span>
           <span className="w">{short(e.wallet)}</span>
           <span className="who">{e.roles.map((k) => <span key={k} className={"role " + (ROLE[k]?.cls ?? "d")}>{ROLE[k]?.label ?? k}</span>)}</span>
@@ -660,7 +668,7 @@ function EarlyBuyers({ r }: { r: Report }) {
           <span className="v">{p(e.atBuy)}</span>
           <span className="v">{p(e.now)}</span>
           <span className={"v " + (STATUS[e.status] ?? "d")}>{e.status === "partly sold" ? `sold ${Math.round(e.soldPct)}%` : e.status === "moved" ? "moved out" : e.status === "added" ? "added more" : e.status === "sold" ? "sold out" : "holding"}</span>
-        </a>
+        </div>
       ))}
     </div>
   );
