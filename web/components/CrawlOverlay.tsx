@@ -447,6 +447,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
               </TopHolders>
+              <EarlyBuyers r={r} />
               <div className="repmeta">
                 block <b>{fmt(r.provenance.block)}</b> · observed <b>{r.provenance.observedAt.slice(0, 16).replace("T", " ")} UTC</b> · <b>{(r.provenance.ms / 1000).toFixed(1)}s</b> · sources <b>{r.provenance.sources.join(", ")}</b>
                 {r.provenance.partial && <> · <b style={{ color: "var(--ye)" }}>partial: some log ranges could not be read</b></>}
@@ -603,6 +604,39 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
           <span className="v d">{h.heldSec != null ? age(h.heldSec) : ""}</span>
           <span className="v d">{h.valueUsd != null ? "$" + fmt(h.valueUsd) : ""}</span>
           <span className={"v " + (h.pnlPct == null ? "d" : h.pnlPct >= 0 ? "g" : "rd")}>{h.pnlPct != null ? `${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</span>
+        </a>
+      ))}
+    </div>
+  );
+}
+
+/** The first twenty buyers: how soon they came in, how much they took, what they did since. */
+const STATUS: Record<string, string> = { holding: "g", added: "g", "partly sold": "y", sold: "rd", moved: "y" };
+
+function EarlyBuyers({ r }: { r: Report }) {
+  const rows = r.early;
+  if (!rows?.length) return null;
+  const after = (s: number, b: number) => (s < 60 ? `${s}s` : s < 3600 ? `${Math.round(s / 60)}m` : `${Math.round(s / 3600)}h`) + ` · ${fmt(b)} blk`;
+  const p = (x: number) => (x === 0 ? "0%" : x < 0.01 ? "<0.01%" : x < 1 ? x.toFixed(2) + "%" : x.toFixed(1) + "%");
+  const still = rows.filter((e) => e.status === "holding" || e.status === "added").length;
+  return (
+    <div className="tophold early">
+      <div className="th">
+        <div>
+          <b>first {rows.length} buyers</b>
+          <span className="sum"><span className="role d">{still} of {rows.length} still in</span></span>
+        </div>
+      </div>
+      <div className="thead"><span>#</span><span>wallet</span><span>who</span><span>after launch</span><span>at buy</span><span>now</span><span>status</span></div>
+      {rows.map((e, i) => (
+        <a key={e.wallet} className={"tr" + (e.roles.some((x) => x === "dev" || x === "insider" || x === "sniper") ? " bad" : e.roles.includes("smart") ? " smart" : "")} href={`https://robinhoodchain.blockscout.com/address/${e.wallet}`} target="_blank" rel="noreferrer">
+          <span className="n">{i + 1}</span>
+          <span className="w">{short(e.wallet)}</span>
+          <span className="who">{e.roles.map((k) => <span key={k} className={"role " + (ROLE[k]?.cls ?? "d")}>{ROLE[k]?.label ?? k}</span>)}</span>
+          <span className="v d">{after(e.delaySec, e.delayBlocks)}</span>
+          <span className="v">{p(e.atBuy)}</span>
+          <span className="v">{p(e.now)}</span>
+          <span className={"v " + (STATUS[e.status] ?? "d")}>{e.status === "partly sold" ? `sold ${Math.round(e.soldPct)}%` : e.status === "moved" ? "moved out" : e.status === "added" ? "added more" : e.status === "sold" ? "sold out" : "holding"}</span>
         </a>
       ))}
     </div>
