@@ -41,13 +41,13 @@ export default function Hero({ version, pulse, report, onRun, onSample }: {
 }) {
   /* ---- the hero counters: anchored on the index pulse, extrapolated between reads ---- */
   const live = useRef<Live | null>(null);
-  const [stats, setStats] = useState({ a: "...", c: "...", d: "..." });
+  const [stats, setStats] = useState({ a: "...", c: "...", d: "...", e: "...", t: "" });
   useEffect(() => {
     const show = () => {
       const L = live.current;
       if (!pulse || "offline" in pulse || !L) {
         const d = report && report.provenance.ms > 0 ? Math.round(report.provenance.ms / 1000) + "s" : "n/a";
-        setStats({ a: "n/a", c: "n/a", d });
+        setStats({ a: "n/a", c: "n/a", d, e: "n/a", t: "" });
         return;
       }
       const dt = (Date.now() - L.at) / 1000;
@@ -56,6 +56,8 @@ export default function Hero({ version, pulse, report, onRun, onSample }: {
         a: fmt(L.launches + dt * L.rateL),
         c: w >= 1e6 ? (w / 1e6).toFixed(2) + "M" : fmt(w),
         d: pulse.avgCrawlMs > 0 ? Math.round(pulse.avgCrawlMs / 1000) + "s" : "n/a",
+        e: fmt(pulse.crawlsToday),
+        t: fmt(pulse.crawlsTotal),
       });
     };
     if (pulse && !("offline" in pulse)) {
@@ -129,6 +131,7 @@ export default function Hero({ version, pulse, report, onRun, onSample }: {
           <div><b>8</b><span>crawlers live</span></div>
           <div><b>{stats.c}</b><span>wallets indexed</span></div>
           <div><b>{stats.d}</b><span>per crawl</span></div>
+          <div><b>{stats.e}</b><span>crawls today{stats.t ? ` · ${stats.t} all time` : ""}</span></div>
         </div>
       </div>
 
