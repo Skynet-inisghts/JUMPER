@@ -459,10 +459,11 @@ button.inputchip{all:unset}
 .pchart{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:10px 16px 8px;margin-bottom:14px}
 .pchart .ph{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--dm);font-variant-numeric:tabular-nums}
 .pchart .ph b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
-.pchart svg{display:block;width:100%;height:190px}
+.pchart .pcv{position:relative;width:100%;height:300px;cursor:crosshair;touch-action:pan-y}
+.pchart .ph .hv{color:var(--tx)}.pchart .ph .hv em{font-style:normal;color:#E2CCFF}
 .pchart .ph .hl{color:var(--cy);display:inline-flex;align-items:center;gap:6px}.pchart .ph .hl i{display:inline-block;width:14px;height:0;border-top:1.5px dashed var(--cy)}
 .pchart .pf{display:flex;justify-content:space-between;gap:12px;font-size:10px;color:var(--dm2);margin-top:4px}
-@media(max-width:640px){.pchart .pf span:nth-child(2){display:none}.pchart svg{height:150px}}
+@media(max-width:640px){.pchart .pf span:nth-child(2){display:none}.pchart .pcv{height:240px}}
 .tophold.hold8 .thead,.tophold.hold8 .tr{grid-template-columns:34px 130px minmax(0,460px) repeat(2,minmax(52px,1fr)) minmax(110px,1.6fr) repeat(2,minmax(56px,1fr))}
 .tophold .tr .v.xs{display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.25}
 .tophold .tr .v.xs i{font-style:normal}

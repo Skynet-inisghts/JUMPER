@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- pixel sprite and the generated card PNG */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
+import PriceChart from "./PriceChart";
 import Similar from "./Similar";
 import SilkWeb from "./SilkWeb";
 import WalletCheck, { type WalletHere } from "./WalletCheck";
@@ -754,67 +755,6 @@ function RugWarning({ r }: { r: Report }) {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-/**
- * The token's price over its whole life: the close of each of the report's
- * candles (curve trades, then pool swaps) as one purple line on a log scale,
- * so a launch spike and the weeks after both read. Dollars when the crawl
- * read a rate.
- */
-function PriceChart({ r }: { r: Report }) {
-  const cs = r.chart ?? [];
-  if (cs.length < 2 || !cs.some((c) => c.h !== c.l || c.o !== c.c)) return null;
-  const led = r.panels?.ledger;
-  const k = led?.priceUsd != null && led.priceQuote ? led.priceUsd / led.priceQuote : null;
-  const W = 1000, H = 170, PAD = 6;
-  const lows = cs.map((c) => c.l).filter((x) => x > 0);
-  const lo = Math.min(...lows), hi = Math.max(...cs.map((c) => c.h));
-  if (!(lo > 0) || !(hi > 0)) return null;
-  const L0 = Math.log(lo), L1 = Math.log(hi) === L0 ? L0 + 1 : Math.log(hi);
-  const y = (p: number) => PAD + (H - 2 * PAD) * (1 - (Math.log(Math.max(p, lo)) - L0) / (L1 - L0));
-  const step = W / cs.length;
-  const xs = cs.map((_, i) => i * step + step / 2);
-  const line = cs.map((c, i) => `${i ? "L" : "M"}${xs[i].toFixed(1)},${y(c.c).toFixed(1)}`).join(" ");
-  const money = (p: number) => {
-    const x = k != null ? p * k : p;
-    const z = x >= 1 ? 2 : Math.min(12, Math.max(0, -Math.floor(Math.log10(x)) - 1) + 3);
-    return (k != null ? "$" : "") + x.toFixed(z) + (k != null ? "" : " " + r.token.pairSymbol);
-  };
-  const day = (t: number) => new Date(t * 1000).toISOString().slice(5, 16).replace("T", " ");
-  // holders on their own scale, from zero, drawn over the candles
-  const hc = r.holderCurve && r.holderCurve.length === cs.length ? r.holderCurve : null;
-  const hmax = hc ? Math.max(1, ...hc) : 1;
-  const hpath = hc ? hc.map((n, i) => `${i ? "L" : "M"}${(i * step + step / 2).toFixed(1)},${(PAD + (H - 2 * PAD) * (1 - n / hmax)).toFixed(1)}`).join(" ") : "";
-  return (
-    <div className="pchart">
-      <div className="ph">
-        <b>price</b>
-        <span>high {money(hi)} · low {money(lo)} · now {money(cs[cs.length - 1].c)}</span>
-        {hc && <span className="hl"><i />holders {fmt(hc[hc.length - 1])}{hmax > hc[hc.length - 1] ? `, peak ${fmt(hmax)}` : ""}</span>}
-      </div>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`$${r.token.symbol} price over its life`}>
-        <defs>
-          <linearGradient id="pline" x1="0" x2={W} y1="0" y2="0" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#3B1670" />
-            <stop offset="1" stopColor="#E2CCFF" />
-          </linearGradient>
-          <linearGradient id="pfill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#B47CFF" stopOpacity="0.32" />
-            <stop offset="1" stopColor="#3B1670" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path d={`${line} L${xs[xs.length - 1].toFixed(1)},${H} L${xs[0].toFixed(1)},${H} Z`} fill="url(#pfill)" />
-        <path d={line} fill="none" stroke="url(#pline)" strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-        {hc && <path d={hpath} fill="none" stroke="var(--cy)" strokeWidth="1.2" strokeOpacity="0.55" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />}
-      </svg>
-      <div className="pf">
-        <span>{day(cs[0].t)} UTC launch</span>
-        <span>log scale · curve trades and pool swaps read from the robinhood rpc</span>
-        <span>now</span>
-      </div>
     </div>
   );
 }
