@@ -11,6 +11,7 @@ export default function Nav({ onRun }: { onRun: () => void }) {
           <a href="#crawlers">Crawlers</a>
           <a href="#feed">Live</a>
           <a href="/proof">Proof</a>
+          <a href="/leaders">Leaders</a>
           <a href={DOCS} target="_blank" rel="noopener noreferrer">Docs</a>
           <a href={GITHUB} target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>

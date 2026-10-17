@@ -40,7 +40,7 @@ export default function WalletCheck({ here, onClose }: { here: WalletHere; onClo
   }, [here.wallet, onClose]);
 
   const rec = data?.record;
-  const others = (data?.seen ?? []).filter((s) => s.symbol !== here.symbol);
+  const others = (data?.seen ?? []).filter((s) => !here.symbol || s.symbol !== here.symbol);
   return createPortal(
     <div className="wcheck" role="dialog" aria-modal="true" aria-label={`Wallet ${here.wallet}`} onClick={onClose}>
       <div className="wbox" onClick={(e) => e.stopPropagation()}>
@@ -56,14 +56,14 @@ export default function WalletCheck({ here, onClose }: { here: WalletHere; onClo
           </div>
         </div>
 
-        <div className="wsec">
+        {here.symbol && <div className="wsec">
           <span className="k">in ${here.symbol}</span>
           <div className="wroles">
             {here.roles.length ? here.roles.map((r) => <span key={r} className="role d">{r}</span>) : <span className="role d">holder</span>}
             {here.share != null && <span className="v">{here.share < 1 ? here.share.toFixed(2) : here.share.toFixed(1)}% of supply</span>}
           </div>
           {here.who && <p>{here.who}</p>}
-        </div>
+        </div>}
 
         {error && <div className="wsec"><p className="err">{error}</p></div>}
         {!data && !error && <div className="wsec"><p className="dim">reading the index</p></div>}
@@ -84,7 +84,7 @@ export default function WalletCheck({ here, onClose }: { here: WalletHere; onClo
 
         {data && others.length > 0 && (
           <div className="wsec">
-            <span className="k">named in other crawls</span>
+            <span className="k">{here.symbol ? "named in other crawls" : "named in crawls"}</span>
             {others.slice(0, 8).map((s) => (
               <div className="wrow" key={s.token}>
                 <b>${s.symbol}</b>

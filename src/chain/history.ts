@@ -20,6 +20,7 @@
  *   GET  /latest                            the newest full report
  *   GET  /logs?token=  PUT /logs?token=     a token's cached logs (see src/cache.ts)
  *   POST /tokens     { tokens }             a few tokens at a glance: ticker, wallets, last trade, verdict
+ *   GET  /leaders?by=  GET /smartflow       leaderboard, smart money buying in the last hour
  *   GET  /active                            the Pons tokens busiest in the last hour
  *   GET  /wallet?address=                   one wallet: record, last markets, reports that name it
  */
@@ -124,6 +125,24 @@ export interface TokenGlance {
 
 export const readTokens = async (tokens: string[]): Promise<TokenGlance[]> =>
   (await call<{ tokens: TokenGlance[] }>("/tokens", { tokens }, 15_000)).tokens;
+
+/** The leaderboard the index's leaders job keeps: wallets of the busiest markets, bots left out. */
+export interface Leaders {
+  at: number;
+  by: "realized" | "winrate";
+  rows: { wallet: string; markets: number; positions: number; winrate: number | null; avgPnl: number; realized: number; trades: number; lastBlock: number; smart: number }[];
+}
+
+/** Smart money moving now: the last hour's buys by smart wallets, per token. */
+export interface SmartFlow {
+  at: number;
+  smartWallets: number;
+  tip: number;
+  tokens: { token: string; symbol: string | null; smartBuyers: number; eth: number; lastBlock: number }[];
+}
+
+export const readLeaders = (by: "realized" | "winrate"): Promise<Leaders> => call<Leaders>(`/leaders?by=${by}`, undefined, 15_000);
+export const readSmartFlow = (): Promise<SmartFlow> => call<SmartFlow>("/smartflow", undefined, 20_000);
 
 export const readBooks = (token: string, curve: string): Promise<TokenBooks> => call<TokenBooks>("/positions", { token, curve });
 
