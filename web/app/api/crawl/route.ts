@@ -124,7 +124,8 @@ export async function POST(request: Request) {
         });
       }
 
-      if (run.started && indexConfigured()) {
+      // the staging copy reads the index but leaves the live site's feed alone
+      if (run.started && indexConfigured() && !process.env.JUMPER_STAGING) {
         // record the finished crawl for the pulse; never delays the stream
         after(async () => {
           const report = await run.promise.catch(() => null);

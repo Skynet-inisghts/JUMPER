@@ -27,6 +27,8 @@ export async function GET(request: Request) {
   if (secret && request.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "not allowed" }, { status: 401 });
   }
+  // the live site warms the cache; a staging copy would only double the RPC load
+  if (process.env.JUMPER_STAGING) return NextResponse.json({ error: "staging copy does not warm" }, { status: 404 });
   if (!indexConfigured()) return NextResponse.json({ error: "no wallet index configured" }, { status: 503 });
 
   const deadline = Date.now() + WARM_BUDGET_MS;
