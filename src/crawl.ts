@@ -29,9 +29,20 @@ export class CrawlError extends Error {}
 
 /** The token's logs did not fit the time a web crawl has; warmLogs reads them into the cache for the next one. */
 export class CrawlTooLong extends CrawlError {
+  /** Seconds until the history is read in, from the reading rate so far; null when unknown. */
+  public etaSec: number | null = null;
   constructor(message: string, public readonly token: Address, public readonly symbol: string) {
     super(message);
   }
+}
+
+/** What a warming run did: transfers kept, the blocks it covered, and how long it took. */
+export interface Warmed {
+  transfers: number;
+  from: number;
+  upTo: number;
+  head: number;
+  ms: number;
 }
 
 export type CrawlEvent =
@@ -299,29 +310,36 @@ async function readLogs(
 
 /**
  * Read a token's logs into the cache: what the site does after a crawl ran
- * out of time on a long history, so the next crawl is quick. Returns the
- * number of transfers kept, 0 when the budget ran out first.
+ * out of time on a long history, so the next crawl is quick. Says how many
+ * transfers are kept (0 when the budget ran out first) and which blocks
+ * the run covered, so a caller can tell how long the rest will take.
  */
 export async function warmLogs(
   token: Address,
   onProgress?: (done: number, total: number, transfers: number) => void,
   budgetMs?: number,
-): Promise<number> {
-  const deadline = budgetMs ? Date.now() + budgetMs : Infinity;
+): Promise<Warmed> {
+  const started = Date.now();
+  const deadline = budgetMs ? started + budgetMs : Infinity;
   const launch = await readLaunch(token);
-  if (!launch) return 0;
+  if (!launch) return { transfers: 0, from: 0, upTo: 0, head: 0, ms: 0 };
   const clock = await makeClock(launch.launchBlock, launch.launchedAt);
   // In windows, each kept as soon as it is complete: a history longer than
   // one budget is read over several runs, each picking up where the last stopped.
   let transfers = 0;
+  let first = -1;
+  let upTo = launch.launchBlock;
   for (;;) {
     const kept = await loadLogs(launch.token);
     const from = kept && kept.upTo >= launch.launchBlock ? kept.upTo + 1 : launch.launchBlock;
+    if (first < 0) first = from;
+    upTo = from - 1;
     const to = Math.min(clock.headBlock, from + WARM_WINDOW_BLOCKS);
     const logs = await readLogs(launch, to, deadline, onProgress);
     await cacheWritten();
-    if (!logs) return 0;
+    if (!logs) return { transfers: 0, from: first, upTo, head: clock.headBlock, ms: Date.now() - started };
     transfers = logs.transfers.length;
-    if (to >= clock.headBlock || !logs.complete) return transfers;
+    upTo = to;
+    if (to >= clock.headBlock || !logs.complete) return { transfers, from: first, upTo, head: clock.headBlock, ms: Date.now() - started };
   }
 }

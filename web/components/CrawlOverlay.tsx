@@ -12,7 +12,7 @@ import type { CheckpointLabel } from "@engine/crawlers/types.js";
 type Step = "input" | "run" | "report";
 type Pass = { state: "queued" | "running" | "done"; pct: number };
 type Feed = { id: number; c: string; m: string; v: string; cls: string };
-type Failure = { message: string; blocked?: boolean; candidates?: { token: string; symbol: string; name: string }[] };
+type Failure = { message: string; blocked?: boolean; candidates?: { token: string; symbol: string; name: string }[]; retryInSec?: number };
 
 const PASSES: [string, string][] = [
   ["WEAVER", "mapping transfers"], ["TRACKER", "marking exits"], ["SNARE", "scanning first blocks"],
@@ -129,9 +129,21 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
     });
   }, []);
 
+  /* a history still being read: count down and crawl again by itself */
+  const lastTarget = useRef("");
+  const [retryLeft, setRetryLeft] = useState<number | null>(null);
+  const startRef = useRef<(raw: string) => void>(() => {});
+  useEffect(() => {
+    if (retryLeft == null) return;
+    if (retryLeft <= 0) { setRetryLeft(null); startRef.current(lastTarget.current); return; }
+    const id = setTimeout(() => setRetryLeft((n) => (n == null ? null : n - 1)), 1000);
+    return () => clearTimeout(id);
+  }, [retryLeft]);
+
   const toInput = useCallback((f: Failure | null) => {
     abortRef.current?.abort();
     setFailure(f);
+    setRetryLeft(f?.retryInSec ? f.retryInSec : null);
     setStep("input");
     setCmd(<>&gt; waiting for a contract</>);
   }, []);
@@ -145,6 +157,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
     abortRef.current?.abort();
     const ac = new AbortController();
     abortRef.current = ac;
+    lastTarget.current = target;
+    setRetryLeft(null);
     setFailure(null);
     setReport(null);
     setCardState("loading");
@@ -231,6 +245,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
     }
     if (!finished && !ac.signal.aborted) toInput({ message: "the crawl ended without a report; try again in a moment" });
   }, [pushFeed, progressFeed, toInput]);
+  useEffect(() => { startRef.current = start; }, [start]);
 
   /* running bars creep toward done while the engine works without a count */
   useEffect(() => {
@@ -366,7 +381,9 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
           {failure?.blocked && <div className="inblock" role="status">{failure.message}</div>}
           {failure && !failure.blocked && (
             <div className="inerr" role="alert">
-              <b>crawl stopped</b> · {failure.message}
+              {retryLeft != null
+                ? <><b className="wait">reading the full history</b> · {failure.message} Crawling again in {retryLeft >= 60 ? `${Math.floor(retryLeft / 60)}m ${String(retryLeft % 60).padStart(2, "0")}s` : `${retryLeft}s`}. <button type="button" className="linkbtn" onClick={() => setRetryLeft(null)}>Cancel</button></>
+                : <><b>crawl stopped</b> · {failure.message}</>}
               {failure.candidates && failure.candidates.length > 0 && (
                 <div className="cands">
                   {failure.candidates.map((c) => (

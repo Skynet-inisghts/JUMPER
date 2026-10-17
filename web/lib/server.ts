@@ -82,8 +82,17 @@ export function crawlShared(token: Address, listener?: Listener): { promise: Pro
           } catch (error) {
             if (!(error instanceof CrawlTooLong)) throw error;
             emit({ type: "stage", crawler: "WEAVER", state: "running", detail: `$${error.symbol} has a long history, reading all of it once` });
-            await warmLogs(token, (done, total, n) => emit({ type: "progress", crawler: "WEAVER", done, total, detail: `${n} transfers` }), LONG_READ_MS);
-            ({ report } = await crawl(token, emit, { budgetMs: LONG_BUDGET_MS, finishMs: LONG_FINISH_MS }));
+            const warmed = await warmLogs(token, (done, total, n) => emit({ type: "progress", crawler: "WEAVER", done, total, detail: `${n} transfers` }), LONG_READ_MS);
+            try {
+              ({ report } = await crawl(token, emit, { budgetMs: LONG_BUDGET_MS, finishMs: LONG_FINISH_MS }));
+            } catch (again) {
+              // still too long: say when the background read should be done, from this run's pace
+              if (again instanceof CrawlTooLong && warmed.upTo > warmed.from && warmed.ms > 0) {
+                const perSec = (warmed.upTo - warmed.from) / (warmed.ms / 1000);
+                again.etaSec = Math.min(3600, Math.max(60, Math.round((warmed.head - warmed.upTo) / perSec) + 30));
+              }
+              throw again;
+            }
           }
           reportCache.set(key, report, reportTtlMs(report.token.ageSec));
           return report;
