@@ -459,6 +459,13 @@ button.inputchip{all:unset}
 .pchart{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:10px 16px 8px;margin-bottom:14px}
 .pchart .ph{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--dm);font-variant-numeric:tabular-nums}
 .pchart .ph b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
+.pchart .pctl{margin-left:auto;display:flex;gap:8px}
+.pchart .seg{display:inline-flex;border:1px solid var(--ln2);border-radius:4px;overflow:hidden}
+.pchart .seg button{all:unset;cursor:pointer;padding:4px 10px;font-size:11px;color:var(--dm);font-family:inherit}
+.pchart .seg button+button{border-left:1px solid var(--ln2)}
+.pchart .seg button:hover{color:var(--tx)}
+.pchart .seg button.on{background:#3B1670;color:#E2CCFF}
+.pchart .seg button:focus-visible{outline:1px solid var(--ac);outline-offset:-1px}
 .pchart .pcv{position:relative;width:100%;height:300px;cursor:crosshair;touch-action:pan-y}
 .pchart .ph .phov{color:var(--tx)}.pchart .ph .phov em{font-style:normal;color:#E2CCFF}
 .pchart .ph .hl{color:var(--cy);display:inline-flex;align-items:center;gap:6px}.pchart .ph .hl i{display:inline-block;width:14px;height:0;border-top:1.5px dashed var(--cy)}
