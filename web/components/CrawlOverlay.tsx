@@ -414,6 +414,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
         <div className={"step" + (step === "report" ? " on" : "")} id="stepReport">
           <div className="repwrap">
             <div className="repcore" ref={coreRef}>
+              <RugWarning r={r} />
               {r.outcome ? (
                 <div className="gradehead">
                   <div className="gradeltr" style={{ color: "var(--dm)" }}>{r.outcome.kind.toUpperCase()}</div>
@@ -659,6 +660,26 @@ function MarketStrip({ r }: { r: Report }) {
       {cells.map(([k, v]) => (
         <div key={k}><span>{k}</span><b>{v}</b></div>
       ))}
+    </div>
+  );
+}
+
+/** Price 80% or more below its peak: a rug when the launch side sold it, a collapse when the crowd did. */
+function RugWarning({ r }: { r: Report }) {
+  const g = r.rug;
+  if (!g) return null;
+  const ago = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))} min` : s < 86400 ? `${Math.round(s / 3600)} h` : `${Math.round(s / 86400)} d`);
+  return (
+    <div className={"rugwarn" + (g.rugged ? "" : " soft")}>
+      <div className="rh"><b>{g.rugged ? "probably rugged" : "price collapsed"}</b><span>price down {Math.round(g.drawdown)}% from its peak {ago(g.peakAgoSec)} ago{g.devState === "dumped" ? ", the dev sold out" : g.devState === "sold half" ? ", the dev sold half" : ""}</span></div>
+      {g.sellers.length > 0 && (
+        <div className="rs">
+          <span className="k">sold since the peak</span>
+          {g.sellers.map((s) => (
+            <span key={s.group} className={s.group === "later buyers" || s.group === "ten-minute flippers" ? "o" : ""}><b>{Math.round(s.share)}%</b> {s.group} <i>({s.wallets})</i></span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

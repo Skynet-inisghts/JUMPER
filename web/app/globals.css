@@ -453,6 +453,19 @@ button.inputchip{all:unset}
 .pchart .ph .phov{color:var(--tx)}.pchart .ph .phov em{font-style:normal;color:#E2CCFF}
 .pchart .pf{display:flex;justify-content:space-between;gap:12px;font-size:10px;color:var(--dm2);margin-top:4px}
 @media(max-width:640px){.pchart .pf span:nth-child(2){display:none}.pchart .pcv{height:240px}}
+.tophold.early{margin-top:14px}
+.tophold .tr .v.y{color:var(--ye)}
+.rugwarn{border:1px solid rgba(255,93,122,.55);background:rgba(255,93,122,.08);border-radius:5px;padding:10px 14px;margin-bottom:14px;font-size:12px}
+.rugwarn.soft{border-color:rgba(255,209,102,.45);background:rgba(255,209,102,.06)}
+.rugwarn.soft .rh b{color:var(--ye)}
+.rugwarn .rh{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.rugwarn .rh b{color:var(--rd);font-weight:400;text-transform:uppercase;letter-spacing:.18em;font-size:11px}
+.rugwarn .rh span{color:var(--tx)}
+.rugwarn .rs{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:6px;color:var(--dm)}
+.rugwarn .rs .k{color:var(--dm2);text-transform:uppercase;letter-spacing:.14em;font-size:10px;align-self:center}
+.rugwarn .rs b{color:var(--rd);font-weight:400}
+.rugwarn .rs .o b{color:var(--dm)}
+.rugwarn .rs i{font-style:normal;color:var(--dm2)}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}

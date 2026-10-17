@@ -5,8 +5,8 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  Candle, CrawlerName, CrawlerReport, Fill, Market, Outcome, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
-  ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, WeaverOut,
+  Candle, CrawlerName, CrawlerReport, Fill, Market, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
 } from "./types.js";
 
 export interface Crawled {
@@ -110,6 +110,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
   ];
 
   const ticks = priceTicks(tape, c);
+  const candles = chart(tape, c, ticks);
   return {
     version: 1,
     token: {
@@ -144,8 +145,9 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     market: market(tape, c),
     facts,
     crawlers: crawlerReports(tape, c, metrics),
-    chart: chart(tape, c, ticks),
+    chart: candles,
     candles: { m1: candlesOf(tape, ticks, 60, 1440), m5: candlesOf(tape, ticks, 300, 2016) },
+    rug: rugCheck(tape, c, candles),
     panels: panels(tape, c, parts),
     holders: holderRows(tape, c),
     fills: fills(tape, c),
@@ -201,6 +203,91 @@ function outcomeOf(tape: Tape, c: Crawled): Outcome | null {
     return { kind: "no verdict", why: `${grouped(dropped.length)} holders never bought, they were sent ${Math.round(share)}% of what is held: an airdrop, the score cannot judge it` };
   }
   return null;
+}
+
+/**
+ * A price that fell 80% or more from its peak: how deep, how long ago, and
+ * who did the selling since the peak, by kind of wallet. Null when the
+ * price is within reach of its high.
+ */
+function rugCheck(tape: Tape, c: Crawled, candles: Report["chart"]): Rug | null {
+  if (candles.length < 2) return null;
+  let peak = 0;
+  for (let i = 1; i < candles.length; i++) if (candles[i].h > candles[peak].h) peak = i;
+  const high = candles[peak].h;
+  const last = candles[candles.length - 1].c;
+  if (!(high > 0)) return null;
+  const drawdown = Math.round((1 - last / high) * 1000) / 10;
+  if (drawdown < THRESHOLDS.rugDrawdownPct) return null;
+  const peakBlock = tape.launch.launchBlock + Math.floor((candles[peak].t - tape.launch.launchedAt) / tape.secPerBlock);
+  // what is known of every seller without its history: the launch, the
+  // first minute, the funding graph, how long it held
+  const roleOf = roleReader(tape, c);
+  const firstMinute = new Set(c.snared.firstMinute);
+  const flipBlocks = Math.round(THRESHOLDS.flipSec / tape.secPerBlock);
+  const groups = new Map<RugGroup, { wallets: Set<string>; tokens: bigint }>();
+  let total = 0n;
+  for (const s of c.web.sells) {
+    if (s.block < peakBlock) continue;
+    const w = c.web.wallets.get(s.wallet);
+    const roles = w ? roleOf(w).roles : [];
+    const g: RugGroup = roles.includes("dev") || roles.includes("insider") ? "dev and insiders"
+      : roles.includes("sniper") ? "snipers" : roles.includes("bundle") ? "bundles"
+      : roles.includes("transfer") ? "got it by transfer"
+      : w && isFlip(w, flipBlocks) ? "ten-minute flippers"
+      : firstMinute.has(s.wallet) ? "first-minute buyers" : "later buyers";
+    const v = groups.get(g) ?? { wallets: new Set<string>(), tokens: 0n };
+    v.wallets.add(s.wallet);
+    v.tokens += s.tokens;
+    groups.set(g, v);
+    total += s.tokens;
+  }
+  const sellers = [...groups.entries()]
+    .map(([group, v]) => ({ group, wallets: v.wallets.size, share: total > 0n ? Number((v.tokens * 1000n) / total) / 10 : 0 }))
+    .sort((a, b) => b.share - a.share);
+  // A crowd selling a top is a collapse; a dev that dumped, or a launch side
+  // doing the selling, is a rug. Flippers buy back what they sell, so their
+  // volume is left out of the comparison.
+  const held = sellers.filter((x) => x.group !== "ten-minute flippers");
+  const heldTotal = held.reduce((a, x) => a + x.share, 0);
+  const inside = held.filter((x) => x.group !== "later buyers").reduce((a, x) => a + x.share, 0);
+  const rugged = c.tracked.devState === "dumped" || (heldTotal > 0 && (inside / heldTotal) * 100 >= THRESHOLDS.rugInsideSharePct);
+  return { drawdown, peakAgoSec: Math.max(0, tape.now - candles[peak].t), rugged, devState: c.tracked.devState, sellers };
+}
+
+/**
+ * What kind of wallet each one is: dev, insider, sniper, bot, whale, smart,
+ * bundle, fresh, trader, router, transfer. One reader for every table that
+ * names wallets, so a wallet is the same thing everywhere in the report.
+ */
+function roleReader(tape: Tape, c: Crawled): (w: Wallet) => { roles: Role[]; insider: boolean; funder: string | undefined } {
+  const dev = devSet(tape);
+  const snipers = new Set(c.snared.snipers.map((s) => s.wallet));
+  const smart = new Set(c.scouted.smart.map((s) => s.wallet));
+  const virgins = new Set(c.scouted.virgins);
+  const funding = new Map(tape.funding.map((f) => [f.wallet, f.funder]));
+  const declared = new Set(tape.launch.exemptions.map((a) => a.toLowerCase()));
+  const clustered = new Set(c.knotted.clusters.flatMap((k) => k.wallets));
+  return (h) => {
+    const hist = tape.history?.[h.address];
+    const book = c.books.books.get(h.address);
+    const share = pctOf(h.balance, tape.launch.totalSupply);
+    const funder = funding.get(h.address);
+    const insider = !dev.has(h.address) && (dev.has(h.parent) || (funder !== undefined && dev.has(funder)) || declared.has(h.address));
+    const roles: Role[] = [];
+    if (dev.has(h.address)) roles.push("dev");
+    if (insider) roles.push("insider");
+    if (snipers.has(h.address)) roles.push("sniper");
+    if (hist && isBotRecord(hist)) roles.push("bot");
+    if (share >= THRESHOLDS.whalePct || (book?.valueUsd ?? 0) >= THRESHOLDS.whaleUsd) roles.push("whale");
+    if (smart.has(h.address)) roles.push("smart");
+    if (clustered.has(h.address)) roles.push("bundle");
+    if (virgins.has(h.address)) roles.push("fresh");
+    else if (hist && hist.markets > 0 && !roles.includes("bot") && !roles.includes("smart")) roles.push("trader");
+    else if (!hist?.markets && h.routed) roles.push("router");
+    if (h.bought === 0n && h.received > 0n) roles.push("transfer");
+    return { roles, insider, funder };
+  };
 }
 
 /** The top fifty holders, each with a few words on who it is. */
