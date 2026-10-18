@@ -5,7 +5,7 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { blockTs, devSet, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
 import type {
-  CrawlerName, CrawlerReport, Fill, Market, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
+  Candle, CrawlerName, CrawlerReport, Fill, Market, Panels, Role, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
   ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, WeaverOut,
 } from "./types.js";
 
@@ -109,6 +109,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     `${pctText(sniperSupply)} sniped · ${grouped(web.holders.length)} holders`,
   ];
 
+  const ticks = priceTicks(tape, c);
   return {
     version: 1,
     token: {
@@ -142,7 +143,8 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     market: market(tape, c),
     facts,
     crawlers: crawlerReports(tape, c, metrics),
-    chart: chart(tape, c),
+    chart: chart(tape, c, ticks),
+    candles: { m1: candlesOf(tape, ticks, 60, 1440), m5: candlesOf(tape, ticks, 300, 2016) },
     panels: panels(tape, c, parts),
     holders: holderRows(tape, c),
     fills: fills(tape, c),
@@ -416,14 +418,52 @@ function crawlerReports(tape: Tape, c: Crawled, m: Metrics): CrawlerReport[] {
 }
 
 /** 64 candles across the token's life; empty buckets carry the last close. */
-function chart(tape: Tape, c: Crawled): Report["chart"] {
+/** Every priced trade, curve and pool, oldest first: block, price in whole quote per whole token, quote volume. */
+function priceTicks(tape: Tape, c: Crawled): { block: number; px: number; v: number }[] {
   const qd = 10 ** tape.launch.pairDecimals;
   const toWhole = 1e18 / qd;
   const pts: { block: number; px: number; v: number }[] = [];
   for (const t of c.web.trades) if (t.tokens > 0n) pts.push({ block: t.block, px: (Number(t.quoteWei) / Number(t.tokens)) * toWhole, v: Number(t.quoteWei) / qd });
   for (const s of tape.swaps ?? []) if (s.price > 0) pts.push({ block: s.block, px: s.price * toWhole, v: Number(s.quote) / qd });
+  return pts.sort((a, b) => a.block - b.block);
+}
+
+/** Six significant digits: enough for a chart, a third of the bytes. */
+const sig = (x: number) => Number(x.toPrecision(6));
+
+/**
+ * Candles of a fixed width in seconds, the newest `keep` of them, from the
+ * first trade to now; a minute without trades carries the last close flat.
+ */
+function candlesOf(tape: Tape, pts: { block: number; px: number; v: number }[], width: number, keep: number): Candle[] {
   if (pts.length < 2) return [];
-  pts.sort((a, b) => a.block - b.block);
+  const slot = (block: number) => Math.floor(blockTs(tape, block) / width) * width;
+  const first = slot(pts[0].block);
+  const end = Math.floor(tape.now / width) * width;
+  const start = Math.max(first, end - (keep - 1) * width);
+  const out: Candle[] = [];
+  let last = pts[0].px;
+  let k = 0;
+  // trades before the window only set the opening price
+  while (k < pts.length && slot(pts[k].block) < start) last = pts[k++].px;
+  for (let t = start; t <= end; t += width) {
+    const o = last;
+    let h = o, l = o, cl = o, v = 0;
+    while (k < pts.length && slot(pts[k].block) <= t) {
+      const p = pts[k].px;
+      h = Math.max(h, p);
+      l = Math.min(l, p);
+      cl = p;
+      v += pts[k++].v;
+    }
+    last = cl;
+    out.push({ t, o: sig(o), h: sig(h), l: sig(l), c: sig(cl), v: sig(v) });
+  }
+  return out;
+}
+
+function chart(tape: Tape, c: Crawled, pts = priceTicks(tape, c)): Report["chart"] {
+  if (pts.length < 2) return [];
   const N = 64;
   const from = tape.launch.launchBlock;
   const span = Math.max(N, tape.headBlock - from + 1);

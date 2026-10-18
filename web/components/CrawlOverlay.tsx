@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- pixel sprite and the generated card PNG */
 import { useCallback, useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
+import PriceChart from "./PriceChart";
 import type { RecentRow } from "./types";
 import { buildChain, graphFromReport, type Bug, type Graph, type NodeState } from "@/lib/chain";
 import { createCrawlRoom } from "@/lib/crawlroom";
@@ -413,7 +414,6 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
         <div className={"step" + (step === "report" ? " on" : "")} id="stepReport">
           <div className="repwrap">
             <div className="repcore" ref={coreRef}>
-              <MarketStrip r={r} />
               <div className="gradehead">
                 <div className="gradeltr" style={{ color: b.color }}>{r.label}</div>
                 <div>
@@ -448,6 +448,8 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
               </div>
             </div>
             <div className="repfull">
+              <MarketStrip r={r} />
+              <PriceChart r={r} />
               <TopHolders r={r}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>
@@ -614,7 +616,7 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
   );
 }
 
-/** Price, cap, liquidity, the last day's volume, age, holders, top ten and the deployer, on one line. */
+/** Price, cap, liquidity, the last day's volume, holders, top ten, age and the creator, on one line over the chart. */
 function MarketStrip({ r }: { r: Report }) {
   const m = r.market;
   if (!m) return null;
@@ -634,13 +636,13 @@ function MarketStrip({ r }: { r: Report }) {
   const age = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`);
   const cells: [string, React.ReactNode][] = [
     ["price", price(m.priceUsd)],
-    ["mcap", usd(m.mcapUsd)],
-    [m.liquidityIn === "curve" ? `liq · curve ${Math.round(r.token.curveProgress * 100)}%` : "liq · pool", usd(m.liquidityUsd)],
-    ["vol 24h", <span key="vol">{m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`}<i> · {fmt(m.trades24h)} tx</i></span>],
-    ["age", age(r.token.ageSec)],
+    ["market cap", usd(m.mcapUsd)],
+    ["liquidity", usd(m.liquidityUsd)],
+    ["volume 24h", m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`],
     ["holders", fmt(r.metrics.holders)],
     ["top 10", (m.top10 < 10 ? m.top10.toFixed(1) : Math.round(m.top10)) + "%"],
-    ["deployer", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
+    ["age", age(r.token.ageSec)],
+    ["creator", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
   ];
   return (
     <div className="mstrip">

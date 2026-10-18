@@ -433,12 +433,26 @@ button.inputchip{all:unset}
 /* numeric columns: header and values share one centre line */
 .tophold .thead span:nth-child(n+4){text-align:center}
 .tophold .tr .v.d{color:var(--dm)}.tophold .tr .v.g{color:var(--ac2)}.tophold .tr .v.rd{color:var(--rd)}
-.mstrip{display:flex;flex-wrap:wrap;gap:8px 16px;padding:10px 14px;margin-bottom:14px;border:1px solid var(--ln);background:var(--pan);border-radius:5px;font-size:12px;font-variant-numeric:tabular-nums}
+.mstrip{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 22px;padding:12px 16px;margin-bottom:8px;border:1px solid var(--ln);background:var(--pan);border-radius:5px;font-size:12px;font-variant-numeric:tabular-nums}
 .mstrip div{display:flex;flex-direction:column;gap:2px;min-width:0}
 .mstrip>div>span{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dm2);white-space:nowrap}
-.mstrip b{font-weight:400;color:var(--tx);white-space:nowrap}
+.mstrip b{font-weight:400;font-size:15px;color:var(--tx);white-space:nowrap}
 .mstrip b i{font-style:normal;color:var(--dm)}
 .mstrip a{color:var(--tx);text-decoration:none;border-bottom:1px dotted var(--dm2)}
+.pchart{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:10px 16px 8px;margin-bottom:14px}
+.pchart .ph{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--dm);font-variant-numeric:tabular-nums}
+.pchart .ph b{font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dm)}
+.pchart .pctl{margin-left:auto;display:flex;gap:8px}
+.pchart .seg{display:inline-flex;border:1px solid var(--ln2);border-radius:4px;overflow:hidden}
+.pchart .seg button{all:unset;cursor:pointer;padding:4px 10px;font-size:11px;color:var(--dm);font-family:inherit}
+.pchart .seg button+button{border-left:1px solid var(--ln2)}
+.pchart .seg button:hover{color:var(--tx)}
+.pchart .seg button.on{background:#3B1670;color:#E2CCFF}
+.pchart .seg button:focus-visible{outline:1px solid var(--ac);outline-offset:-1px}
+.pchart .pcv{position:relative;width:100%;height:300px;cursor:crosshair;touch-action:pan-y}
+.pchart .ph .phov{color:var(--tx)}.pchart .ph .phov em{font-style:normal;color:#E2CCFF}
+.pchart .pf{display:flex;justify-content:space-between;gap:12px;font-size:10px;color:var(--dm2);margin-top:4px}
+@media(max-width:640px){.pchart .pf span:nth-child(2){display:none}.pchart .pcv{height:240px}}
 .role{border:1px solid;border-radius:3px;padding:0 6px;font-size:10.5px;line-height:1.6;white-space:nowrap;flex:none}
 .role.r{color:var(--rd);border-color:rgba(255,93,122,.45)}
 .role.y{color:var(--ye);border-color:rgba(255,209,102,.45)}

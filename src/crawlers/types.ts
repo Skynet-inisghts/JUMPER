@@ -305,6 +305,9 @@ export interface LogLine {
   text: string;
 }
 
+/** A price candle: unix seconds, whole quote per whole token, quote volume. */
+export type Candle = { t: number; o: number; h: number; l: number; c: number; v: number };
+
 export interface Fill {
   wallet: string;
   kind: "buy" | "sell";
@@ -368,7 +371,9 @@ export interface Report {
   holders: HolderRow[];
   fills: Fill[];
   /** Price candles over the token's life: curve trades, then pool swaps. Whole quote per whole token. */
-  chart: { t: number; o: number; h: number; l: number; c: number; v: number }[];
+  chart: Candle[];
+  /** One- and five-minute candles, the newest day and week of them (absent on older reports). */
+  candles?: { m1: Candle[]; m5: Candle[] };
   /** What each crawler's desk monitor shows: real rows from this crawl. */
   panels: Panels;
   graph: { nodes: { id: string; layer: number; kind: "contract" | "tx" | "holder" | "history"; state: "held" | "smart" | "sniper" | "gone" | "neutral" }[]; links: [number, number][] };
