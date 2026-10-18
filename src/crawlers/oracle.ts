@@ -5,9 +5,10 @@ import { isFlip } from "./snare.js";
 import { isBotRecord } from "./scout.js";
 import { BURN_ADDRESSES } from "../chain/chain.js";
 import { blockTs, devSet, isNonWallet, venues, grouped, hasExited, lc, pctOf, pctText, short } from "./common.js";
+import { timeline } from "./timeline.js";
 import type {
   Candle, CrawlerName, CrawlerReport, DumpImpact, EarlyBuyer, SilkNode, Fill, Market, Operators, Outcome, Panels, Role, Rug, RugGroup, Flag, HolderRow, KnotOut, LedgerOut, LogLine, Metrics, Report,
-  ScoutOut, SieveOut, SnareOut, Tape, TrackerOut, Wallet, WeaverOut,
+  ScoutOut, SieveOut, SnareOut, Tape, Timeline, TrackerOut, Wallet, WeaverOut,
 } from "./types.js";
 
 export interface Crawled {
@@ -150,6 +151,7 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     facts,
     crawlers: crawlerReports(tape, c, metrics),
     chart: candles,
+    timeline: withAth(timeline(tape, c, supply, c.web.holders.map((h) => h.address)), candles),
     candles: { m1: candlesOf(tape, ticks, 60, 1440), m5: candlesOf(tape, ticks, 300, 2016) },
     rug: rugCheck(tape, c, candles),
     sellingNow: sellingNow(tape, c),
@@ -163,6 +165,14 @@ export function oracle(tape: Tape, c: Crawled): Omit<Report, "provenance"> {
     fills: fills(tape, c),
     graph: graph(tape, c),
   };
+}
+
+/** The all-time high joins the replay's events, from the life chart. */
+function withAth(t: Timeline, life: Candle[]): Timeline {
+  if (!life.length) return t;
+  const top = life.reduce((a, c) => (c.h > a.h ? c : a));
+  const events = [...t.events, { t: top.t, kind: "ath" as const, text: "all-time high" }].sort((a, b) => a.t - b.t);
+  return { ...t, events };
 }
 
 /**

@@ -5,6 +5,7 @@ import Logo from "./Logo";
 import PriceChart from "./PriceChart";
 import Similar from "./Similar";
 import WalletCheck, { type WalletHere } from "./WalletCheck";
+import Timeline from "./Timeline";
 import type { RecentRow } from "./types";
 import { buildChain, graphFromReport, type Bug, type Graph, type NodeState } from "@/lib/chain";
 import { createCrawlRoom } from "@/lib/crawlroom";
@@ -484,6 +485,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
               <MarketStrip r={r} />
               <TradeLinks token={r.token.address} />
               <PriceChart r={r} />
+              {r.timeline && r.timeline.steps.length > 1 && <Timeline key={r.token.address} r={r} />}
               <TopHolders r={r} onWallet={setWallet}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
                 <button className="btn ghost" onClick={() => { setValue(""); toInput(null); }}>Run another</button>

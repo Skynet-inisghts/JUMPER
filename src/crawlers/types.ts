@@ -411,6 +411,24 @@ export interface Fill {
   estimated: boolean;
 }
 
+/** One moment that changed a token's story, for the replay. */
+export interface TimelineEvent {
+  t: number;
+  kind: "launch" | "snipe" | "dev-sell" | "big-sell" | "smart-in" | "ath";
+  wallet?: string;
+  pct?: number;
+  text: string;
+}
+
+/** The token's life sampled at 80 moments: counts and shares (% supply) at each, the tracked wallets' balances, and the events. */
+export interface Timeline {
+  steps: { t: number; holders: number; top10: number; snipers: number; dev: number; smart: number }[];
+  wallets: { wallet: string; role: string }[];
+  /** balances[step][wallet], % supply */
+  balances: number[][];
+  events: TimelineEvent[];
+}
+
 export interface Panels {
   weaver: { nodes: number; edges: number; walletEdges: number; routers: number; firstBuyer: string | null; lastBuyer: string | null; fanout: number[] };
   tracker: { exitsByBucket: number[]; recent: { wallet: string; pct: number }[] };
@@ -483,6 +501,8 @@ export interface Report {
   candles?: { m1: Candle[]; m5: Candle[] };
   /** Wallets holding at the end of each chart candle (absent on older reports). */
   holderCurve?: number[];
+  /** The life replay (absent on older reports). */
+  timeline?: Timeline;
   /** What each crawler's desk monitor shows: real rows from this crawl. */
   panels: Panels;
   graph: { nodes: { id: string; layer: number; kind: "contract" | "tx" | "holder" | "history"; state: "held" | "smart" | "sniper" | "gone" | "neutral" }[]; links: [number, number][] };
