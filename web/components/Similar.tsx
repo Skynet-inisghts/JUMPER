@@ -1,6 +1,7 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import proof from "@/sample/proof.json";
+import sample from "@/sample/proof.json";
 import type { Report } from "@/lib/util";
 
 interface Row {
@@ -21,7 +22,17 @@ function shape(m: { score: number; sniperSupply: number; bundleSupply: number; f
  * past, not a forecast.
  */
 export default function Similar({ r }: { r: Report }) {
-  const rows = ((proof as unknown as { rows: Row[] }).rows ?? []).filter((x) => x.at && x.token.toLowerCase() !== r.token.address.toLowerCase());
+  // the rolling backtest; the checked-in run until it answers
+  const [all, setAll] = useState<Row[]>((sample as unknown as { rows: Row[] }).rows ?? []);
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/proof")
+      .then((x) => x.json())
+      .then((j: { rows?: Row[] }) => { if (alive && j.rows?.length) setAll(j.rows); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+  const rows = all.filter((x) => x.at && x.token.toLowerCase() !== r.token.address.toLowerCase());
   // no comparison for a token the score does not judge (too early, an airdrop)
   if (rows.length < 20 || (r as { outcome?: unknown }).outcome) return null;
   const me = shape({ ...r.metrics, score: r.score });
