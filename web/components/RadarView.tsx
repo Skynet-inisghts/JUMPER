@@ -38,7 +38,8 @@ const usd = (x: number | null) => (x == null ? "n/a" : x >= 1e6 ? `$${(x / 1e6).
 const age = (m: number) => (m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`);
 const xs = (x: number | null | undefined) => (x == null ? "n/a" : x >= 10 ? `${x.toFixed(0)}x` : `${x.toFixed(2)}x`);
 const BAND: Record<string, string> = { TORN: "bad", PATCHED: "mid", TAUT: "ok" };
-const ago = (s: number) => { const d = Math.max(0, Date.now() / 1000 - s); return d < 3600 ? `${Math.max(1, Math.round(d / 60))}m ago` : d < 86400 ? `${Math.round(d / 3600)}h ago` : `${Math.round(d / 86400)}d ago`; };
+/** Relative to the radar's own clock, so the server and the browser print the same. */
+const ago = (s: number, now: number) => { const d = Math.max(0, now - s); return d < 3600 ? `${Math.max(1, Math.round(d / 60))}m ago` : d < 86400 ? `${Math.round(d / 3600)}h ago` : `${Math.round(d / 86400)}d ago`; };
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 /** The rings run on the square root of age: the busy first hour gets most of the room. */
 const radiusOf = (min: number) => 22 + (R - 22) * Math.sqrt(Math.min(1, Math.max(0, min / WINDOW_MIN)));
@@ -148,7 +149,7 @@ function Web({ rows, others, hot, onHot }: { rows: RadarItem[]; others: RadarDot
   );
 }
 
-function Card({ r, hot, onHot }: { r: RadarItem; hot: boolean; onHot: (t: string | null) => void }) {
+function Card({ r, hot, onHot, at }: { r: RadarItem; hot: boolean; onHot: (t: string | null) => void; at: number }) {
   const [copied, setCopied] = useState(false);
   const copy = () => void navigator.clipboard?.writeText(r.token).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1300); });
   return (
@@ -170,7 +171,7 @@ function Card({ r, hot, onHot }: { r: RadarItem; hot: boolean; onHot: (t: string
         )}
       </div>
       <div className="rentry">
-        <span>spotted {r.entryAt ? ago(r.entryAt) : "now"} at <b>{usd(r.entryMcapUsd ?? r.mcapUsd)}</b></span>
+        <span>spotted {r.entryAt ? ago(r.entryAt, at) : "now"} at <b>{usd(r.entryMcapUsd ?? r.mcapUsd)}</b></span>
         <span className={r.sinceX == null ? "" : r.sinceX >= 1 ? "g" : "rd"}>{r.sinceX == null ? "" : `${xs(r.sinceX)} since`}</span>
         <span className="d">radar {r.rank}/100 · {pct(r.kept)} staying</span>
       </div>
@@ -192,7 +193,7 @@ function Card({ r, hot, onHot }: { r: RadarItem; hot: boolean; onHot: (t: string
 }
 
 /** What became of every token the radar showed: the record the radar is judged by. */
-function Track({ h }: { h: RadarHistory }) {
+function Track({ h, at }: { h: RadarHistory; at: number }) {
   const st = h.stats;
   const share = (a: number, n: number) => (n ? `${Math.round((a / n) * 100)}%` : "n/a");
   return (
@@ -214,7 +215,7 @@ function Track({ h }: { h: RadarHistory }) {
           {h.rows.map((r) => (
             <a key={r.token} className="rhr" href={`/?token=${r.token}`}>
               <b>${r.symbol}</b>
-              <span className="d">{ago(r.firstAt)}</span>
+              <span className="d">{ago(r.firstAt, at)}</span>
               <span>{usd(r.firstMcapUsd)}</span>
               <span className={BAND[r.band ?? ""] ?? "d"}>{r.score != null ? `${r.score} ${r.label}` : "n/a"}</span>
               <span className={r.peakX != null && r.peakX >= 2 ? "g" : ""}>{xs(r.peakX)}</span>
@@ -264,9 +265,9 @@ export default function RadarView({ initial }: { initial: RadarData | null }) {
       {!data && <p className="rempty">The radar did not answer. It comes back on the next read.</p>}
       {data && !rows.length && <p className="rempty">Nothing passes right now. Fresh launches are checked every two minutes.</p>}
       <div className="rgrid">
-        {rows.map((r) => <Card key={r.token} r={r} hot={hot === r.token} onHot={setHot} />)}
+        {rows.map((r) => <Card key={r.token} r={r} hot={hot === r.token} onHot={setHot} at={data?.at ?? 0} />)}
       </div>
-      {data?.history && <Track h={data.history} />}
+      {data?.history && <Track h={data.history} at={data.at} />}
     </>
   );
 }
