@@ -233,6 +233,32 @@ export interface Cluster {
 export const readClusters = (): Promise<{ at: number; windowH: number; clusters: Cluster[] }> =>
   call<{ at: number; windowH: number; clusters: Cluster[] }>("/clusters", undefined, 10_000);
 
+/** The bot's price alerts and followed wallets; jumper-watch sends the messages. */
+async function post<T>(path: string, body: unknown): Promise<T> {
+  const base = process.env.JUMPER_INDEX_URL!.trim().replace(/\/$/, "");
+  const res = await fetch(`${base}${path}`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-jumper-key": process.env.JUMPER_INDEX_KEY!.trim() },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10_000),
+  });
+  // the index's refusals carry a reason the bot shows as is
+  return (await res.json()) as T;
+}
+export const addPriceAlert = (chat: number, token: string, mult: number) =>
+  post<{ ok?: boolean; symbol?: string; price?: number; target?: number; count?: number; error?: string }>("/alert", { chat, token, mult });
+export const readPriceAlerts = (chat: number) =>
+  call<{ rows: { token: string; symbol: string; mult: number }[] }>(`/alerts?chat=${chat}`, undefined, 10_000);
+export const clearPriceAlerts = (chat: number, token?: string) => post<{ removed?: number }>("/alert-clear", { chat, token });
+export const followWallet = (chat: number, wallet: string) => post<{ ok?: boolean; already?: boolean; count?: number; error?: string }>("/follow", { chat, wallet });
+export const unfollowWallet = (chat: number, wallet?: string) => post<{ removed?: number }>("/unfollow", { chat, wallet });
+export const readFollows = (chat: number) => call<{ rows: { wallet: string }[] }>(`/follows?chat=${chat}`, undefined, 10_000);
+/** Watched tokens the site should crawl again, so a changed score reaches the watchers. */
+export const readWatchScoreQueue = async (): Promise<string[]> =>
+  (await call<{ rows: { token: string }[] }>("/watch-scores", undefined, 8_000)).rows.map((r) => r.token);
+export const writeWatchScore = (token: string, score: number, band: string, label: string) =>
+  post<{ changed?: boolean }>("/watch-score", { token, score, band, label });
+
 export const readPulse = (): Promise<Pulse> => call<Pulse>("/pulse", undefined, 8_000);
 
 export const readLatest = <T>(): Promise<{ report: T | null }> => call<{ report: T | null }>("/latest", undefined, 8_000);

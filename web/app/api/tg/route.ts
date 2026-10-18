@@ -7,7 +7,9 @@ import { fetchTokenLogo } from "@engine/chain/logo.js";
 import { RateLimiter } from "@engine/web.js";
 import { blockedMessage } from "@engine/blocked.js";
 import { readLaunch } from "@engine/chain/launches.js";
-import { indexConfigured, radarSub, readRadar, readWatches, unwatchToken, watchToken } from "@engine/chain/history.js";
+import {
+  addPriceAlert, clearPriceAlerts, followWallet, indexConfigured, radarSub, readFollows, readPriceAlerts, readRadar, readWatches, unfollowWallet, unwatchToken, watchToken,
+} from "@engine/chain/history.js";
 import type { Report } from "@engine/crawlers/types.js";
 import { cachedReport, crawlShared } from "@/lib/server";
 import { answerCallback, deleteMessage, editText, esc, sendPhoto, sendText, typing, type Button, type TgUpdate } from "@/lib/telegram";
@@ -38,6 +40,9 @@ const HELP = [
   "<code>/watch 0x...</code> alerts on a token: the dev sells, a wallet sells 1% of the supply or more at once, a smart wallet buys, the price moves 50% up or 30% down",
   "<code>/unwatch 0x...</code> or <code>/unwatch all</code> stops them, <code>/list</code> shows what you watch",
   "<code>/radar</code> fresh launches whose buyers stay, <code>/radar on</code> a message for each new one, <code>/radar off</code> stops it",
+  "<code>/alert 0x... 2x</code> or <code>/alert 0x... -50%</code> one message when the price gets there, <code>/alerts</code> lists them, <code>/alerts clear</code>",
+  "<code>/follow 0x...</code> a message on every trade of a wallet, <code>/unfollow 0x...</code>, <code>/following</code>",
+  "Watched tokens also tell you when their JUMPER score changes band.",
   "",
   "0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in.",
   "It measures the past, it does not predict. Not financial advice.",
@@ -137,8 +142,19 @@ async function watch(chat: number, token: Address): Promise<string> {
   return `${ok.already ? "Already watching" : "Watching"} <b>$${esc(ok.symbol ?? "")}</b> (${ok.count ?? 1} of 20). ${WATCH_NOTE}`;
 }
 
+/** A target as a multiple of the price now: 2x, 0.5x, -50%, +100%, 50% (up). */
+function multOf(arg: string): number | null {
+  const x = arg.match(/^(\d+(?:\.\d+)?)x$/i);
+  if (x) return Number(x[1]);
+  const p = arg.match(/^([+-]?)(\d+(?:\.\d+)?)%$/);
+  if (!p) return null;
+  const v = Number(p[2]) / 100;
+  return p[1] === "-" ? (v < 1 ? 1 - v : null) : 1 + v;
+}
+
 async function command(chat: number, replyTo: number, text: string) {
-  const [cmd, arg = ""] = text.replace(/@\w+/, "").split(/\s+/, 2);
+  const [head, arg = ""] = text.replace(/@\w+/, "").split(/\s+/, 2);
+  const cmd = head.toLowerCase();
   if (!indexConfigured()) return void sendText(chat, "Alerts are not set up here.", { replyTo });
   if (cmd === "/watch") {
     const input = target(arg);
@@ -166,6 +182,47 @@ async function command(chat: number, replyTo: number, text: string) {
       "",
       `Radar alerts: ${r.radar ? "on" : "off"}`,
     ].join("\n"), { replyTo });
+  }
+  if (cmd === "/alert") {
+    const [, a1 = "", a2 = ""] = text.split(/\s+/);
+    const input = target(a1);
+    const mult = multOf(a2);
+    if (!input || !mult || mult === 1) return void sendText(chat, "Send <code>/alert 0x... 2x</code>, <code>/alert 0x... -50%</code> or <code>/alert 0x... +100%</code>.", { replyTo });
+    const resolved = await resolveInput(input).catch(() => null);
+    if (!resolved?.token) return void sendText(chat, esc(resolved?.note ?? `nothing found for ${input}`), { replyTo });
+    const r = await addPriceAlert(chat, resolved.token, mult).catch(() => ({ error: "the alerts did not answer; try again in a moment" }) as { error: string });
+    if ("error" in r && r.error) return void sendText(chat, esc(r.error), { replyTo });
+    const ok = r as { symbol?: string; count?: number };
+    return void sendText(chat, `Alert set on <b>$${esc(ok.symbol ?? "")}</b>: one message when the price is ${mult > 1 ? `up ${Math.round((mult - 1) * 100)}%` : `down ${Math.round((1 - mult) * 100)}%`} from now (${ok.count ?? 1} of 20).`, { replyTo });
+  }
+  if (cmd === "/alerts") {
+    if (/^clear$/i.test(arg)) {
+      const r = await clearPriceAlerts(chat).catch(() => null);
+      return void sendText(chat, r ? `Cleared ${r.removed ?? 0}.` : "The alerts did not answer. Try again in a moment.", { replyTo });
+    }
+    const r = await readPriceAlerts(chat).catch(() => null);
+    if (!r) return void sendText(chat, "The alerts did not answer. Try again in a moment.", { replyTo });
+    if (!r.rows.length) return void sendText(chat, "No price alerts. <code>/alert 0x... 2x</code> sets one.", { replyTo });
+    return void sendText(chat, [`<b>${r.rows.length} price alerts</b>`, ...r.rows.map((a) => `$${esc(a.symbol)} at ${a.mult > 1 ? `+${Math.round((a.mult - 1) * 100)}%` : `-${Math.round((1 - a.mult) * 100)}%`} <code>${a.token}</code>`), "", "<code>/alerts clear</code> removes them."].join("\n"), { replyTo });
+  }
+  if (cmd === "/follow") {
+    const w = arg.match(ADDRESS)?.[0];
+    if (!w) return void sendText(chat, "Send <code>/follow 0x...</code> with a wallet address.", { replyTo });
+    const r = await followWallet(chat, w).catch(() => ({ error: "following did not answer; try again in a moment" }) as { error: string });
+    if ("error" in r && r.error) return void sendText(chat, esc(r.error), { replyTo });
+    const ok = r as { already?: boolean; count?: number };
+    return void sendText(chat, `${ok.already ? "Already following" : "Following"} <code>${w.toLowerCase()}</code> (${ok.count ?? 1} of 10). A message on every Pons trade it makes.`, { replyTo });
+  }
+  if (cmd === "/unfollow") {
+    const w = arg.match(ADDRESS)?.[0];
+    if (!w && !/^all$/i.test(arg)) return void sendText(chat, "Send <code>/unfollow 0x...</code> or <code>/unfollow all</code>.", { replyTo });
+    const r = await unfollowWallet(chat, w).catch(() => null);
+    return void sendText(chat, r ? (r.removed ? `Stopped following ${r.removed === 1 ? "it" : `${r.removed} wallets`}.` : "That wallet was not followed.") : "Following did not answer. Try again in a moment.", { replyTo });
+  }
+  if (cmd === "/following") {
+    const r = await readFollows(chat).catch(() => null);
+    if (!r) return void sendText(chat, "Following did not answer. Try again in a moment.", { replyTo });
+    return void sendText(chat, r.rows.length ? [`<b>Following ${r.rows.length} of 10</b>`, ...r.rows.map((f) => `<code>${f.wallet}</code>`)].join("\n") : "You follow no wallets. <code>/follow 0x...</code> adds one.", { replyTo });
   }
   if (cmd === "/radar") {
     if (/^(on|off)$/i.test(arg)) {
@@ -211,7 +268,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  if (/^\/(watch|unwatch|list|radar)\b/i.test(text)) {
+  if (/^\/(watch|unwatch|list|radar|alerts?|follow|unfollow|following)\b/i.test(text)) {
     after(() => command(chat, msg.message_id, text));
     return NextResponse.json({ ok: true });
   }
