@@ -20,13 +20,17 @@ export const maxDuration = 300;
  */
 
 const pngs = new TtlCache<Buffer>(150);
+const bare = new Set<string>();
 const limiter = new RateLimiter(10, 60_000);
 
-const png = (buf: Buffer) =>
+/** A card drawn without its logo is kept a minute: the logo is usually there on the next try. */
+const NO_LOGO_MS = 60_000;
+
+const png = (buf: Buffer, short = false) =>
   new NextResponse(new Uint8Array(buf), {
     headers: {
       "content-type": "image/png",
-      "cache-control": "public, s-maxage=300, stale-while-revalidate=3600",
+      "cache-control": short ? "public, s-maxage=60" : "public, s-maxage=300, stale-while-revalidate=3600",
     },
   });
 
@@ -50,7 +54,7 @@ export async function GET(request: Request) {
   const blocked = blockedMessage(token);
   if (blocked) return NextResponse.json({ error: blocked }, { status: 404 });
   const hit = pngs.get(key);
-  if (hit) return png(hit);
+  if (hit) return png(hit, bare.has(key));
 
   let report = cachedReport(token);
   if (!report && !limiter.allow(clientIp(request))) {
@@ -62,10 +66,12 @@ export async function GET(request: Request) {
       if (!report) report = await crawlShared(token).promise;
       const logo = await fetchTokenLogo(token).catch(() => null);
       const out = await renderCard(report, { logo: logo ?? undefined });
-      pngs.set(key, out, reportTtlMs(report.token.ageSec));
+      if (logo) bare.delete(key);
+      else bare.add(key);
+      pngs.set(key, out, logo ? reportTtlMs(report.token.ageSec) : NO_LOGO_MS);
       return out;
     });
-    return png(buf);
+    return png(buf, bare.has(key));
   } catch (error) {
     if (error instanceof CrawlError) return NextResponse.json({ error: error.message }, { status: 404 });
     return NextResponse.json({ error: "chain read failed; try again in a moment" }, { status: 502 });
