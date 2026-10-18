@@ -607,3 +607,24 @@ button.inputchip{all:unset}
 
 /* spiders walk everywhere, the crawl overlay included */
 body:has(#ov.on) #web{z-index:65}
+
+/* $JUMPER block */
+.jtok{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-bottom:10px}
+.jca{flex:1 1 420px;display:flex;align-items:center;gap:14px;min-width:0;padding:10px 16px;border:1px solid var(--ln2);border-radius:5px;background:var(--pan);color:var(--tx);font:inherit;font-size:13px;cursor:pointer;text-align:left}
+.jca:hover{border-color:var(--ac)}
+.jca span{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dm2)}
+.jca b{font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.jca i{font-style:normal;color:var(--ac)}
+.jlinks{display:flex;flex-wrap:wrap;gap:8px}
+.jlinks .btn{text-decoration:none;display:flex;align-items:center}
+.jwait{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:40px 16px;text-align:center;color:var(--dm)}
+.jburn{margin-top:8px;border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:12px 16px;font-size:12px}
+.jbh{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.jbh b{font-weight:400;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dm2)}
+.jbh span{color:var(--tx)}
+.jnone{color:var(--dm);margin-top:8px}
+.jbr{display:grid;grid-template-columns:90px 1fr auto;gap:12px;padding:7px 0;border-top:1px solid var(--ln);margin-top:8px;color:var(--tx);text-decoration:none;font-variant-numeric:tabular-nums}
+.jbr:hover b{color:var(--ac)}
+.jbr span{color:var(--dm)}
+.jbr b{font-weight:400}
+@media (max-width:640px){.jca{flex-basis:100%}.jlinks .btn{flex:1 1 calc(50% - 8px);justify-content:center}}
