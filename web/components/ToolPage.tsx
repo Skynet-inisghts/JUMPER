@@ -11,10 +11,12 @@ export default function ToolPage({ tagline, children }: { tagline: string; child
           <Logo />
           <div className="tagline">{tagline}</div>
           <div className="navlinks">
+            <Link href="/radar">Radar</Link>
             <Link href="/map">Map</Link>
             <Link href="/exits">Exits</Link>
             <Link href="/clusters">Clusters</Link>
             <Link href="/dev">Dev check</Link>
+            <Link href="/leaders">Leaders</Link>
             <Link href="/">Terminal</Link>
           </div>
         </div>
