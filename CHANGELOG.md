@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.1 · 2026-10-18
+
+- Logos load on more cards: a logo kept as a link to any IPFS gateway is read through the gateway pons uses, the pons gateway is tried twice, the RPC read of the logo once more, and logos up to 4 MB are kept.
+- A card drawn without its logo is cached for a minute instead of hours, so a slow gateway no longer leaves a token without its logo.
+
 ## 0.6.0 · 2026-10-18
 
 - The report shows the market: price, market cap, liquidity, 24h volume, holders, top ten, age and the creator, on one line over the chart.
