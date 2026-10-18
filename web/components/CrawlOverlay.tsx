@@ -737,7 +737,7 @@ function MarketStrip({ r }: { r: Report }) {
     ["holders", fmt(r.metrics.holders)],
     ["top 10", (m.top10 < 10 ? m.top10.toFixed(1) : Math.round(m.top10)) + "%"],
     ["age", age(r.token.ageSec)],
-    ["creator", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
+    ["creator", <a key="dep" href={`/dev?address=${r.token.deployer}`} target="_blank" rel="noopener" title="Everything this dev launched, and what became of it">{short(r.token.deployer)}</a>],
   ];
   return (
     <div className="mstrip">

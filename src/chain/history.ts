@@ -210,6 +210,29 @@ export const readRadarScoreQueue = async (): Promise<{ token: string; scoredAt: 
 export const writeRadarScore = (token: string, score: number, band: string, label: string): Promise<unknown> =>
   call("/radar-score", { token, score, band, label }, 8_000);
 
+/** One big sell of the last hour; the dev flag is the site's, from the launch event. */
+export interface ExitSell { wallet: string; block: number; minAgo: number; share: number; eth: number; bagSold: number | null; left: number | null; dev?: boolean }
+export interface ExitRow { token: string; symbol: string; ageMin: number; mcapEth: number | null; sold: number; eth: number; sellers: number; lastMinAgo: number; sells: ExitSell[] }
+export const readExits = (): Promise<{ at: number; rows: ExitRow[] }> => call<{ at: number; rows: ExitRow[] }>("/exits", undefined, 15_000);
+
+/** The launchpad map jumper-watch draws every five minutes. */
+export interface MapNode { token: string; symbol: string; ageMin: number; wallets: number; mcapUsd: number | null; peakUsd: number | null; fromPeak: number; score: number | null; label: string | null; radar: boolean }
+export const readMap = (): Promise<{ at: number; nodes: MapNode[] }> => call<{ at: number; nodes: MapNode[] }>("/map", undefined, 10_000);
+
+/** A dev's launches and what became of them. */
+export interface DevToken { token: string; symbol: string; ageMin: number; wallets: number; peakMcapEth: number | null; nowMcapEth: number | null; devBuyEth: number; devSellEth: number; devSold: number | null }
+export const readDevTokens = (dev: string, tokens: string[]): Promise<{ dev: string; rows: DevToken[] }> =>
+  call<{ dev: string; rows: DevToken[] }>("/dev", { dev, tokens }, 30_000);
+
+/** Wallets that move together, from the jumper-clusters job. */
+export interface Cluster {
+  id: string; wallets: string[]; size: number; tokenCount: number; spentEth: number; backEth: number; lastMinAgo: number;
+  tokens: { token: string; symbol: string; together: number; held: number; kept: number }[];
+  holding: { token: string; symbol: string; together: number; held: number; kept: number }[];
+}
+export const readClusters = (): Promise<{ at: number; windowH: number; clusters: Cluster[] }> =>
+  call<{ at: number; windowH: number; clusters: Cluster[] }>("/clusters", undefined, 10_000);
+
 export const readPulse = (): Promise<Pulse> => call<Pulse>("/pulse", undefined, 8_000);
 
 export const readLatest = <T>(): Promise<{ report: T | null }> => call<{ report: T | null }>("/latest", undefined, 8_000);
