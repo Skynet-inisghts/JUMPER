@@ -413,6 +413,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
         <div className={"step" + (step === "report" ? " on" : "")} id="stepReport">
           <div className="repwrap">
             <div className="repcore" ref={coreRef}>
+              <MarketStrip r={r} />
               <div className="gradehead">
                 <div className="gradeltr" style={{ color: b.color }}>{r.label}</div>
                 <div>
@@ -608,6 +609,43 @@ function TopHolders({ r, children }: { r: Report; children?: React.ReactNode }) 
           <span className="v d">{h.valueUsd != null ? "$" + fmt(h.valueUsd) : ""}</span>
           <span className={"v " + (h.pnlPct == null ? "d" : h.pnlPct >= 0 ? "g" : "rd")}>{h.pnlPct != null ? `${h.pnlPct >= 0 ? "+" : ""}${Math.round(h.pnlPct)}%` : ""}</span>
         </a>
+      ))}
+    </div>
+  );
+}
+
+/** Price, cap, liquidity, the last day's volume, age, holders, top ten and the deployer, on one line. */
+function MarketStrip({ r }: { r: Report }) {
+  const m = r.market;
+  if (!m) return null;
+  const usd = (x: number | null) => {
+    if (x == null) return "n/a";
+    if (x >= 1e9) return "$" + (x / 1e9).toFixed(2) + "B";
+    if (x >= 1e6) return "$" + (x / 1e6).toFixed(2) + "M";
+    if (x >= 1e3) return "$" + (x / 1e3).toFixed(1) + "K";
+    return "$" + x.toFixed(0);
+  };
+  const price = (x: number | null) => {
+    if (x == null) return "n/a";
+    if (x >= 1) return "$" + x.toFixed(2);
+    const z = Math.max(0, -Math.floor(Math.log10(x)) - 1);
+    return "$" + x.toFixed(Math.min(12, z + 3));
+  };
+  const age = (s: number) => (s < 3600 ? `${Math.max(1, Math.round(s / 60))}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`);
+  const cells: [string, React.ReactNode][] = [
+    ["price", price(m.priceUsd)],
+    ["mcap", usd(m.mcapUsd)],
+    [m.liquidityIn === "curve" ? `liq · curve ${Math.round(r.token.curveProgress * 100)}%` : "liq · pool", usd(m.liquidityUsd)],
+    ["vol 24h", <span key="vol">{m.vol24hUsd != null ? usd(m.vol24hUsd) : `${m.vol24hQuote.toFixed(2)} ${r.token.pairSymbol}`}<i> · {fmt(m.trades24h)} tx</i></span>],
+    ["age", age(r.token.ageSec)],
+    ["holders", fmt(r.metrics.holders)],
+    ["top 10", (m.top10 < 10 ? m.top10.toFixed(1) : Math.round(m.top10)) + "%"],
+    ["deployer", <a key="dep" href={`https://robinhoodchain.blockscout.com/address/${r.token.deployer}`} target="_blank" rel="noreferrer">{short(r.token.deployer)}</a>],
+  ];
+  return (
+    <div className="mstrip">
+      {cells.map(([k, v]) => (
+        <div key={k}><span>{k}</span><b>{v}</b></div>
       ))}
     </div>
   );

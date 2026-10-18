@@ -11,6 +11,8 @@ import { SOURCES } from "./chain.js";
 export interface UsdRate {
   usd: number;
   source: string;
+  /** The pool's liquidity in dollars, when the source reports it. */
+  liquidityUsd?: number;
 }
 
 async function getJson(url: string, timeoutMs = 8_000): Promise<unknown> {
@@ -57,7 +59,7 @@ export async function dexPriceUsd(token: string): Promise<UsdRate | null> {
       .filter((p) => p.chainId === "robinhood" && p.baseToken.address.toLowerCase() === token.toLowerCase() && Number(p.priceUsd) > 0)
       .sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0));
     if (!pairs[0]) return null;
-    return { usd: Number(pairs[0].priceUsd), source: "dexscreener" };
+    return { usd: Number(pairs[0].priceUsd), source: "dexscreener", liquidityUsd: pairs[0].liquidity?.usd };
   } catch {
     return null;
   }

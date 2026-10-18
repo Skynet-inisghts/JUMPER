@@ -26,6 +26,8 @@ export interface TapeLaunch {
   phaseLabel: string;
   graduated: boolean;
   curveProgress: number;
+  /** The curve's quote reserve, quote base units (absent on older tapes). */
+  quoteReserve?: bigint;
   launchedAt: number;
   launchBlock: number;
   totalSupply: bigint;
@@ -90,6 +92,8 @@ export interface Tape {
   quoteUsd: number | null;
   /** Optional direct dollar price per whole token (graduated tokens, DEX). */
   tokenUsd: number | null;
+  /** The pool's dollar liquidity from the DEX source (graduated tokens; absent on older tapes). */
+  liquidityUsd?: number | null;
   sources: string[];
 }
 
@@ -269,6 +273,21 @@ export interface HolderRow {
   heldSec: number;
 }
 
+/** The market strip at the top of the report, in dollars where a rate was read. */
+export interface Market {
+  priceUsd: number | null;
+  mcapUsd: number | null;
+  /** The curve's quote reserve before graduation, the pool's liquidity after. */
+  liquidityUsd: number | null;
+  liquidityIn: "curve" | "pool";
+  /** Curve and pool trades of the last 24 hours. */
+  vol24hUsd: number | null;
+  vol24hQuote: number;
+  trades24h: number;
+  /** % of supply the ten biggest holders have. */
+  top10: number;
+}
+
 export interface CrawlerReport {
   name: CrawlerName;
   color: string;
@@ -341,6 +360,8 @@ export interface Report {
     snare: { sniperSupply: number; sniperHeld: number; sniperWallets: number; sniperExited: number; bundles: number; bundleSupply: number };
     exit: { exitPressure: number; soldHour: number; boughtHour: number; devState: string; devSoldPct: number; takenOut: number; takenOutUsd: number | null; pairSymbol: string };
   };
+  /** Price, market cap, liquidity, 24h volume, top ten (absent on older reports). */
+  market?: Market;
   /** the three fact lines the card and the report print */
   facts: [string, string, string];
   crawlers: CrawlerReport[];
