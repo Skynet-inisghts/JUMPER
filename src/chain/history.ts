@@ -174,6 +174,10 @@ export async function writeProof(proof: unknown): Promise<void> {
 export interface RadarRow {
   token: string; symbol: string; ageMin: number; buyers: number; stayed: number; kept: number;
   top: number; snipe: number; smartIn: number; volEth: number; mcapUsd: number | null; fromPeak: number; rank: number;
+  /** when the radar first showed it, at what cap, and its price since as a multiple */
+  entryAt?: number; entryMcapUsd?: number | null; sinceX?: number | null;
+  /** the full crawl's score, once the site has run it */
+  score?: number; band?: string; label?: string; scoredAt?: number;
 }
 export interface Radar { at: number; rows: RadarRow[]; checked?: number; others?: { token: string; symbol: string; ageMin: number }[] }
 export const readRadar = (): Promise<Radar> => call<Radar>("/radar", undefined, 8_000);
@@ -193,6 +197,18 @@ export const unwatchToken = (chat: number, token?: string): Promise<{ removed: n
 export const readWatches = (chat: number): Promise<{ rows: { token: string; symbol: string }[]; radar: boolean }> =>
   call<{ rows: { token: string; symbol: string }[]; radar: boolean }>(`/watches?chat=${chat}`, undefined, 10_000);
 export const radarSub = (chat: number, on: boolean): Promise<{ on: boolean }> => call<{ on: boolean }>("/radar-sub", { chat, on }, 10_000);
+
+/** What became of every token the radar showed over the last days. */
+export interface RadarHistory {
+  at: number; days: number;
+  stats: { spotted: number; settled: number; reached2x: number; fell50at24h: number; medianX24h: number | null } | null;
+  rows: { token: string; symbol: string; firstAt: number; firstMcapUsd: number | null; peakX: number | null; x6h: number | null; x24h: number | null; xNow: number | null; score: number | null; band: string | null; label: string | null }[];
+}
+export const readRadarHistory = (): Promise<RadarHistory> => call<RadarHistory>("/radar-history", undefined, 8_000);
+export const readRadarScoreQueue = async (): Promise<{ token: string; scoredAt: number | null }[]> =>
+  (await call<{ rows: { token: string; scoredAt: number | null }[] }>("/radar-scores", undefined, 8_000)).rows;
+export const writeRadarScore = (token: string, score: number, band: string, label: string): Promise<unknown> =>
+  call("/radar-score", { token, score, band, label }, 8_000);
 
 export const readPulse = (): Promise<Pulse> => call<Pulse>("/pulse", undefined, 8_000);
 

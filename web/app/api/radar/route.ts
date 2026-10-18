@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { Address } from "viem";
 import { publicClient } from "@engine/chain/chain.js";
 import { erc20Abi } from "@engine/chain/abi.js";
-import { indexConfigured, readRadar } from "@engine/chain/history.js";
+import { indexConfigured, readRadar, readRadarHistory } from "@engine/chain/history.js";
 import { TtlCache } from "@engine/web.js";
 import "@/lib/server";
 
@@ -23,8 +23,8 @@ async function nameOf(token: string): Promise<string> {
 
 export async function GET() {
   if (!indexConfigured()) return NextResponse.json({ error: "no index configured" }, { status: 503 });
-  const data = await readRadar().catch(() => null);
+  const [data, history] = await Promise.all([readRadar().catch(() => null), readRadarHistory().catch(() => null)]);
   if (!data) return NextResponse.json({ error: "the radar did not answer" }, { status: 502 });
   const rows = await Promise.all(data.rows.map(async (r) => ({ ...r, name: await nameOf(r.token) })));
-  return NextResponse.json({ ...data, rows }, { headers: { "cache-control": "public, s-maxage=15, stale-while-revalidate=60" } });
+  return NextResponse.json({ ...data, rows, history }, { headers: { "cache-control": "public, s-maxage=15, stale-while-revalidate=60" } });
 }

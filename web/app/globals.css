@@ -689,6 +689,23 @@ body:has(#ov.on) #web{z-index:65}
 .rca:hover{border-color:var(--ac)}.rca i{font-style:normal;color:var(--ac)}
 .racts{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
 .racts .btn{text-align:center;text-decoration:none;padding:9px 6px}
+.rscore.bad b,.rscore.bad em{color:var(--rd)}.rscore.bad em{border-color:rgba(255,93,122,.5)}
+.rscore.mid b,.rscore.mid em{color:var(--ye)}.rscore.mid em{border-color:rgba(255,209,102,.5)}
+.rscore.ok b,.rscore.ok em{color:var(--ac2)}
+.rscore.wait i{font-size:11px;color:var(--dm);animation:rpulse 1.6s ease-in-out infinite}
+.rentry{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--dm)}
+.rentry b{font-weight:400;color:var(--tx)}.rentry .g{color:var(--ac2)}.rentry .rd{color:var(--rd)}.rentry .d{color:var(--dm2);margin-left:auto}
+.rtrack{padding:10px 0 60px}
+.rtrack h2{font-size:30px;margin-bottom:8px}
+.rhist{border:1px solid var(--ln);background:var(--pan);border-radius:8px;overflow:hidden;font-size:12px;font-variant-numeric:tabular-nums}
+.rhist .rhh,.rhist .rhr{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(7,minmax(0,1fr));gap:10px;padding:9px 16px;align-items:center}
+.rhist .rhh{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dm2);border-bottom:1px solid var(--ln)}
+.rhist .rhr{color:var(--tx);text-decoration:none;border-bottom:1px solid rgba(36,27,51,.6)}
+.rhist .rhr:last-child{border-bottom:0}.rhist .rhr:hover{background:rgba(180,124,255,.06)}
+.rhist .rhr b{font-weight:400}
+.rhist .d{color:var(--dm)}.rhist .g,.rhist .ok{color:var(--ac2)}.rhist .rd,.rhist .bad{color:var(--rd)}.rhist .mid{color:var(--ye)}
+.rnums b.rd{color:var(--rd)}
+@media(max-width:760px){.rhist .rhh{display:none}.rhist .rhr{grid-template-columns:1.2fr 1fr 1fr 1fr}.rhist .rhr>:nth-child(2),.rhist .rhr>:nth-child(4),.rhist .rhr>:nth-child(6),.rhist .rhr>:nth-child(7){display:none}}
 @media(max-width:1000px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.rhero{grid-template-columns:1fr;gap:16px;padding-top:24px}.rhero h1{font-size:44px}.rweb{max-width:380px;margin:0 auto;width:100%}.rgrid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.rwsweep,.rlive i{animation:none}}

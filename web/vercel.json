@@ -1,6 +1,7 @@
 {
   "crons": [
     { "path": "/api/warm", "schedule": "* * * * *" },
-    { "path": "/api/proof-tick", "schedule": "*/10 * * * *" }
+    { "path": "/api/proof-tick", "schedule": "*/10 * * * *" },
+    { "path": "/api/radar-score", "schedule": "*/2 * * * *" }
   ]
 }

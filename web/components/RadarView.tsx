@@ -11,9 +11,20 @@ import { MARK } from "@/lib/util";
 export interface RadarItem {
   token: string; symbol: string; name?: string; ageMin: number; buyers: number; stayed: number; kept: number;
   top: number; snipe: number; smartIn: number; volEth: number; mcapUsd: number | null; fromPeak: number; rank: number;
+  entryAt?: number; entryMcapUsd?: number | null; sinceX?: number | null;
+  score?: number; band?: string; label?: string; scoredAt?: number;
+}
+export interface RadarPast {
+  token: string; symbol: string; firstAt: number; firstMcapUsd: number | null; peakX: number | null;
+  x6h: number | null; x24h: number | null; xNow: number | null; score: number | null; band: string | null; label: string | null;
+}
+export interface RadarHistory {
+  days: number;
+  stats: { spotted: number; settled: number; reached2x: number; fell50at24h: number; medianX24h: number | null } | null;
+  rows: RadarPast[];
 }
 export interface RadarDot { token: string; symbol: string; ageMin: number }
-export interface RadarData { at: number; rows: RadarItem[]; checked?: number; others?: RadarDot[] }
+export interface RadarData { at: number; rows: RadarItem[]; checked?: number; others?: RadarDot[]; history?: RadarHistory | null }
 
 const WINDOW_MIN = 180;
 const SIZE = 440;
@@ -25,6 +36,9 @@ const RINGS = [15, 60, 120, 180];
 const pct = (x: number) => `${(x * 100).toFixed(Math.abs(x) < 0.1 ? 1 : 0)}%`;
 const usd = (x: number | null) => (x == null ? "n/a" : x >= 1e6 ? `$${(x / 1e6).toFixed(2)}M` : x >= 1e3 ? `$${(x / 1e3).toFixed(1)}K` : `$${x.toFixed(0)}`);
 const age = (m: number) => (m < 60 ? `${m}m` : `${Math.floor(m / 60)}h ${m % 60}m`);
+const xs = (x: number | null | undefined) => (x == null ? "n/a" : x >= 10 ? `${x.toFixed(0)}x` : `${x.toFixed(2)}x`);
+const BAND: Record<string, string> = { TORN: "bad", PATCHED: "mid", TAUT: "ok" };
+const ago = (s: number) => { const d = Math.max(0, Date.now() / 1000 - s); return d < 3600 ? `${Math.max(1, Math.round(d / 60))}m ago` : d < 86400 ? `${Math.round(d / 3600)}h ago` : `${Math.round(d / 86400)}d ago`; };
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 /** The rings run on the square root of age: the busy first hour gets most of the room. */
 const radiusOf = (min: number) => 22 + (R - 22) * Math.sqrt(Math.min(1, Math.max(0, min / WINDOW_MIN)));
@@ -149,7 +163,16 @@ function Card({ r, hot, onHot }: { r: RadarItem; hot: boolean; onHot: (t: string
       </header>
       <div className="rbox">
         <div><span>cap now</span><b>{usd(r.mcapUsd)}</b></div>
-        <div className="rscore"><b>{r.rank}</b><i>/100</i><em>{pct(r.kept)} staying</em></div>
+        {r.score != null ? (
+          <div className={"rscore " + (BAND[r.band ?? ""] ?? "")} title="the full JUMPER crawl of this token"><b>{r.score}</b><i>/100</i><em>{r.label}</em></div>
+        ) : (
+          <div className="rscore wait" title="the full crawl runs within a few minutes of a token reaching the radar"><i>crawling</i></div>
+        )}
+      </div>
+      <div className="rentry">
+        <span>spotted {r.entryAt ? ago(r.entryAt) : "now"} at <b>{usd(r.entryMcapUsd ?? r.mcapUsd)}</b></span>
+        <span className={r.sinceX == null ? "" : r.sinceX >= 1 ? "g" : "rd"}>{r.sinceX == null ? "" : `${xs(r.sinceX)} since`}</span>
+        <span className="d">radar {r.rank}/100 · {pct(r.kept)} staying</span>
       </div>
       <dl className="rstats">
         <div><dt>buyers</dt><dd>{r.buyers}</dd></div>
@@ -165,6 +188,44 @@ function Card({ r, hot, onHot }: { r: RadarItem; hot: boolean; onHot: (t: string
         <a className="btn ghost" href={`/?token=${r.token}`}>Full scan</a>
       </div>
     </article>
+  );
+}
+
+/** What became of every token the radar showed: the record the radar is judged by. */
+function Track({ h }: { h: RadarHistory }) {
+  const st = h.stats;
+  const share = (a: number, n: number) => (n ? `${Math.round((a / n) * 100)}%` : "n/a");
+  return (
+    <section className="rtrack">
+      <h2>Radar track record</h2>
+      <p className="rfine">Every token the radar showed in the last {h.days} days, from the moment it was spotted: the highest price after, the price six and twenty-four hours later, and the price now, as multiples of the price when it was spotted. The misses stay in.</p>
+      {st && (
+        <div className="rnums">
+          <div><span>spotted</span><b>{st.spotted}</b></div>
+          <div><span>24 h old</span><b>{st.settled}</b></div>
+          <div><span>went 2x after</span><b className="g">{share(st.reached2x, st.settled)}</b></div>
+          <div><span>down 50% at 24 h</span><b className="rd">{share(st.fell50at24h, st.settled)}</b></div>
+          <div><span>median at 24 h</span><b>{xs(st.medianX24h)}</b></div>
+        </div>
+      )}
+      {h.rows.length ? (
+        <div className="rhist">
+          <div className="rhh"><span>token</span><span>spotted</span><span>cap then</span><span>score</span><span>peak after</span><span>at 6 h</span><span>at 24 h</span><span>now</span></div>
+          {h.rows.map((r) => (
+            <a key={r.token} className="rhr" href={`/?token=${r.token}`}>
+              <b>${r.symbol}</b>
+              <span className="d">{ago(r.firstAt)}</span>
+              <span>{usd(r.firstMcapUsd)}</span>
+              <span className={BAND[r.band ?? ""] ?? "d"}>{r.score != null ? `${r.score} ${r.label}` : "n/a"}</span>
+              <span className={r.peakX != null && r.peakX >= 2 ? "g" : ""}>{xs(r.peakX)}</span>
+              <span className={r.x6h == null ? "d" : r.x6h >= 1 ? "g" : "rd"}>{r.x6h == null ? "waiting" : xs(r.x6h)}</span>
+              <span className={r.x24h == null ? "d" : r.x24h >= 1 ? "g" : "rd"}>{r.x24h == null ? "waiting" : xs(r.x24h)}</span>
+              <span className={r.xNow == null ? "d" : r.xNow >= 1 ? "g" : "rd"}>{xs(r.xNow)}</span>
+            </a>
+          ))}
+        </div>
+      ) : <p className="rempty">The record starts with the first token the radar shows.</p>}
+    </section>
   );
 }
 
@@ -205,6 +266,7 @@ export default function RadarView({ initial }: { initial: RadarData | null }) {
       <div className="rgrid">
         {rows.map((r) => <Card key={r.token} r={r} hot={hot === r.token} onHot={setHot} />)}
       </div>
+      {data?.history && <Track h={data.history} />}
     </>
   );
 }
