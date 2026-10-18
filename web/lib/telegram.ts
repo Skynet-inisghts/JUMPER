@@ -12,9 +12,16 @@ export interface TgMessage {
 export interface TgUpdate {
   update_id: number;
   message?: TgMessage;
+  callback_query?: TgCallback;
 }
 
-export type Button = { text: string; url: string };
+export interface TgCallback {
+  id: string;
+  data?: string;
+  message?: TgMessage;
+}
+
+export type Button = { text: string; url: string } | { text: string; callback_data: string };
 
 const api = (method: string) => `https://api.telegram.org/bot${process.env.TG_BOT_TOKEN!.trim()}/${method}`;
 
@@ -51,6 +58,8 @@ export const editText = (chat: number, message: number, text: string) =>
   call("editMessageText", { chat_id: chat, message_id: message, text, parse_mode: "HTML", link_preview_options: { is_disabled: true } });
 
 export const deleteMessage = (chat: number, message: number) => call("deleteMessage", { chat_id: chat, message_id: message });
+
+export const answerCallback = (id: string, text: string) => call("answerCallbackQuery", { callback_query_id: id, text });
 
 export const typing = (chat: number) => call("sendChatAction", { chat_id: chat, action: "upload_photo" });
 

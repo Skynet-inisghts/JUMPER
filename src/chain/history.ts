@@ -177,6 +177,22 @@ export interface RadarRow {
 }
 export const readRadar = (): Promise<{ at: number; rows: RadarRow[] }> => call<{ at: number; rows: RadarRow[] }>("/radar", undefined, 8_000);
 
+/** The bot's watchlist: jumper-watch on the index host sends the alerts. */
+export async function watchToken(chat: number, token: string, deployer?: string): Promise<{ ok?: boolean; symbol?: string; already?: boolean; count?: number; error?: string }> {
+  const base = process.env.JUMPER_INDEX_URL!.trim().replace(/\/$/, "");
+  const res = await fetch(`${base}/watch`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-jumper-key": process.env.JUMPER_INDEX_KEY!.trim() },
+    body: JSON.stringify({ chat, token, deployer }),
+    signal: AbortSignal.timeout(10_000),
+  });
+  return (await res.json()) as { ok?: boolean; symbol?: string; already?: boolean; count?: number; error?: string };
+}
+export const unwatchToken = (chat: number, token?: string): Promise<{ removed: number }> => call<{ removed: number }>("/unwatch", { chat, token }, 10_000);
+export const readWatches = (chat: number): Promise<{ rows: { token: string; symbol: string }[]; radar: boolean }> =>
+  call<{ rows: { token: string; symbol: string }[]; radar: boolean }>(`/watches?chat=${chat}`, undefined, 10_000);
+export const radarSub = (chat: number, on: boolean): Promise<{ on: boolean }> => call<{ on: boolean }>("/radar-sub", { chat, on }, 10_000);
+
 export const readPulse = (): Promise<Pulse> => call<Pulse>("/pulse", undefined, 8_000);
 
 export const readLatest = <T>(): Promise<{ report: T | null }> => call<{ report: T | null }>("/latest", undefined, 8_000);

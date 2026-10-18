@@ -6,9 +6,11 @@ import { renderCard } from "@engine/card/card.js";
 import { fetchTokenLogo } from "@engine/chain/logo.js";
 import { RateLimiter } from "@engine/web.js";
 import { blockedMessage } from "@engine/blocked.js";
+import { readLaunch } from "@engine/chain/launches.js";
+import { indexConfigured, radarSub, readRadar, readWatches, unwatchToken, watchToken } from "@engine/chain/history.js";
 import type { Report } from "@engine/crawlers/types.js";
 import { cachedReport, crawlShared } from "@/lib/server";
-import { deleteMessage, editText, esc, sendPhoto, sendText, typing, type Button, type TgUpdate } from "@/lib/telegram";
+import { answerCallback, deleteMessage, editText, esc, sendPhoto, sendText, typing, type Button, type TgUpdate } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +34,10 @@ const HELP = [
   "<b>JUMPER</b> crawls one Pons v2 token on Robinhood Chain and scores its holders: who stayed, who left, who sniped it.",
   "",
   "Send a token contract address (0x...) or a $TICKER. In a group: <code>/scan 0x...</code>",
+  "",
+  "<code>/watch 0x...</code> alerts on a token: the dev sells, a wallet sells 1% of the supply or more at once, a smart wallet buys, the price moves 50% up or 30% down",
+  "<code>/unwatch 0x...</code> or <code>/unwatch all</code> stops them, <code>/list</code> shows what you watch",
+  "<code>/radar</code> fresh launches whose buyers stay, <code>/radar on</code> a message for each new one, <code>/radar off</code> stops it",
   "",
   "0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in.",
   "It measures the past, it does not predict. Not financial advice.",
@@ -65,7 +71,7 @@ function caption(r: Report): string {
 function buttons(base: string, token: string): Button[][] {
   const ca = token.toLowerCase();
   return [
-    [{ text: "Full report", url: `${base}/?token=${ca}` }],
+    [{ text: "Full report", url: `${base}/?token=${ca}` }, { text: "Watch", callback_data: `w:${ca}` }],
     [
       { text: "Trade on Axiom", url: `https://axiom.trade/t/${ca}/@jumperrrr?chain=robinhood` },
       { text: "Trade on GMGN", url: `https://gmgn.ai/robinhood/token/jumper_${ca}` },
@@ -116,12 +122,83 @@ async function answer(chat: number, replyTo: number, input: string, base: string
   }
 }
 
+const WATCH_NOTE = "You get a message when the dev sells, a wallet sells 1% of the supply or more at once, a smart wallet buys, or the price moves 50% up or 30% down.";
+const pct = (x: number) => `${(x * 100).toFixed(x < 0.1 ? 1 : 0)}%`;
+const usd = (x: number | null) => (x == null ? "n/a" : x >= 1e6 ? `$${(x / 1e6).toFixed(2)}M` : x >= 1e3 ? `$${(x / 1e3).toFixed(1)}K` : `$${x.toFixed(0)}`);
+
+/** Adds a token to the chat's watchlist; the dev comes from the launch so their sells are named. */
+async function watch(chat: number, token: Address): Promise<string> {
+  const blocked = blockedMessage(token);
+  if (blocked) return esc(blocked);
+  const deployer = cachedReport(token)?.token.deployer ?? (await readLaunch(token).catch(() => null))?.deployer;
+  const r = await watchToken(chat, token, deployer).catch(() => ({ error: "the watchlist did not answer; try again in a moment" }) as { error: string });
+  if ("error" in r && r.error) return esc(r.error);
+  const ok = r as { symbol?: string; already?: boolean; count?: number };
+  return `${ok.already ? "Already watching" : "Watching"} <b>$${esc(ok.symbol ?? "")}</b> (${ok.count ?? 1} of 20). ${WATCH_NOTE}`;
+}
+
+async function command(chat: number, replyTo: number, text: string) {
+  const [cmd, arg = ""] = text.replace(/@\w+/, "").split(/\s+/, 2);
+  if (!indexConfigured()) return void sendText(chat, "Alerts are not set up here.", { replyTo });
+  if (cmd === "/watch") {
+    const input = target(arg);
+    if (!input) return void sendText(chat, "Send <code>/watch 0x...</code> or <code>/watch $TICKER</code>.", { replyTo });
+    const resolved = await resolveInput(input).catch(() => null);
+    if (!resolved?.token) return void sendText(chat, esc(resolved?.note ?? `nothing found for ${input}`), { replyTo });
+    return void sendText(chat, await watch(chat, resolved.token), { replyTo });
+  }
+  if (cmd === "/unwatch") {
+    const all = /^all$/i.test(arg);
+    const input = all ? null : target(arg);
+    if (!all && !input) return void sendText(chat, "Send <code>/unwatch 0x...</code> or <code>/unwatch all</code>.", { replyTo });
+    const token = input ? (await resolveInput(input).catch(() => null))?.token : undefined;
+    if (!all && !token) return void sendText(chat, `nothing found for ${esc(input ?? "")}`, { replyTo });
+    const r = await unwatchToken(chat, token).catch(() => null);
+    return void sendText(chat, r ? (r.removed ? `Stopped ${r.removed === 1 ? "that token" : `${r.removed} tokens`}.` : "That token was not on your list.") : "The watchlist did not answer. Try again in a moment.", { replyTo });
+  }
+  if (cmd === "/list") {
+    const r = await readWatches(chat).catch(() => null);
+    if (!r) return void sendText(chat, "The watchlist did not answer. Try again in a moment.", { replyTo });
+    const lines = r.rows.map((w) => `$${esc(w.symbol)} <code>${w.token}</code>`);
+    return void sendText(chat, [
+      lines.length ? `<b>Watching ${lines.length} of 20</b>` : "Nothing on your list. <code>/watch 0x...</code> adds a token.",
+      ...lines,
+      "",
+      `Radar alerts: ${r.radar ? "on" : "off"}`,
+    ].join("\n"), { replyTo });
+  }
+  if (cmd === "/radar") {
+    if (/^(on|off)$/i.test(arg)) {
+      const on = /^on$/i.test(arg);
+      const r = await radarSub(chat, on).catch(() => null);
+      return void sendText(chat, !r ? "The radar did not answer. Try again in a moment." : on ? "Radar alerts on: a message for each launch the first time it is on the radar." : "Radar alerts off.", { replyTo });
+    }
+    const r = await readRadar().catch(() => null);
+    if (!r) return void sendText(chat, "The radar did not answer. Try again in a moment.", { replyTo });
+    if (!r.rows.length) return void sendText(chat, "Nothing on the radar right now. Fresh launches are checked every two minutes.", { replyTo });
+    const lines = r.rows.slice(0, 10).map((x, i) =>
+      `${i + 1}. <b>$${esc(x.symbol)}</b> ${x.ageMin}m · ${x.buyers} buyers, ${pct(x.kept)} in · top ${pct(x.top)}${x.smartIn ? ` · ${x.smartIn} smart` : ""} · ${usd(x.mcapUsd)}\n<code>${x.token}</code>`);
+    return void sendText(chat, ["<b>Radar</b>: fresh launches whose buyers stay", "", ...lines, "", "Send an address to crawl it. <code>/radar on</code> for alerts. Not financial advice."].join("\n"), { replyTo });
+  }
+}
+
 export async function POST(request: Request) {
   const secret = process.env.TG_WEBHOOK_SECRET?.trim();
   if (!process.env.TG_BOT_TOKEN?.trim() || !secret) return NextResponse.json({ error: "no bot configured" }, { status: 404 });
   if (request.headers.get("x-telegram-bot-api-secret-token") !== secret) return NextResponse.json({ error: "not allowed" }, { status: 401 });
 
   const update = (await request.json().catch(() => null)) as TgUpdate | null;
+  const cb = update?.callback_query;
+  if (cb) {
+    const m = cb.data?.match(/^w:(0x[0-9a-f]{40})$/);
+    const chat = cb.message?.chat.id;
+    if (m && chat) after(async () => {
+      const text = await watch(chat, m[1] as Address);
+      await answerCallback(cb.id, text.startsWith("Watching") || text.startsWith("Already") ? "Watching it" : "Could not add it");
+      await sendText(chat, text);
+    });
+    return NextResponse.json({ ok: true });
+  }
   const msg = update?.message;
   const text = msg?.text?.trim();
   if (!msg || !text) return NextResponse.json({ ok: true });
@@ -131,6 +208,11 @@ export async function POST(request: Request) {
 
   if (/^\/(start|help)\b/i.test(text)) {
     after(() => sendText(chat, HELP).then(() => {}));
+    return NextResponse.json({ ok: true });
+  }
+
+  if (/^\/(watch|unwatch|list|radar)\b/i.test(text)) {
+    after(() => command(chat, msg.message_id, text));
     return NextResponse.json({ ok: true });
   }
 
