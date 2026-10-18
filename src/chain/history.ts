@@ -170,6 +170,12 @@ export async function writeProof(proof: unknown): Promise<void> {
   });
   if (!res.ok) throw new Error(`index /proof: HTTP ${res.status}`);
 }
+/** One launch on the radar: read off the trade index, bought minus sold per wallet. */
+export interface RadarRow {
+  token: string; symbol: string; ageMin: number; buyers: number; stayed: number; kept: number;
+  top: number; snipe: number; smartIn: number; volEth: number; mcapUsd: number | null; fromPeak: number; rank: number;
+}
+export const readRadar = (): Promise<{ at: number; rows: RadarRow[] }> => call<{ at: number; rows: RadarRow[] }>("/radar", undefined, 8_000);
 
 export const readPulse = (): Promise<Pulse> => call<Pulse>("/pulse", undefined, 8_000);
 

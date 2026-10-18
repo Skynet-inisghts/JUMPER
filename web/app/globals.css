@@ -628,3 +628,18 @@ body:has(#ov.on) #web{z-index:65}
 .jbr span{color:var(--dm)}
 .jbr b{font-weight:400}
 @media (max-width:640px){.jca{flex-basis:100%}.jlinks .btn{flex:1 1 calc(50% - 8px);justify-content:center}}
+
+/* /radar */
+.radarpage h2{margin-top:36px}
+.radarpage .plede{color:var(--dm);max-width:80ch;margin-bottom:12px}
+.radarpage .psub{color:var(--dm);margin:10px 0}
+.radarpage .psub a{color:var(--ac)}
+.radarpage .pempty{color:var(--dm);border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:28px 16px;text-align:center;margin:14px 0}
+.rtable{border:1px solid var(--ln);background:var(--pan);border-radius:5px;overflow:hidden;font-size:12px;font-variant-numeric:tabular-nums;margin-top:14px}
+.rtable .rh,.rtable .rr{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(8,minmax(0,1fr));gap:10px;padding:9px 16px;align-items:center}
+.rtable .rh{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dm2);border-bottom:1px solid var(--ln)}
+.rtable .rr{color:var(--tx);text-decoration:none;border-bottom:1px solid rgba(36,27,51,.6)}
+.rtable .rr:last-child{border-bottom:0}.rtable .rr:hover{background:rgba(180,124,255,.06)}
+.rtable .rr b{font-weight:400}
+.rtable .d{color:var(--dm)}.rtable .ok{color:var(--ac2)}.rtable .bad{color:var(--rd)}
+@media(max-width:760px){.rtable .rh{display:none}.rtable .rr{grid-template-columns:1.3fr 1fr 1fr 1fr}.rtable .rr>:nth-child(2),.rtable .rr>:nth-child(5),.rtable .rr>:nth-child(6),.rtable .rr>:nth-child(7),.rtable .rr>:nth-child(9){display:none}}
