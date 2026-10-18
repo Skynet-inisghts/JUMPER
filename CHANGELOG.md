@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 · 2026-10-18
+
+- The report shows the market: price, market cap, liquidity, 24h volume, holders, top ten, age and the creator, on one line over the chart.
+- A market cap chart on a log scale with its axis on the right: a purple line or candles, one-minute candles for the last day, five-minute for the last week, or the whole life. The wheel or a pinch zooms, a drag scrolls, a double click on the time axis fits it all. Over it, the all-time high, the low since then and now.
+- A crawl keeps one- and five-minute candles in its report.
+
 ## 0.5.4 · 2026-10-18
 
 - Token logos load again on share cards: pons moved its image gateway, and the old address answered 404 for every logo. Logos are read through the gateway the pons site uses now, then the old one, then a public IPFS gateway.
