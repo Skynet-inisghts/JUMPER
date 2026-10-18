@@ -175,7 +175,8 @@ export interface RadarRow {
   token: string; symbol: string; ageMin: number; buyers: number; stayed: number; kept: number;
   top: number; snipe: number; smartIn: number; volEth: number; mcapUsd: number | null; fromPeak: number; rank: number;
 }
-export const readRadar = (): Promise<{ at: number; rows: RadarRow[] }> => call<{ at: number; rows: RadarRow[] }>("/radar", undefined, 8_000);
+export interface Radar { at: number; rows: RadarRow[]; checked?: number; others?: { token: string; symbol: string; ageMin: number }[] }
+export const readRadar = (): Promise<Radar> => call<Radar>("/radar", undefined, 8_000);
 
 /** The bot's watchlist: jumper-watch on the index host sends the alerts. */
 export async function watchToken(chat: number, token: string, deployer?: string): Promise<{ ok?: boolean; symbol?: string; already?: boolean; count?: number; error?: string }> {
