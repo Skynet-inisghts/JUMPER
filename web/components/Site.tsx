@@ -7,6 +7,7 @@ import Room from "./Room";
 import Crawlers from "./Crawlers";
 import Feed from "./Feed";
 import Footer from "./Footer";
+import JumperToken from "./JumperToken";
 import CrawlOverlay from "./CrawlOverlay";
 import Lightbox from "./Lightbox";
 import SpiderLayer from "./SpiderLayer";
@@ -63,6 +64,7 @@ export default function Site({ initialToken, version }: { initialToken: string |
         <Room report={report} />
         <Crawlers report={report} label={label} />
         <Feed report={report} label={label} />
+        <JumperToken />
         <Footer />
       </div>
       <CrawlOverlay

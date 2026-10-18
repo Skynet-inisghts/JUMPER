@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import { DOCS, GITHUB } from "./Footer";
+import { BOT, DOCS, GITHUB } from "./Footer";
 
 export default function Nav({ onRun }: { onRun: () => void }) {
   return (
@@ -10,6 +10,8 @@ export default function Nav({ onRun }: { onRun: () => void }) {
         <div className="navlinks">
           <a href="#crawlers">Crawlers</a>
           <a href="#feed">Live</a>
+          <a href="#jumper">$JUMPER</a>
+          <a href={BOT} target="_blank" rel="noopener noreferrer">Telegram bot</a>
           <a href={DOCS} target="_blank" rel="noopener noreferrer">Docs</a>
           <a href={GITHUB} target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
