@@ -37,6 +37,8 @@ A crawl plays out in the room. The holder graph builds on the back wall in four 
 
 The report folds it into four questions. **WEB**: do the people who bought still hold, at 5m, 15m, 1h, 6h, 24h. **SILK**: does anyone here know what they are doing. **SNARE**: how much went before a human could read the ticker. **EXIT**: what the last hour did, both sides. Above them, the points that built the score. The card beside them is the share image, rendered on the server from the same report.
 
+Under them, the market: price, market cap, liquidity, 24h volume, holders, top ten, age and the creator, over a chart of the market cap on a log scale. The chart is a line or candles, one-minute (the last day), five-minute (the last week) or whole-life; the wheel zooms, a drag scrolls.
+
 <p align="center"><img src="assets/readme/site-holders.png" width="100%" alt="The top 50 holders: each wallet with its roles (whale, insider, dev, fresh wallet, trader, smart, bot, sniper), share, time held, value and return" /></p>
 
 Below, the top 50 holders by share of supply, and who each one is: **dev**, **insider** (got tokens from the dev, was funded by it, or sat in the launch bundle), **sniper**, **bot** (thousands of markets, or a 90% winrate over fifty trades), **whale** (3% of supply or $25k), **smart**, **bundle**, **fresh wallet** (this token is its first trade), **trader** with its record. Each row links to the wallet on Blockscout.
