@@ -482,6 +482,7 @@ export default function CrawlOverlay({ open, autoTarget, examples, onClose, onCa
             </div>
             <div className="repfull">
               <MarketStrip r={r} />
+              <TradeLinks token={r.token.address} />
               <PriceChart r={r} />
               <TopHolders r={r} onWallet={setWallet}>
                 <button className="btn ghost" onClick={() => onCard(cardSrc, cardLabel)}>Open card</button>
@@ -695,6 +696,17 @@ function EarlyBuyers({ r, onWallet }: { r: Report; onWallet: (w: WalletHere) => 
           <span className={"v " + (STATUS[e.status] ?? "d")}>{e.status === "partly sold" ? `sold ${Math.round(e.soldPct)}%` : e.status === "moved" ? "moved out" : e.status === "added" ? "added more" : e.status === "sold" ? "sold out" : "holding"}</span>
         </div>
       ))}
+    </div>
+  );
+}
+
+/** Buttons that open this token on Axiom and GMGN with JUMPER's referral. */
+function TradeLinks({ token }: { token: string }) {
+  const ca = token.toLowerCase();
+  return (
+    <div className="trade">
+      <a className="btn ghost" href={`https://axiom.trade/t/${ca}/@jumperrrr?chain=robinhood`} target="_blank" rel="noopener">Trade on Axiom</a>
+      <a className="btn ghost" href={`https://gmgn.ai/robinhood/token/jumper_${ca}`} target="_blank" rel="noopener">Trade on GMGN</a>
     </div>
   );
 }
