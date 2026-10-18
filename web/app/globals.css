@@ -438,6 +438,8 @@ button.inputchip{all:unset}
 .mstrip>div>span{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dm2);white-space:nowrap}
 .mstrip b{font-weight:400;font-size:15px;color:var(--tx);white-space:nowrap}
 .mstrip b i{font-style:normal;color:var(--dm)}
+.trade{display:flex;gap:8px;margin-bottom:8px}
+.trade .btn{flex:1;text-align:center;text-decoration:none}
 .mstrip a{color:var(--tx);text-decoration:none;border-bottom:1px dotted var(--dm2)}
 .pchart{border:1px solid var(--ln);background:var(--pan);border-radius:5px;padding:10px 16px 8px;margin-bottom:14px}
 .pchart .ph{display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--dm);font-variant-numeric:tabular-nums}
