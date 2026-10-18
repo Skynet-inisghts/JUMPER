@@ -146,6 +146,31 @@ export const readSmartFlow = (): Promise<SmartFlow> => call<SmartFlow>("/smartfl
 
 export const readBooks = (token: string, curve: string): Promise<TokenBooks> => call<TokenBooks>("/positions", { token, curve });
 
+/** Launches old enough for the /proof backtest, the most traders first. */
+export const readProofCandidates = async (): Promise<string[]> =>
+  (await call<{ tokens: { token: string }[] }>("/proof-candidates", undefined, 30_000)).tokens.map((t) => t.token);
+
+/** The rolling /proof backtest, or null before the first run. */
+export async function readProof<T>(): Promise<T | null> {
+  try {
+    return await call<T>("/proof", undefined, 10_000);
+  } catch (e) {
+    if (String(e).includes("HTTP 404")) return null;
+    throw e;
+  }
+}
+
+export async function writeProof(proof: unknown): Promise<void> {
+  const base = process.env.JUMPER_INDEX_URL!.trim().replace(/\/$/, "");
+  const res = await fetch(`${base}/proof`, {
+    method: "PUT",
+    headers: { "content-type": "application/json", "x-jumper-key": process.env.JUMPER_INDEX_KEY!.trim() },
+    body: JSON.stringify(proof),
+    signal: AbortSignal.timeout(20_000),
+  });
+  if (!res.ok) throw new Error(`index /proof: HTTP ${res.status}`);
+}
+
 export const readPulse = (): Promise<Pulse> => call<Pulse>("/pulse", undefined, 8_000);
 
 export const readLatest = <T>(): Promise<{ report: T | null }> => call<{ report: T | null }>("/latest", undefined, 8_000);
