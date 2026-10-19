@@ -279,8 +279,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  if (EXTRAS && /^\/(watch|unwatch|list|radar|alerts?|follow|unfollow|following)\b/i.test(text)) {
-    after(() => command(chat, msg.message_id, text));
+  if (/^\/(watch|unwatch|list|radar|alerts?|follow|unfollow|following)\b/i.test(text)) {
+    after(() => EXTRAS
+      ? command(chat, msg.message_id, text)
+      : sendText(chat, "That one is not out yet. Send a token address to crawl it.", { replyTo: msg.message_id }).then(() => {}));
     return NextResponse.json({ ok: true });
   }
 
