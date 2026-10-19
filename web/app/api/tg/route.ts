@@ -32,18 +32,28 @@ const ADDRESS = /0x[0-9a-fA-F]{40}/;
 const TICKER = /\$[A-Za-z0-9]{1,20}\b/;
 const perChat = new RateLimiter(4, 60_000);
 
+/**
+ * Everything past /scan (watchlist, price alerts, follows, radar) is built
+ * but not released yet. Flip this to true to bring it all back: the help,
+ * the Watch button and the commands. The menu is set separately with
+ * setMyCommands.
+ */
+const EXTRAS = false;
+
 const HELP = [
   "<b>JUMPER</b> crawls one Pons v2 token on Robinhood Chain and scores its holders: who stayed, who left, who sniped it.",
   "",
   "Send a token contract address (0x...) or a $TICKER. In a group: <code>/scan 0x...</code>",
   "",
-  "<code>/watch 0x...</code> alerts on a token: the dev sells, a wallet sells 1% of the supply or more at once, a smart wallet buys, the price moves 50% up or 30% down",
-  "<code>/unwatch 0x...</code> or <code>/unwatch all</code> stops them, <code>/list</code> shows what you watch",
-  "<code>/radar</code> fresh launches whose buyers stay, <code>/radar on</code> a message for each new one, <code>/radar off</code> stops it",
-  "<code>/alert 0x... 2x</code> or <code>/alert 0x... -50%</code> one message when the price gets there, <code>/alerts</code> lists them, <code>/alerts clear</code>",
-  "<code>/follow 0x...</code> a message on every trade of a wallet, <code>/unfollow 0x...</code>, <code>/following</code>",
-  "Watched tokens also tell you when their JUMPER score changes band.",
-  "",
+  ...(EXTRAS ? [
+    "<code>/watch 0x...</code> alerts on a token: the dev sells, a wallet sells 1% of the supply or more at once, a smart wallet buys, the price moves 50% up or 30% down",
+    "<code>/unwatch 0x...</code> or <code>/unwatch all</code> stops them, <code>/list</code> shows what you watch",
+    "<code>/radar</code> fresh launches whose buyers stay, <code>/radar on</code> a message for each new one, <code>/radar off</code> stops it",
+    "<code>/alert 0x... 2x</code> or <code>/alert 0x... -50%</code> one message when the price gets there, <code>/alerts</code> lists them, <code>/alerts clear</code>",
+    "<code>/follow 0x...</code> a message on every trade of a wallet, <code>/unfollow 0x...</code>, <code>/following</code>",
+    "Watched tokens also tell you when their JUMPER score changes band.",
+    "",
+  ] : []),
   "0-34 TORN, do not touch · 35-69 PATCHED, handle with care · 70-100 TAUT, safe to walk in.",
   "It measures the past, it does not predict. Not financial advice.",
 ].join("\n");
@@ -76,7 +86,7 @@ function caption(r: Report): string {
 function buttons(base: string, token: string): Button[][] {
   const ca = token.toLowerCase();
   return [
-    [{ text: "Full report", url: `${base}/?token=${ca}` }, { text: "Watch", callback_data: `w:${ca}` }],
+    [{ text: "Full report", url: `${base}/?token=${ca}` }, ...(EXTRAS ? [{ text: "Watch", callback_data: `w:${ca}` }] : [])],
     [
       { text: "Trade on Axiom", url: `https://axiom.trade/t/${ca}/@jumperrrr?chain=robinhood` },
       { text: "Trade on GMGN", url: `https://gmgn.ai/robinhood/token/jumper_${ca}` },
@@ -247,6 +257,7 @@ export async function POST(request: Request) {
   const update = (await request.json().catch(() => null)) as TgUpdate | null;
   const cb = update?.callback_query;
   if (cb) {
+    if (!EXTRAS) return NextResponse.json({ ok: true });
     const m = cb.data?.match(/^w:(0x[0-9a-f]{40})$/);
     const chat = cb.message?.chat.id;
     if (m && chat) after(async () => {
@@ -268,7 +279,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  if (/^\/(watch|unwatch|list|radar|alerts?|follow|unfollow|following)\b/i.test(text)) {
+  if (EXTRAS && /^\/(watch|unwatch|list|radar|alerts?|follow|unfollow|following)\b/i.test(text)) {
     after(() => command(chat, msg.message_id, text));
     return NextResponse.json({ ok: true });
   }
