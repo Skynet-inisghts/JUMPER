@@ -22,6 +22,9 @@ nav{position:sticky;top:0;z-index:20;background:rgba(7,6,10,.92);border-bottom:1
 .tagline{color:var(--dm2);font-size:11px}
 .navlinks{margin-left:auto;display:flex;gap:20px;font-size:12px;color:var(--dm)}
 .navlinks a:hover{color:var(--tx)}
+.tgapp{display:flex;flex:none;border-radius:50%;transition:transform .15s}
+.tgapp:hover{transform:scale(1.08)}
+.tgapp:focus-visible{outline:1px solid var(--ac);outline-offset:3px}
 .btn{background:var(--ac);color:#140A20;padding:9px 17px;font-weight:700;font-size:12px;
  border:0;border-radius:3px;cursor:pointer;font-family:inherit}
 .btn:hover{filter:brightness(1.12)}
@@ -351,6 +354,7 @@ button.inputchip{all:unset}
 @media(max-width:640px){
  .wrap{padding:0 16px}
  .tagline,.navlinks{display:none}
+ .tgapp{margin-left:auto}
  .nav{gap:12px}
  .hero{gap:20px;padding:36px 16px}
  .ochip{font-size:9.5px;padding:3px 7px}
