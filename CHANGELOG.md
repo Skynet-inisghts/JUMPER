@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 · 2026-10-20
+
+- Trade on Axiom and Trade on GMGN buttons on every report, opening that token.
+- A $JUMPER block on the home page: the contract to copy, links to trade it, its chart and how much of it was burned.
+- A Telegram bot, @jumper_terminal_bot: send a token address or a $TICKER and it answers with the share card, the score, three facts and buttons to the full report and to trade. Linked from the menu and the footer.
+- A token too early to read (under ten holders) gets TOO EARLY instead of a score; one whose supply was handed out in many small drops gets NO VERDICT. A few big chunks handed out are a stash and are scored as usual.
+- A price 80% or more below its peak gets a warning over the report: probably rugged or price collapsed, how deep, how long ago, and who did the selling since the peak, by kind of wallet.
+- A token with more history than one crawl can read counts down and crawls again by itself while its history is read.
+
 ## 0.6.1 · 2026-10-18
 
 - Logos load on more cards: a logo kept as a link to any IPFS gateway is read through the gateway pons uses, the pons gateway is tried twice, the RPC read of the logo once more, and logos up to 4 MB are kept.

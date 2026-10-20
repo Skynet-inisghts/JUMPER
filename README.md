@@ -39,6 +39,10 @@ The report folds it into four questions. **WEB**: do the people who bought still
 
 Under them, the market: price, market cap, liquidity, 24h volume, holders, top ten, age and the creator, over a chart of the market cap on a log scale. The chart is a line or candles, one-minute (the last day), five-minute (the last week) or whole-life; the wheel zooms, a drag scrolls.
 
+Over it, a warning when the price is 80% or more below its peak: rug or collapse, and who sold since the peak. A token with under ten holders reads TOO EARLY, and one handed out by airdrop NO VERDICT, instead of a score. Trade on Axiom and Trade on GMGN open the token.
+
+The same crawl answers in Telegram: send a token address or a $TICKER to [@jumper_terminal_bot](https://t.me/jumper_terminal_bot) for the card, the score and three facts.
+
 <p align="center"><img src="assets/readme/site-holders.png" width="100%" alt="The top 50 holders: each wallet with its roles (whale, insider, dev, fresh wallet, trader, smart, bot, sniper), share, time held, value and return" /></p>
 
 Below, the top 50 holders by share of supply, and who each one is: **dev**, **insider** (got tokens from the dev, was funded by it, or sat in the launch bundle), **sniper**, **bot** (thousands of markets, or a 90% winrate over fifty trades), **whale** (3% of supply or $25k), **smart**, **bundle**, **fresh wallet** (this token is its first trade), **trader** with its record. Each row links to the wallet on Blockscout.
