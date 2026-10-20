@@ -51,8 +51,9 @@ function target(text: string): string | null {
 
 function caption(r: Report): string {
   const lines = [
-    `<b>$${esc(r.token.symbol)}</b> · <b>${r.score}/100 ${esc(r.label)}</b>`,
-    `${esc(r.verdict.toLowerCase())}: ${esc(r.subline)}`,
+    ...(r.outcome
+      ? [`<b>$${esc(r.token.symbol)}</b> · <b>${esc(r.outcome.kind.toUpperCase())}</b>`, `no score: ${esc(r.outcome.why)}`]
+      : [`<b>$${esc(r.token.symbol)}</b> · <b>${r.score}/100 ${esc(r.label)}</b>`, `${esc(r.verdict.toLowerCase())}: ${esc(r.subline)}`]),
     "",
     ...r.facts.map((f) => `· ${esc(f)}`),
     "",

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1 · 2026-10-20
+
+- A token that many bought and nearly all sold reads SOLD OUT instead of TOO EARLY.
+- The Telegram bot answers TOO EARLY, SOLD OUT or NO VERDICT with the reason instead of a score for such a token.
+- The menu shows the Telegram bot as its app icon, next to Run a crawl.
+
 ## 0.7.0 · 2026-10-20
 
 - Trade on Axiom and Trade on GMGN buttons on every report, opening that token.
