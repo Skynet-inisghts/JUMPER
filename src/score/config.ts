@@ -34,6 +34,8 @@ export const THRESHOLDS = {
   /** At least this many holders that never bought, holding this % of the held supply: an airdrop, NO VERDICT. */
   airdropWallets: 20,
   airdropHeldPct: 25,
+  /** A drop is a holder that never bought and holds under this % of supply; bigger chunks are a stash, scored as usual. */
+  airdropDropPct: 0.2,
   /** SNARE: buys inside the launch block and the two after it. */
   sniperBlocks: 3,
   /** First-minute cohort window and the keep ratio (balance >= 80% of peak). */
