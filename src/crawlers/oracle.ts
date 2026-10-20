@@ -324,10 +324,15 @@ function rugCheck(tape: Tape, c: Crawled, candles: Report["chart"]): Rug | null 
   return { drawdown, peakAgoSec: Math.max(0, tape.now - candles[peak].t), rugged, devState: c.tracked.devState, sellers };
 }
 
-/** TOO EARLY with too few holders to read; NO VERDICT when the supply was handed out, not bought. */
+/** TOO EARLY with too few holders to read, SOLD OUT when the buyers all left; NO VERDICT when the supply was handed out, not bought. */
 function outcomeOf(tape: Tape, c: Crawled): Outcome | null {
   const n = c.web.holders.length;
   if (n < THRESHOLDS.tooEarlyHolders) {
+    // bought by many and held by almost none: not early, everyone left
+    const buyers = new Set(c.web.buys.map((b) => b.wallet)).size;
+    if (buyers >= THRESHOLDS.tooEarlyHolders) {
+      return { kind: "sold out", why: `${plural(n, "holder")} left of ${plural(buyers, "buyer")}: nearly everyone who bought has sold` };
+    }
     return { kind: "too early", why: `${n} holder${n === 1 ? "" : "s"} so far: too few to read, crawl it again once people buy in` };
   }
   const dev = devSet(tape);

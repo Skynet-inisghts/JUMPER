@@ -314,7 +314,7 @@ export interface Rug {
 
 /** A token the score cannot judge: too few holders yet, or supply handed out instead of bought. */
 export interface Outcome {
-  kind: "too early" | "no verdict";
+  kind: "too early" | "sold out" | "no verdict";
   why: string;
 }
 

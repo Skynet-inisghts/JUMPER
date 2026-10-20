@@ -156,3 +156,22 @@ test("a few big equal chunks handed out is a stash, not an airdrop: it is scored
   const r = crawlTape(tape);
   assert.notEqual(r.outcome?.kind, "no verdict", JSON.stringify(r.outcome));
 });
+
+test("a token everyone sold out of is SOLD OUT, not TOO EARLY", () => {
+  const tape = fixture("twain");
+  const r0 = crawlTape(tape);
+  assert.ok(r0.metrics.holders >= 10);
+  // every wallet sells its whole bag back into the curve
+  const bal = new Map();
+  for (const t of tape.transfers) {
+    bal.set(t.from.toLowerCase(), (bal.get(t.from.toLowerCase()) ?? 0n) - t.value);
+    bal.set(t.to.toLowerCase(), (bal.get(t.to.toLowerCase()) ?? 0n) + t.value);
+  }
+  const curve = tape.launch.curve.toLowerCase();
+  let logIndex = 90_000;
+  for (const [w, b] of bal) {
+    if (b > 0n && w !== curve) tape.transfers.push({ from: w, to: curve, value: b, block: tape.headBlock, logIndex: logIndex++ });
+  }
+  const r = crawlTape(tape);
+  assert.equal(r.outcome?.kind, "sold out", JSON.stringify(r.outcome));
+});

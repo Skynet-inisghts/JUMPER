@@ -1,6 +1,7 @@
 import Logo from "./Logo";
 
 export const GITHUB = "https://github.com/Skynet-inisghts/JUMPER";
+export const BOT = "https://t.me/jumper_terminal_bot";
 export const DOCS = "https://github.com/Skynet-inisghts/JUMPER#readme";
 
 export default function Footer() {

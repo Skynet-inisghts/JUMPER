@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import { DOCS } from "./Footer";
+import { BOT, DOCS } from "./Footer";
 
 export default function Nav({ onRun }: { onRun: () => void }) {
   return (
